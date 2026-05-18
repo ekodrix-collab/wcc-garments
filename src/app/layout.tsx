@@ -58,9 +58,42 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const orgSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_CONFIG.fullName,
+    alternateName: SITE_CONFIG.name,
+    url: SITE_CONFIG.url || 'https://www.wccgarments.com',
+    email: SITE_CONFIG.email,
+    telephone: SITE_CONFIG.phone,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Dubai',
+      addressCountry: 'AE',
+    },
+    foundingDate: SITE_CONFIG.founded,
+    description:
+      'B2B manufacturing and wholesale supplier for garments, uniforms, hospitality textiles, home furnishings, fragrance, and household products.',
+  }
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_CONFIG.name,
+    url: SITE_CONFIG.url || 'https://www.wccgarments.com',
+    description: `${SITE_CONFIG.description} No public pricing; quotes are provided based on order scope.`,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products?search={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-body">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <ThemeProvider>
           <PreLoader />
           <SmoothScroll>

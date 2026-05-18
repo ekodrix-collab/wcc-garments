@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,12 +10,33 @@ import { BUSINESS_TYPES, PRODUCT_INTERESTS, COUNTRIES, SITE_CONFIG } from '@/lib
 import { SplitSubmitButton } from '@/components/ui/SplitSubmitButton'
 import { TypewriterEffect } from '@/components/ui/typewriter-effect'
 
-export function EnquiryConsole() {
+type EnquiryConsoleProps = {
+  source?: string
+  initialBusinessType?: string
+  initialInterests?: string[]
+  initialMessage?: string
+}
+
+export function EnquiryConsole({
+  source = 'homepage_enquiry',
+  initialBusinessType,
+  initialInterests,
+  initialMessage,
+}: EnquiryConsoleProps = {}) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [step, setStep] = useState(1)
-  const [selectedBusinessType, setSelectedBusinessType] = useState('')
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([])
+  const initialBusiness = useMemo(
+    () => (initialBusinessType && BUSINESS_TYPES.includes(initialBusinessType) ? initialBusinessType : ''),
+    [initialBusinessType]
+  )
+  const sanitizedInterests = useMemo(
+    () => (initialInterests || []).filter((interest) => PRODUCT_INTERESTS.includes(interest)),
+    [initialInterests]
+  )
+  const startingStep = sanitizedInterests.length > 0 ? 3 : initialBusiness ? 2 : 1
+  const [step, setStep] = useState(startingStep)
+  const [selectedBusinessType, setSelectedBusinessType] = useState(initialBusiness)
+  const [selectedInterests, setSelectedInterests] = useState<string[]>(sanitizedInterests)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -31,10 +52,26 @@ export function EnquiryConsole() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<EnquiryFormData>({
     resolver: zodResolver(EnquirySchema),
+    defaultValues: {
+      message: initialMessage || '',
+    },
   })
+
+  useEffect(() => {
+    if (initialMessage) {
+      setValue('message', initialMessage)
+    }
+  }, [initialMessage, setValue])
+
+  useEffect(() => {
+    setSelectedBusinessType(initialBusiness)
+    setSelectedInterests(sanitizedInterests)
+    setStep(sanitizedInterests.length > 0 ? 3 : initialBusiness ? 2 : 1)
+  }, [initialBusiness, sanitizedInterests])
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -53,7 +90,7 @@ export function EnquiryConsole() {
           ...data,
           business_type: selectedBusinessType,
           product_interest: selectedInterests,
-          source: 'homepage_enquiry',
+          source,
         }),
       })
       const json = await res.json()
