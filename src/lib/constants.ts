@@ -1,0 +1,321 @@
+export const SITE_CONFIG = {
+  name: 'WCC Garments',
+  fullName: 'Western Clothing Company',
+  tagline: 'Precision in Every Stitch',
+  description:
+    'UAE-based industrial fashion manufacturing group. Premium garments, uniforms, hospitality textiles, home furnishings, and fragrance — manufactured and supplied globally.',
+  url: process.env.NEXT_PUBLIC_SITE_URL || '',
+  phone: process.env.NEXT_PUBLIC_COMPANY_PHONE || '+971 XX XXX XXXX',
+  email: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'info@wccgarments.com',
+  whatsapp: process.env.NEXT_PUBLIC_COMPANY_WHATSAPP || '+971 XX XXX XXXX',
+  address: 'Dubai, United Arab Emirates',
+  founded: '2010',
+  countries: '50+',
+  products: '10,000+',
+  years: '15+',
+}
+
+export const DIVISIONS = [
+  { name: 'Garments', slug: 'garments', icon: 'DIV-01', description: 'Premium garment manufacturing for global export' },
+  { name: 'Uniforms', slug: 'uniforms', icon: 'DIV-02', description: 'Professional uniform solutions for all sectors' },
+  { name: 'Hospitality', slug: 'hospitality', icon: 'DIV-03', description: 'Premium hospitality textiles and uniforms' },
+  { name: 'Home', slug: 'home', icon: 'DIV-04', description: 'Luxury home linen and furnishing textiles' },
+  { name: 'Fragrance', slug: 'fragrance', icon: 'DIV-05', description: 'Perfumes, raw materials and private label' },
+  { name: 'Households', slug: 'households', icon: 'DIV-06', description: 'Essential household products for bulk supply' },
+]
+
+export const BUSINESS_TYPES = [
+  'Wholesale Distributor',
+  'Hotel / Hospitality',
+  'Hospital / Healthcare',
+  'Corporate / Uniforms',
+  'Retail Chain',
+  'Government / Tender',
+  'Other',
+]
+
+export const PRODUCT_INTERESTS = [
+  'Garments & Fashion',
+  'Uniforms & Workwear',
+  'Hospitality Textiles',
+  'Home Furnishings',
+  'Fragrance & Raw Materials',
+  'Household Products',
+  'Multiple Categories',
+]
+
+export const COUNTRIES = [
+  'United Arab Emirates', 'Saudi Arabia', 'Kuwait', 'Bahrain', 'Qatar', 'Oman',
+  'Nigeria', 'Kenya', 'South Africa', 'Ghana', 'Egypt', 'Ethiopia', 'Tanzania',
+  'Uganda', 'Mozambique', 'Cameroon', 'Senegal', 'Ivory Coast',
+  'India', 'Pakistan', 'Bangladesh', 'Sri Lanka',
+  'United Kingdom', 'Germany', 'France', 'Italy', 'Spain',
+  'United States', 'Canada', 'Brazil',
+  'China', 'Japan', 'South Korea', 'Australia',
+  'Turkey', 'Jordan', 'Iraq', 'Iran',
+  'Other',
+]
+
+export const NAV_LINKS = [
+  { name: 'Products', href: '/products' },
+  { name: 'Hospitality', href: '/hospitality' },
+  { name: 'New Arrivals', href: '/new-arrivals' },
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
+]
+
+export const ENQUIRY_STATUSES = [
+  { value: 'new', label: 'New', color: '#3B82F6' },
+  { value: 'contacted', label: 'Contacted', color: '#F59E0B' },
+  { value: 'quoted', label: 'Quoted', color: '#8B5CF6' },
+  { value: 'negotiating', label: 'Negotiating', color: '#EC4899' },
+  { value: 'won', label: 'Won', color: '#10B981' },
+  { value: 'lost', label: 'Lost', color: '#EF4444' },
+]
+
+export const MOCK_IMAGES = {
+  hero: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1920&q=90',
+  garments: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=85',
+  uniforms: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=85',
+  hospitality: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=85',
+  home: 'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=800&q=85',
+  fragrance: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=85',
+  households: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=85',
+  factory: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=85',
+  team: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=85',
+  quality: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=85',
+  fabric: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1200&q=90',
+  sewing: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=90',
+  textiles: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=1200&q=90',
+}
+
+export const MOCK_PRODUCTS: Array<{
+  id: string
+  name: string
+  slug: string
+  division: string
+  division_slug: string
+  category: string
+  short_description: string
+  moq: string
+  lead_time: string
+  images: string[]
+  is_new: boolean
+  is_offer: boolean
+  offer_label: string | null
+  featured: boolean
+  specifications: Record<string, string>
+  suitable_for: string[]
+  tags: string[]
+}> = [
+  {
+    id: '1', name: 'Egyptian Cotton Premium Shirts', slug: 'egyptian-cotton-premium-shirts',
+    division: 'Garments', division_slug: 'garments', category: 'Formal Shirts',
+    short_description: 'Premium 100% Egyptian cotton shirts crafted for global wholesale distribution. Available in multiple fits and finishes.',
+    moq: '500 units', lead_time: '15-25 working days',
+    images: [
+      'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&q=85',
+      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=85',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: true,
+    specifications: { material: '100% Egyptian Cotton', thread_count: '300 TC', weight: '120 GSM', sizes: 'S, M, L, XL, XXL', colors: 'White, Sky Blue, Navy, Black' },
+    suitable_for: ['Corporate', 'Retail', 'Hotels'],
+    tags: ['cotton', 'formal', 'premium'],
+  },
+  {
+    id: '2', name: 'Industrial Cargo Work Pants', slug: 'industrial-cargo-work-pants',
+    division: 'Uniforms', division_slug: 'uniforms', category: 'Workwear',
+    short_description: 'Heavy-duty cargo work pants built for industrial environments. Reinforced stitching and multiple utility pockets.',
+    moq: '300 units', lead_time: '20-30 working days',
+    images: [
+      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=85',
+      'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&q=85',
+    ],
+    is_new: false, is_offer: true, offer_label: 'Bulk Discount', featured: true,
+    specifications: { material: 'Poly-Cotton Blend 65/35', weight: '280 GSM', sizes: '28-44 Waist', colors: 'Khaki, Navy, Black, Olive' },
+    suitable_for: ['Construction', 'Manufacturing', 'Oil & Gas'],
+    tags: ['workwear', 'industrial', 'cargo'],
+  },
+  {
+    id: '3', name: 'Hotel Bed Linen Collection', slug: 'hotel-bed-linen-collection',
+    division: 'Hospitality', division_slug: 'hospitality', category: 'Bed Linen',
+    short_description: 'Luxury hotel-grade bed linen sets. Sateen weave finish with exceptional durability for commercial laundering.',
+    moq: '200 sets', lead_time: '15-20 working days',
+    images: [
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=85',
+      'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=800&q=85',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: true,
+    specifications: { material: '100% Combed Cotton', thread_count: '300-600 TC', weave: 'Sateen', sizes: 'Single, Double, Queen, King' },
+    suitable_for: ['Hotels', 'Resorts', 'Airlines'],
+    tags: ['hotel', 'linen', 'luxury'],
+  },
+  {
+    id: '4', name: 'Luxury Bath Towel Set', slug: 'luxury-bath-towel-set',
+    division: 'Home', division_slug: 'home', category: 'Bath Textiles',
+    short_description: 'Ultra-soft ring spun cotton towels with superior absorbency. Double-stitched hems for commercial durability.',
+    moq: '1000 units', lead_time: '10-15 working days',
+    images: [
+      'https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=800&q=85',
+      'https://images.unsplash.com/photo-1600369671738-fa6e0a1b3bd0?w=800&q=85',
+    ],
+    is_new: false, is_offer: true, offer_label: 'Seasonal Special', featured: false,
+    specifications: { material: '100% Ring Spun Cotton', weight: '500-700 GSM', sizes: 'Hand, Bath, Bath Sheet', colors: 'White, Ivory, Grey, Navy' },
+    suitable_for: ['Hotels', 'Retail', 'Healthcare'],
+    tags: ['towel', 'bath', 'cotton'],
+  },
+  {
+    id: '5', name: 'Arabian Oud Collection', slug: 'arabian-oud-collection',
+    division: 'Fragrance', division_slug: 'fragrance', category: 'Premium Fragrances',
+    short_description: 'Authentic Arabian Oud fragrances crafted from rare aged agarwood. Private label options available.',
+    moq: '100 units', lead_time: '10-15 working days',
+    images: [
+      'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=85',
+      'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=800&q=85',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: true,
+    specifications: { type: 'Eau de Parfum', concentration: '18-22%', sizes: '50ml, 100ml', notes: 'Oud, Rose, Amber, Musk' },
+    suitable_for: ['Retail', 'Duty Free', 'Gift Shops'],
+    tags: ['fragrance', 'oud', 'luxury'],
+  },
+  {
+    id: '6', name: 'Premium Chef Uniform Set', slug: 'premium-chef-uniform-set',
+    division: 'Hospitality', division_slug: 'hospitality', category: 'Chef Uniforms',
+    short_description: 'Professional chef coats with breathable fabric and stain resistance. Double-breasted design with cloth buttons.',
+    moq: '100 units', lead_time: '12-18 working days',
+    images: [
+      'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800&q=85',
+      'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=85',
+    ],
+    is_new: false, is_offer: false, offer_label: null, featured: true,
+    specifications: { material: 'Poly-Cotton Twill', weight: '200 GSM', sizes: 'XS-3XL', colors: 'White, Black, Grey' },
+    suitable_for: ['Restaurants', 'Hotels', 'Catering'],
+    tags: ['chef', 'uniform', 'hospitality'],
+  },
+  {
+    id: '7', name: 'Microfiber Cleaning Cloths', slug: 'microfiber-cleaning-cloths',
+    division: 'Households', division_slug: 'households', category: 'Cleaning Products',
+    short_description: 'Industrial grade microfiber cleaning cloths. Ultra-absorbent, lint-free, and reusable for hundreds of wash cycles.',
+    moq: '5000 units', lead_time: '7-10 working days',
+    images: [
+      'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&q=85',
+      'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&q=85',
+    ],
+    is_new: false, is_offer: true, offer_label: 'Clearance', featured: false,
+    specifications: { material: '80% Polyester / 20% Polyamide', weight: '300 GSM', sizes: '30x30cm, 40x40cm', colors: 'Blue, Green, Yellow, Red' },
+    suitable_for: ['Hotels', 'Healthcare', 'Industrial'],
+    tags: ['cleaning', 'microfiber', 'household'],
+  },
+  {
+    id: '8', name: 'Executive Polo Collection', slug: 'executive-polo-collection',
+    division: 'Garments', division_slug: 'garments', category: 'Polo Shirts',
+    short_description: 'Premium piqué cotton polo shirts with corporate customization. Ribbed collar and cuffs for refined appearance.',
+    moq: '250 units', lead_time: '12-18 working days',
+    images: [
+      'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=800&q=85',
+      'https://images.unsplash.com/photo-1625910513413-5fc421e0fd6f?w=800&q=85',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: false,
+    specifications: { material: '100% Piqué Cotton', weight: '220 GSM', sizes: 'S-3XL', colors: 'White, Navy, Black, Burgundy, Forest Green' },
+    suitable_for: ['Corporate', 'Hotels', 'Events'],
+    tags: ['polo', 'corporate', 'cotton'],
+  },
+  {
+    id: '9', name: 'Executive Velvet Blazer', slug: 'executive-velvet-blazer',
+    division: 'Garments', division_slug: 'garments', category: 'Formal Outerwear',
+    short_description: 'Luxury tailored velvet blazers engineered for VIP hospitality and front-of-house attire. Stain resistant coating.',
+    moq: '50 units', lead_time: '14-20 working days',
+    images: [
+      'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=85',
+      'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&q=85',
+    ],
+    is_new: false, is_offer: true, offer_label: 'VIP Package', featured: true,
+    specifications: { material: 'Italian Cotton Velvet', weight: '320 GSM', sizes: '36-48 Chest', colors: 'Midnight Blue, Royal Black, Emerald' },
+    suitable_for: ['Boutique Hotels', 'Luxury Lounges', 'Private Clubs'],
+    tags: ['blazer', 'velvet', 'vip'],
+  },
+  {
+    id: '10', name: 'Tactical Security Uniform Suite', slug: 'tactical-security-uniform-suite',
+    division: 'Uniforms', division_slug: 'uniforms', category: 'Security Attire',
+    short_description: 'Industrial ripstop tactical uniforms engineered for VIP security and protocol forces. Water and abrasion resistant coating.',
+    moq: '200 units', lead_time: '18-25 working days',
+    images: [
+      'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=1000&q=90',
+      'https://images.unsplash.com/photo-1544816155-12df9643f363?w=1000&q=90',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: true,
+    specifications: { material: '65% Polyester / 35% Cotton Ripstop', weight: '260 GSM', sizes: 'S-4XL', colors: 'Navy, Black, Desert Tan' },
+    suitable_for: ['Security Firms', 'Hotels', 'Aviation'],
+    tags: ['tactical', 'uniform', 'security'],
+  },
+  {
+    id: '11', name: 'Cashmere Merino Hospitality Blanket', slug: 'cashmere-merino-hospitality-blanket',
+    division: 'Home', division_slug: 'home', category: 'Luxury Throws',
+    short_description: 'Exquisite blended cashmere and merino wool throws designed for five-star presidential suites and VIP aviation lounges.',
+    moq: '100 units', lead_time: '20-30 working days',
+    images: [
+      'https://images.unsplash.com/photo-1579656381226-5fc0f0100c3b?w=1000&q=90',
+      'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=1000&q=90',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: true,
+    specifications: { material: '30% Mongolian Cashmere / 70% Merino Wool', weight: '450 GSM', dimensions: '180x220cm', colors: 'Warm Taupe, Charcoal, Oatmeal' },
+    suitable_for: ['Luxury Hotels', 'Private Jets', 'High-End Retail'],
+    tags: ['cashmere', 'blanket', 'home'],
+  },
+  {
+    id: '12', name: 'Royal Majalis Bakhoor Infusion', slug: 'royal-majalis-bakhoor-infusion',
+    division: 'Fragrance', division_slug: 'fragrance', category: 'Incense & Home Fragrance',
+    short_description: 'Traditional royal Bakhoor compressed tablets rich in natural sandalwood, ambergris, and Taif rose essential oils.',
+    moq: '300 boxes', lead_time: '12-16 working days',
+    images: [
+      'https://images.unsplash.com/photo-1608686207856-001b95cf60ca?w=1000&q=90',
+      'https://images.unsplash.com/photo-1541643600914-78b084683601?w=1000&q=90',
+    ],
+    is_new: false, is_offer: false, offer_label: null, featured: true,
+    specifications: { format: 'Compressed Incense Tablets', weight: '150g per box', origin: 'UAE Crafted', notes: 'Sandalwood, Amber, Taif Rose' },
+    suitable_for: ['Palaces', 'Luxury Hotels', 'Boutique Spas'],
+    tags: ['bakhoor', 'fragrance', 'majalis'],
+  },
+  {
+    id: '13', name: 'Heavy-Duty Industrial Apron Set', slug: 'heavy-duty-industrial-apron-set',
+    division: 'Uniforms', division_slug: 'uniforms', category: 'Protective Workwear',
+    short_description: 'Waxed cotton canvas aprons with genuine leather harness straps and solid brass hardware. Built for artisan workshops.',
+    moq: '150 units', lead_time: '15-20 working days',
+    images: [
+      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&q=90',
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1000&q=90',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: false,
+    specifications: { material: '16oz Waxed Cotton Canvas', straps: 'Full Grain Leather', hardware: 'Solid Brass', sizes: 'Adjustable One Size' },
+    suitable_for: ['Coffee Roasters', 'Woodworking', 'Bespoke Kitchens'],
+    tags: ['apron', 'workwear', 'canvas'],
+  },
+  {
+    id: '14', name: 'Commercial Terry Bar Mops', slug: 'commercial-terry-bar-mops',
+    division: 'Households', division_slug: 'households', category: 'Cleaning Supplies',
+    short_description: 'Industrial bulk pack terry bar mops engineered for high-volume commercial kitchens and sanitation workflows.',
+    moq: '2500 units', lead_time: '10-14 working days',
+    images: [
+      'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=1000&q=90',
+      'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=1000&q=90',
+    ],
+    is_new: false, is_offer: false, offer_label: null, featured: true,
+    specifications: { material: '100% Virgin Cotton Terry', weight: '350 GSM', pack: '50 units per bundle', laundering: '90°C Industrial Wash Safe' },
+    suitable_for: ['Restaurants', 'Bars', 'Industrial Caterers'],
+    tags: ['cleaning', 'barmop', 'terry'],
+  },
+  {
+    id: '15', name: 'Premium Silk Tie Collection', slug: 'premium-silk-tie-collection',
+    division: 'Garments', division_slug: 'garments', category: 'Corporate Accessories',
+    short_description: 'Handcrafted jacquard woven 100% mulberry silk neckties. Custom monogramming and corporate gift box packaging available.',
+    moq: '300 units', lead_time: '20-25 working days',
+    images: [
+      'https://images.unsplash.com/photo-1589756823695-278bc923f962?w=1000&q=90',
+      'https://images.unsplash.com/photo-1617137953288-c89b33a75908?w=1000&q=90',
+    ],
+    is_new: true, is_offer: false, offer_label: null, featured: false,
+    specifications: { material: '100% Mulberry Silk', width: '8cm Classic Width', finish: 'Jacquard Weave', lining: '100% Wool Interlining' },
+    suitable_for: ['Corporate Gifts', 'Airlines', 'Executive Protocol'],
+    tags: ['silk', 'tie', 'corporate'],
+  },
+]

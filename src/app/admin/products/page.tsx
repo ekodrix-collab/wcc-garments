@@ -1,0 +1,241 @@
+'use client'
+
+import { useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Plus, Search, Edit2, Trash2, Eye, EyeOff, Filter, ArrowUpDown, Sparkles, CheckCircle2 } from 'lucide-react'
+import { MOCK_PRODUCTS, DIVISIONS } from '@/lib/constants'
+import { motion, AnimatePresence } from 'framer-motion'
+
+export default function AdminProductsPage() {
+  const [search, setSearch] = useState('')
+  const [selectedDivision, setSelectedDivision] = useState<string>('all')
+  const [productList, setProductList] = useState(MOCK_PRODUCTS)
+  const [deleteModal, setDeleteModal] = useState<string | null>(null)
+
+  const handleDelete = (id: string) => {
+    setProductList(prev => prev.filter(p => p.id !== id))
+    setDeleteModal(null)
+  }
+
+  const filteredProducts = productList.filter((p) => {
+    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.category.toLowerCase().includes(search.toLowerCase())
+    const matchDivision = selectedDivision === 'all' || p.division.toLowerCase() === selectedDivision.toLowerCase()
+    return matchSearch && matchDivision
+  })
+
+  return (
+    <div className="space-y-8 max-w-[1600px] mx-auto text-white">
+      {/* Top Title & Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="font-display text-3xl font-bold tracking-tight text-white">Product Catalog</h1>
+            <span className="rounded-full bg-gold/10 border border-gold/30 px-3 py-0.5 font-mono text-xs font-bold text-gold">
+              {filteredProducts.length} Listed
+            </span>
+          </div>
+          <p className="mt-1 font-mono text-xs text-white/50">
+            Real-time catalog synchronization and commercial pricing rules
+          </p>
+        </div>
+
+        <Link
+          href="/admin/products/new"
+          className="flex items-center gap-2.5 rounded-lg bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(201,168,76,0.4)] self-start sm:self-auto"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Add New Product</span>
+        </Link>
+      </div>
+
+      {/* Filter Tabs & Search Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          <button
+            onClick={() => setSelectedDivision('all')}
+            className={`rounded-lg px-4 py-2 font-mono text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-all ${
+              selectedDivision === 'all' ? 'bg-gold text-black shadow-md font-bold' : 'text-white/60 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            All Divisions
+          </button>
+          {DIVISIONS.map((d) => (
+            <button
+              key={d.slug}
+              onClick={() => setSelectedDivision(d.name)}
+              className={`rounded-lg px-4 py-2 font-mono text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-all ${
+                selectedDivision.toLowerCase() === d.name.toLowerCase() ? 'bg-gold text-black shadow-md font-bold' : 'text-white/60 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              {d.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or tag..."
+            className="w-full rounded-lg border border-white/10 bg-black/50 py-2.5 pl-10 pr-4 font-mono text-xs text-white placeholder-white/30 focus:border-gold focus:outline-none transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* Products Table Bento Box */}
+      <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5 shadow-2xl">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left font-mono">
+            <thead className="border-b border-white/10 bg-black/40 text-[11px] font-semibold uppercase tracking-wider text-white/40">
+              <tr>
+                <th className="px-6 py-4">Item Core</th>
+                <th className="px-6 py-4">Division Hierarchy</th>
+                <th className="px-6 py-4">Commercial MOQ</th>
+                <th className="px-6 py-4">Special Flags</th>
+                <th className="px-6 py-4 text-center">Telemetry</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/10 text-xs text-white/80">
+              <AnimatePresence>
+                {filteredProducts.map((product) => (
+                  <motion.tr
+                    key={product.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="group hover:bg-white/5 transition-colors"
+                  >
+                    <td className="px-6 py-4.5">
+                      <div className="flex items-center gap-4">
+                        <div className="relative h-14 w-14 flex-shrink-0 rounded-lg overflow-hidden border border-white/10 bg-white/5 group-hover:border-gold/50 transition-colors">
+                          <Image src={product.images[0]} alt={product.name} fill className="object-cover transition-transform group-hover:scale-110 duration-500" sizes="56px" />
+                        </div>
+                        <div className="space-y-1">
+                          <p className="font-display text-sm font-bold text-white group-hover:text-gold transition-colors">{product.name}</p>
+                          <p className="text-[10px] text-white/40 font-mono">ID: {product.slug}</p>
+                          <div className="flex items-center gap-2 pt-0.5">
+                            {product.tags.slice(0, 2).map((t, i) => (
+                              <span key={i} className="rounded bg-white/5 border border-white/10 px-1.5 py-0.2 font-mono text-[9px] text-white/60 uppercase tracking-wider">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4.5">
+                      <span className="font-bold text-white">{product.division}</span>
+                      <span className="block text-[10px] text-white/50">{product.category}</span>
+                    </td>
+                    <td className="px-6 py-4.5 font-bold text-gold">
+                      {product.moq || '500 Units'}
+                    </td>
+                    <td className="px-6 py-4.5">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {product.is_new && (
+                          <span className="rounded bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-400 uppercase">
+                            New Arrival
+                          </span>
+                        )}
+                        {product.is_offer && (
+                          <span className="rounded bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-400 uppercase">
+                            Offer
+                          </span>
+                        )}
+                        {product.featured && (
+                          <span className="rounded bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 text-[10px] font-bold text-purple-400 uppercase">
+                            Featured
+                          </span>
+                        )}
+                        {!product.is_new && !product.is_offer && !product.featured && (
+                          <span className="text-[10px] text-white/30 uppercase">Standard</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4.5 text-center">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+                        <CheckCircle2 className="h-3 w-3" />
+                        <span>Live</span>
+                      </span>
+                    </td>
+                    <td className="px-6 py-4.5">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/admin/products/${product.id}`}
+                          className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-all hover:bg-white/10 hover:text-white hover:border-white/20"
+                        >
+                          <Edit2 className="h-3.5 w-3.5" />
+                          <span className="hidden sm:inline">Edit</span>
+                        </Link>
+                        <button
+                          onClick={() => setDeleteModal(product.id)}
+                          className="flex items-center gap-1 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-red-400 transition-all hover:bg-red-500/20 hover:text-red-300"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+
+        {filteredProducts.length === 0 && (
+          <div className="p-16 text-center font-mono space-y-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 border border-white/10 mx-auto">
+              <Search className="h-6 w-6 text-white/30" />
+            </div>
+            <p className="text-sm text-white/60 font-semibold">No product entries match your telemetry filters.</p>
+            <button onClick={() => { setSearch(''); setSelectedDivision('all') }} className="text-xs text-gold underline hover:text-gold-light">
+              Reset Filters
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {deleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-mono">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0D0D0D] p-8 shadow-2xl text-center space-y-6"
+            >
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 mx-auto text-red-400">
+                <Trash2 className="h-8 w-8" />
+              </div>
+              <div>
+                <h3 className="font-display text-xl font-bold text-white">Decommission Product Listing</h3>
+                <p className="mt-2 text-xs text-white/60 leading-relaxed">
+                  Are you sure you want to permanently decommission this product from the WCC global catalog? This telemetry action cannot be undone.
+                </p>
+              </div>
+              <div className="flex items-center gap-4 pt-2">
+                <button
+                  onClick={() => setDeleteModal(null)}
+                  className="flex-1 rounded-lg border border-white/10 bg-white/5 py-3 text-xs font-semibold text-white/70 hover:bg-white/10 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(deleteModal)}
+                  className="flex-1 rounded-lg bg-red-500 py-3 text-xs font-bold text-black hover:bg-red-400 transition-all shadow-lg shadow-red-500/20"
+                >
+                  Confirm Deletion
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
