@@ -27,7 +27,7 @@ interface ProductCardProps {
 export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: ProductCardProps) {
   const [hovered, setHovered] = useState(false)
   const [revealed, setRevealed] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLAnchorElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
