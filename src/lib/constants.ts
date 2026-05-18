@@ -213,7 +213,7 @@ export const MOCK_PRODUCTS: Array<{
     moq: '250 units', lead_time: '12-18 working days',
     images: [
       'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=800&q=85',
-      'https://images.unsplash.com/photo-1625910513413-5fc421e0fd6f?w=800&q=85',
+      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=85',
     ],
     is_new: true, is_offer: false, offer_label: null, featured: false,
     specifications: { material: '100% Piqué Cotton', weight: '220 GSM', sizes: 'S-3XL', colors: 'White, Navy, Black, Burgundy, Forest Green' },

@@ -3,21 +3,22 @@
 @tailwind utilities;
 
 /* ---- FONT IMPORTS — Premium Clean Fonts ---- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap');
 
 /* ---- CSS VARIABLES ---- */
 :root {
-  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'DM Sans', 'Inter', sans-serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Montserrat', sans-serif;
+  --font-mono: 'Montserrat', monospace;
+  color-scheme: light;
 
   /* Luxurious Warm Cream / Ivory Palette */
-  --bg: #F7F5F0;
+  --bg: #F7F4F0;
   --bg-surface: #FCFAF6;
   --bg-subtle: #EFECE6;
-  --text: #1C1A17;
-  --text-muted: #6E6A65;
-  --border: #E6E2D8;
+  --text: #0A0A0A;
+  --text-muted: rgba(10,10,10,0.55);
+  --border: rgba(10,10,10,0.12);
   --gold: #C9A84C;
   --gold-light: #E8D5A3;
   --gold-dark: #8B7355;
@@ -28,13 +29,14 @@
   --bg: #0A0A0A;
   --bg-surface: #111111;
   --bg-subtle: #1A1A1A;
-  --text: #FAFAFA;
-  --text-muted: #888888;
-  --border: #2A2A2A;
+  --text: #FFFFFF;
+  --text-muted: rgba(255,255,255,0.45);
+  --border: rgba(255,255,255,0.12);
   --gold: #C9A84C;
   --gold-light: #E8D5A3;
   --gold-dark: #8B7355;
   --gold-muted: rgba(201, 168, 76, 0.08);
+  color-scheme: dark;
 }
 
 /* ---- BASE RESET ---- */
@@ -209,5 +211,17 @@ body {
 
 .btn-solid:hover {
   background: transparent;
+  color: var(--text);
+}
+
+/* ---- FORM STYLES — Premium Dropdowns ---- */
+select {
+  color-scheme: inherit;
+  background-color: var(--bg-surface);
+  color: var(--text);
+}
+
+select option {
+  background-color: var(--bg-surface);
   color: var(--text);
 }
