@@ -1,11 +1,53 @@
 'use client'
 
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { useSearchParams } from 'next/navigation'
 import { Phone, Mail, MessageCircle, MapPin } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/constants'
 import { EnquiryConsole } from '@/components/home/EnquiryConsole'
 
 export default function ContactPage() {
+  const searchParams = useSearchParams()
+
+  const prefill = useMemo(() => {
+    const division = searchParams.get('division')?.toLowerCase() || ''
+    const category = searchParams.get('category') || ''
+    const source = searchParams.get('source') || 'contact_page'
+    const intent = searchParams.get('intent') || 'general_enquiry'
+    const businessType = searchParams.get('businessType') || ''
+
+    const divisionToInterest: Record<string, string> = {
+      garments: 'Garments & Fashion',
+      uniforms: 'Uniforms & Workwear',
+      hospitality: 'Hospitality Textiles',
+      home: 'Home Furnishings',
+      fragrance: 'Fragrance & Raw Materials',
+      households: 'Household Products',
+    }
+
+    const interestFromDivision = division ? divisionToInterest[division] : undefined
+    const interests = interestFromDivision ? [interestFromDivision] : []
+
+    const contextBits = [
+      category ? `Category: ${category}` : '',
+      division ? `Division: ${division}` : '',
+      intent ? `Intent: ${intent}` : '',
+      source ? `Source: ${source}` : '',
+    ].filter(Boolean)
+
+    const message = contextBits.length
+      ? `I would like a B2B quotation.\n${contextBits.join('\n')}\nPlease share MOQ, lead time, and customization options.`
+      : ''
+
+    return {
+      source,
+      initialBusinessType: businessType,
+      initialInterests: interests,
+      initialMessage: message,
+    }
+  }, [searchParams])
+
   return (
     <div className="min-h-screen bg-[var(--bg)]">
       {/* Hero */}
@@ -77,7 +119,12 @@ export default function ContactPage() {
       </div>
 
       {/* Enquiry Form */}
-      <EnquiryConsole />
+      <EnquiryConsole
+        source={prefill.source}
+        initialBusinessType={prefill.initialBusinessType}
+        initialInterests={prefill.initialInterests}
+        initialMessage={prefill.initialMessage}
+      />
     </div>
   )
 }

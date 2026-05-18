@@ -3,27 +3,63 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
+import {
+  ArrowUpRight,
+  Building2,
+  Building,
+  Hospital,
+  MessageCircle,
+  Plane,
+  Ship,
+  UtensilsCrossed,
+} from 'lucide-react'
 import { RevealText } from '@/components/ui/RevealText'
 import { CounterStat } from '@/components/ui/CounterStat'
+import { SITE_CONFIG } from '@/lib/constants'
 
 const PROPERTY_TYPES = [
-  { icon: '🏨', name: 'Luxury Hotels', desc: 'Complete textile solutions for 5-star properties' },
-  { icon: '🍽️', name: 'Restaurants & F&B', desc: 'Table linen, chef uniforms, and kitchen textiles' },
-  { icon: '🏥', name: 'Healthcare Facilities', desc: 'Medical scrubs, bedding, and patient gowns' },
-  { icon: '✈️', name: 'Airlines & Airports', desc: 'Cabin crew uniforms and in-flight textiles' },
-  { icon: '🚢', name: 'Cruise Lines', desc: 'Maritime uniforms and cabin furnishings' },
-  { icon: '🏢', name: 'Corporate Offices', desc: 'Professional workwear and office textiles' },
+  { icon: Building2, name: 'Luxury Hotels', desc: 'Complete textile solutions for 5-star properties' },
+  { icon: UtensilsCrossed, name: 'Restaurants & F&B', desc: 'Table linen, chef uniforms, and kitchen textiles' },
+  { icon: Hospital, name: 'Healthcare Facilities', desc: 'Medical scrubs, bedding, and patient gowns' },
+  { icon: Plane, name: 'Airlines & Airports', desc: 'Cabin crew uniforms and in-flight textiles' },
+  { icon: Ship, name: 'Cruise Lines', desc: 'Maritime uniforms and cabin furnishings' },
+  { icon: Building, name: 'Corporate Offices', desc: 'Professional workwear and office textiles' },
 ]
 
 const CATEGORIES = [
-  { name: 'Staff Uniforms', image: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=600&q=85', items: 'Chef coats, waiter uniforms, housekeeping attire, front desk wear' },
-  { name: 'Bed & Bath Linen', image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=85', items: 'Bed sheets, duvet covers, pillowcases, bath towels, bathrobes' },
-  { name: 'Table Linen', image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=85', items: 'Tablecloths, napkins, runners, chair covers' },
-  { name: 'Kitchen Textiles', image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&q=85', items: 'Kitchen towels, aprons, oven mitts, cleaning cloths' },
+  {
+    name: 'Staff Uniforms',
+    image: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=600&q=85',
+    items: 'Chef coats, waiter uniforms, housekeeping attire, front desk wear',
+    moq: '100-300 units',
+    leadTime: '15-35 days',
+  },
+  {
+    name: 'Bed & Bath Linen',
+    image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=85',
+    items: 'Bed sheets, duvet covers, pillowcases, bath towels, bathrobes',
+    moq: '200-500 sets',
+    leadTime: '15-30 days',
+  },
+  {
+    name: 'Table Linen',
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=85',
+    items: 'Tablecloths, napkins, runners, chair covers',
+    moq: '300-800 units',
+    leadTime: '15-30 days',
+  },
+  {
+    name: 'Kitchen Textiles',
+    image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&q=85',
+    items: 'Kitchen towels, aprons, oven mitts, cleaning cloths',
+    moq: '500+ units',
+    leadTime: '12-28 days',
+  },
 ]
 
 export default function HospitalityPage() {
+  const whatsappBase = SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')
+
   return (
     <div className="min-h-screen bg-[var(--bg)]">
       {/* Hero */}
@@ -52,10 +88,10 @@ export default function HospitalityPage() {
       {/* Stats */}
       <div className="border-b border-[var(--border)] bg-[var(--bg-surface)] py-12">
         <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 px-6 sm:grid-cols-4">
-          <CounterStat end={200} suffix="+" label="Hotels Served" />
-          <CounterStat end={15} suffix="+" label="Countries" />
-          <CounterStat end={50} suffix="K+" label="Units Monthly" />
-          <CounterStat end={24} suffix="h" label="Response Time" />
+          <CounterStat end={25} suffix="+" label="Years of Operations" />
+          <CounterStat end={7} suffix="" label="Production Locations" />
+          <CounterStat end={3} suffix="" label="Manufacturing Countries" />
+          <CounterStat end={24} suffix="h" label="Typical Response" />
         </div>
       </div>
 
@@ -77,7 +113,7 @@ export default function HospitalityPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
               >
-                <span className="text-3xl">{type.icon}</span>
+                <type.icon className="h-8 w-8 text-gold" aria-hidden="true" />
                 <h3 className="mt-4 font-display text-lg font-semibold text-[var(--text)]">{type.name}</h3>
                 <p className="mt-2 text-sm text-[var(--text-muted)]">{type.desc}</p>
               </motion.div>
@@ -110,6 +146,26 @@ export default function HospitalityPage() {
                   <div className="absolute bottom-6 left-6 right-6">
                     <h3 className="font-display text-xl font-semibold text-white">{cat.name}</h3>
                     <p className="mt-1 text-xs text-white/60">{cat.items}</p>
+                    <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wider">
+                      <span className="border border-white/30 bg-black/35 px-2 py-1 text-white/80">MOQ: {cat.moq}</span>
+                      <span className="border border-white/30 bg-black/35 px-2 py-1 text-white/80">Lead Time: {cat.leadTime}</span>
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <Link
+                        href={`/contact?source=hospitality-page&intent=request-quote&businessType=${encodeURIComponent('Hotel / Hospitality')}&division=hospitality&category=${encodeURIComponent(cat.name)}`}
+                        className="inline-flex items-center gap-1 border border-gold bg-gold px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-black transition-colors hover:bg-gold-light"
+                      >
+                        Request Quote <ArrowUpRight className="h-3 w-3" />
+                      </Link>
+                      <a
+                        href={`https://wa.me/${whatsappBase}?text=${encodeURIComponent(`Hi WCC Garments, I am interested in hospitality category: ${cat.name}. Please share MOQ, lead time, and customization options.`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 border border-white/40 bg-black/35 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-colors hover:border-gold/70 hover:text-gold"
+                      >
+                        WhatsApp Enquiry <MessageCircle className="h-3 w-3" />
+                      </a>
+                    </div>
                   </div>
                 </div>
               </motion.div>

@@ -3,16 +3,16 @@ export const SITE_CONFIG = {
   fullName: 'Western Clothing Company',
   tagline: 'Precision in Every Stitch',
   description:
-    'UAE-based industrial fashion manufacturing group. Premium garments, uniforms, hospitality textiles, home furnishings, and fragrance — manufactured and supplied globally.',
+    'UAE-based B2B manufacturing group for garments, uniforms, hospitality textiles, home furnishings, and fragrance. Bulk supply with quote-based pricing only.',
   url: process.env.NEXT_PUBLIC_SITE_URL || '',
   phone: process.env.NEXT_PUBLIC_COMPANY_PHONE || '+971 XX XXX XXXX',
   email: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'info@wccgarments.com',
   whatsapp: process.env.NEXT_PUBLIC_COMPANY_WHATSAPP || '+971 XX XXX XXXX',
   address: 'Dubai, United Arab Emirates',
-  founded: '2010',
+  founded: '2001',
   countries: '50+',
   products: '10,000+',
-  years: '15+',
+  years: '25+',
 }
 
 export const DIVISIONS = [
@@ -103,8 +103,13 @@ export const MOCK_PRODUCTS: Array<{
   is_new: boolean
   is_offer: boolean
   offer_label: string | null
+  offer_start?: string
+  offer_end?: string
+  offer_terms?: string
   featured: boolean
   specifications: Record<string, string>
+  custom_branding?: boolean
+  certifications?: string[]
   suitable_for: string[]
   tags: string[]
 }> = [
@@ -117,7 +122,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&q=85',
       'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=85',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: true,
+    is_new: true, is_offer: false, offer_label: null, featured: true, custom_branding: true, certifications: ['Export Grade QC'],
     specifications: { material: '100% Egyptian Cotton', thread_count: '300 TC', weight: '120 GSM', sizes: 'S, M, L, XL, XXL', colors: 'White, Sky Blue, Navy, Black' },
     suitable_for: ['Corporate', 'Retail', 'Hotels'],
     tags: ['cotton', 'formal', 'premium'],
@@ -131,7 +136,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=85',
       'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&q=85',
     ],
-    is_new: false, is_offer: true, offer_label: 'Bulk Discount', featured: true,
+    is_new: false, is_offer: true, offer_label: 'Bulk Discount', offer_start: '2026-05-01', offer_end: '2026-06-30', offer_terms: 'Applicable for orders above 1,000 units. Subject to production slot confirmation.', featured: true, custom_branding: true, certifications: ['Industrial Workwear QA'],
     specifications: { material: 'Poly-Cotton Blend 65/35', weight: '280 GSM', sizes: '28-44 Waist', colors: 'Khaki, Navy, Black, Olive' },
     suitable_for: ['Construction', 'Manufacturing', 'Oil & Gas'],
     tags: ['workwear', 'industrial', 'cargo'],
@@ -145,7 +150,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=85',
       'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=800&q=85',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: true,
+    is_new: true, is_offer: false, offer_label: null, featured: true, custom_branding: true, certifications: ['Hospitality Textile QC'],
     specifications: { material: '100% Combed Cotton', thread_count: '300-600 TC', weave: 'Sateen', sizes: 'Single, Double, Queen, King' },
     suitable_for: ['Hotels', 'Resorts', 'Airlines'],
     tags: ['hotel', 'linen', 'luxury'],
@@ -159,7 +164,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=800&q=85',
       'https://images.unsplash.com/photo-1600369671738-fa6e0a1b3bd0?w=800&q=85',
     ],
-    is_new: false, is_offer: true, offer_label: 'Seasonal Special', featured: false,
+    is_new: false, is_offer: true, offer_label: 'Seasonal Special', offer_start: '2026-05-10', offer_end: '2026-07-10', offer_terms: 'Offer applies to container-load and mixed-SKU bulk enquiries only.', featured: false, custom_branding: true,
     specifications: { material: '100% Ring Spun Cotton', weight: '500-700 GSM', sizes: 'Hand, Bath, Bath Sheet', colors: 'White, Ivory, Grey, Navy' },
     suitable_for: ['Hotels', 'Retail', 'Healthcare'],
     tags: ['towel', 'bath', 'cotton'],
@@ -173,7 +178,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=85',
       'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=800&q=85',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: true,
+    is_new: true, is_offer: false, offer_label: null, featured: true, custom_branding: true,
     specifications: { type: 'Eau de Parfum', concentration: '18-22%', sizes: '50ml, 100ml', notes: 'Oud, Rose, Amber, Musk' },
     suitable_for: ['Retail', 'Duty Free', 'Gift Shops'],
     tags: ['fragrance', 'oud', 'luxury'],
@@ -187,7 +192,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800&q=85',
       'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=85',
     ],
-    is_new: false, is_offer: false, offer_label: null, featured: true,
+    is_new: false, is_offer: false, offer_label: null, featured: true, custom_branding: true,
     specifications: { material: 'Poly-Cotton Twill', weight: '200 GSM', sizes: 'XS-3XL', colors: 'White, Black, Grey' },
     suitable_for: ['Restaurants', 'Hotels', 'Catering'],
     tags: ['chef', 'uniform', 'hospitality'],
@@ -201,7 +206,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&q=85',
       'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&q=85',
     ],
-    is_new: false, is_offer: true, offer_label: 'Clearance', featured: false,
+    is_new: false, is_offer: true, offer_label: 'Clearance', offer_start: '2026-04-20', offer_end: '2026-05-31', offer_terms: 'Limited to available warehouse inventory. Bulk dispatch scheduling applies.', featured: false,
     specifications: { material: '80% Polyester / 20% Polyamide', weight: '300 GSM', sizes: '30x30cm, 40x40cm', colors: 'Blue, Green, Yellow, Red' },
     suitable_for: ['Hotels', 'Healthcare', 'Industrial'],
     tags: ['cleaning', 'microfiber', 'household'],
@@ -209,14 +214,14 @@ export const MOCK_PRODUCTS: Array<{
   {
     id: '8', name: 'Executive Polo Collection', slug: 'executive-polo-collection',
     division: 'Garments', division_slug: 'garments', category: 'Polo Shirts',
-    short_description: 'Premium piqué cotton polo shirts with corporate customization. Ribbed collar and cuffs for refined appearance.',
+    short_description: 'Premium pique cotton polo shirts with corporate customization. Ribbed collar and cuffs for refined appearance.',
     moq: '250 units', lead_time: '12-18 working days',
     images: [
       'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=800&q=85',
       'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=85',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: false,
-    specifications: { material: '100% Piqué Cotton', weight: '220 GSM', sizes: 'S-3XL', colors: 'White, Navy, Black, Burgundy, Forest Green' },
+    is_new: true, is_offer: false, offer_label: null, featured: false, custom_branding: true,
+    specifications: { material: '100% Pique Cotton', weight: '220 GSM', sizes: 'S-3XL', colors: 'White, Navy, Black, Burgundy, Forest Green' },
     suitable_for: ['Corporate', 'Hotels', 'Events'],
     tags: ['polo', 'corporate', 'cotton'],
   },
@@ -229,7 +234,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=85',
       'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&q=85',
     ],
-    is_new: false, is_offer: true, offer_label: 'VIP Package', featured: true,
+    is_new: false, is_offer: true, offer_label: 'VIP Package', offer_start: '2026-05-15', offer_end: '2026-08-15', offer_terms: 'Bundle includes branded packaging and priority sampling for qualified buyers.', featured: true, custom_branding: true,
     specifications: { material: 'Italian Cotton Velvet', weight: '320 GSM', sizes: '36-48 Chest', colors: 'Midnight Blue, Royal Black, Emerald' },
     suitable_for: ['Boutique Hotels', 'Luxury Lounges', 'Private Clubs'],
     tags: ['blazer', 'velvet', 'vip'],
@@ -243,7 +248,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=1000&q=90',
       'https://images.unsplash.com/photo-1544816155-12df9643f363?w=1000&q=90',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: true,
+    is_new: true, is_offer: false, offer_label: null, featured: true, custom_branding: true, certifications: ['Compliance-Ready Fabrics'],
     specifications: { material: '65% Polyester / 35% Cotton Ripstop', weight: '260 GSM', sizes: 'S-4XL', colors: 'Navy, Black, Desert Tan' },
     suitable_for: ['Security Firms', 'Hotels', 'Aviation'],
     tags: ['tactical', 'uniform', 'security'],
@@ -257,7 +262,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1579656381226-5fc0f0100c3b?w=1000&q=90',
       'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=1000&q=90',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: true,
+    is_new: true, is_offer: false, offer_label: null, featured: true, custom_branding: true,
     specifications: { material: '30% Mongolian Cashmere / 70% Merino Wool', weight: '450 GSM', dimensions: '180x220cm', colors: 'Warm Taupe, Charcoal, Oatmeal' },
     suitable_for: ['Luxury Hotels', 'Private Jets', 'High-End Retail'],
     tags: ['cashmere', 'blanket', 'home'],
@@ -271,7 +276,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1608686207856-001b95cf60ca?w=1000&q=90',
       'https://images.unsplash.com/photo-1541643600914-78b084683601?w=1000&q=90',
     ],
-    is_new: false, is_offer: false, offer_label: null, featured: true,
+    is_new: false, is_offer: false, offer_label: null, featured: true, custom_branding: true,
     specifications: { format: 'Compressed Incense Tablets', weight: '150g per box', origin: 'UAE Crafted', notes: 'Sandalwood, Amber, Taif Rose' },
     suitable_for: ['Palaces', 'Luxury Hotels', 'Boutique Spas'],
     tags: ['bakhoor', 'fragrance', 'majalis'],
@@ -285,7 +290,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&q=90',
       'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1000&q=90',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: false,
+    is_new: true, is_offer: false, offer_label: null, featured: false, custom_branding: true,
     specifications: { material: '16oz Waxed Cotton Canvas', straps: 'Full Grain Leather', hardware: 'Solid Brass', sizes: 'Adjustable One Size' },
     suitable_for: ['Coffee Roasters', 'Woodworking', 'Bespoke Kitchens'],
     tags: ['apron', 'workwear', 'canvas'],
@@ -300,7 +305,7 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=1000&q=90',
     ],
     is_new: false, is_offer: false, offer_label: null, featured: true,
-    specifications: { material: '100% Virgin Cotton Terry', weight: '350 GSM', pack: '50 units per bundle', laundering: '90°C Industrial Wash Safe' },
+    specifications: { material: '100% Virgin Cotton Terry', weight: '350 GSM', pack: '50 units per bundle', laundering: '90C Industrial Wash Safe' },
     suitable_for: ['Restaurants', 'Bars', 'Industrial Caterers'],
     tags: ['cleaning', 'barmop', 'terry'],
   },
@@ -313,9 +318,10 @@ export const MOCK_PRODUCTS: Array<{
       'https://images.unsplash.com/photo-1589756823695-278bc923f962?w=1000&q=90',
       'https://images.unsplash.com/photo-1617137953288-c89b33a75908?w=1000&q=90',
     ],
-    is_new: true, is_offer: false, offer_label: null, featured: false,
+    is_new: true, is_offer: false, offer_label: null, featured: false, custom_branding: true,
     specifications: { material: '100% Mulberry Silk', width: '8cm Classic Width', finish: 'Jacquard Weave', lining: '100% Wool Interlining' },
     suitable_for: ['Corporate Gifts', 'Airlines', 'Executive Protocol'],
     tags: ['silk', 'tie', 'corporate'],
   },
 ]
+
