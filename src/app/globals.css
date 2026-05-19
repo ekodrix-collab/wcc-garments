@@ -225,3 +225,13 @@ select option {
   background-color: var(--bg-surface);
   color: var(--text);
 }
+
+/* Preloader content hide/reveal */
+body:not(.preloader-done) #root-content {
+  opacity: 0;
+  pointer-events: none;
+}
+#root-content {
+  opacity: 1;
+  transition: opacity 0.8s ease-in-out;
+}
