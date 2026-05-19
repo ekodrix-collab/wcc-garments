@@ -164,7 +164,7 @@ export function HeroSection() {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentSet.fore}
-                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl border border-gold/50 shadow-[0_30px_60px_rgba(201,168,76,0.15)] bg-black"
+                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl border border-gold/50 shadow-[0_30px_60px_rgba(59,130,246,0.15)] bg-black"
                     initial={{ opacity: 0, scale: 0.5, rotateZ: 20 }}
                     animate={{ opacity: 1, scale: 1, rotateZ: -2 }}
                     exit={{ opacity: 0, scale: 1.3, rotateZ: -20 }}

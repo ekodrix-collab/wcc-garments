@@ -29,7 +29,7 @@ export function Footer() {
           <div className="mt-12 flex flex-wrap justify-center gap-4">
             <Link
               href="/contact"
-              className="group relative flex h-14 items-center justify-center gap-3 overflow-hidden rounded-full border border-gold bg-gold px-10 font-mono text-xs font-bold uppercase tracking-[0.2em] text-black transition-all hover:bg-gold-light hover:shadow-[0_0_30px_rgba(201,168,76,0.3)]"
+              className="group relative flex h-14 items-center justify-center gap-3 overflow-hidden rounded-full border border-gold bg-gold px-10 font-mono text-xs font-bold uppercase tracking-[0.2em] text-black transition-all hover:bg-gold-light hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]"
             >
               <span>Deploy Commercial Inquiry</span>
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:rotate-45" />

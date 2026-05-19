@@ -69,7 +69,7 @@ export function GlobalPresence() {
                 animate={isInView ? { pathLength: 1 } : {}}
                 transition={{ duration: 3, ease: 'easeInOut' }}
               />
-              <motion.circle cx="200" cy="180" r="4" fill="#C9A84C" animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }} />
+              <motion.circle cx="200" cy="180" r="4" fill="#3B82F6" animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }} />
 
               {/* Route 2: Dubai to Africa */}
               <motion.path
@@ -82,7 +82,7 @@ export function GlobalPresence() {
                 animate={isInView ? { pathLength: 1 } : {}}
                 transition={{ duration: 3, delay: 0.5, ease: 'easeInOut' }}
               />
-              <motion.circle cx="250" cy="380" r="4" fill="#C9A84C" animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2.5 }} />
+              <motion.circle cx="250" cy="380" r="4" fill="#3B82F6" animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2.5 }} />
 
               {/* Route 3: Dubai to Asia */}
               <motion.path
@@ -95,12 +95,12 @@ export function GlobalPresence() {
                 animate={isInView ? { pathLength: 1 } : {}}
                 transition={{ duration: 3, delay: 1, ease: 'easeInOut' }}
               />
-              <motion.circle cx="650" cy="280" r="4" fill="#C9A84C" animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2.2 }} />
+              <motion.circle cx="650" cy="280" r="4" fill="#3B82F6" animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2.2 }} />
 
               <defs>
                 <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#C9A84C" />
-                  <stop offset="100%" stopColor="rgba(201,168,76,0.1)" />
+                  <stop offset="0%" stopColor="#3B82F6" />
+                  <stop offset="100%" stopColor="rgba(59,130,246,0.1)" />
                 </linearGradient>
               </defs>
             </svg>

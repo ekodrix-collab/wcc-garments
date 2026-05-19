@@ -71,7 +71,7 @@ export function PreLoader() {
                 src="/images/wcc-logo.png"
                 alt="WCC Garments Logo"
                 fill
-                className="object-contain drop-shadow-[0_0_30px_rgba(201,168,76,0.3)]"
+                className="object-contain drop-shadow-[0_0_30px_rgba(59,130,246,0.3)]"
                 priority
                 sizes="(max-width: 640px) 112px, 144px"
               />

@@ -15,7 +15,7 @@ export function QuoteButton({ onClick, href, className = '' }: QuoteButtonProps)
 
   const content = (
     <motion.div
-      className={`group relative flex h-[56px] items-center justify-between gap-6 overflow-hidden rounded-full border border-gold px-8 transition-all duration-500 hover:shadow-[0_0_30px_rgba(201,168,76,0.3)] ${className}`}
+      className={`group relative flex h-[56px] items-center justify-between gap-6 overflow-hidden rounded-full border border-gold px-8 transition-all duration-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] ${className}`}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ scale: 1.02 }}

@@ -6,6 +6,7 @@ import { PreLoader } from '@/components/ui/PreLoader'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { SITE_CONFIG } from '@/lib/constants'
+import { CustomCursor } from '@/components/ui/CustomCursor'
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
@@ -117,6 +118,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PreLoader />
         <ThemeProvider>
           <SmoothScroll>
+            <CustomCursor />
             <GrainOverlay />
             <Navbar />
             <main>{children}</main>

@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         id: p.id,
         name: p.division,
         slug: p.division_slug,
-        accent_color: '#C9A84C',
+        accent_color: '#3B82F6',
       },
       category: {
         id: p.id,

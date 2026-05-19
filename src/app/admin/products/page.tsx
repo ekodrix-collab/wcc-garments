@@ -42,7 +42,7 @@ export default function AdminProductsPage() {
 
         <Link
           href="/admin/products/new"
-          className="flex items-center gap-2.5 rounded-lg bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(201,168,76,0.4)] self-start sm:self-auto"
+          className="flex items-center gap-2.5 rounded-lg bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Add New Product</span>
