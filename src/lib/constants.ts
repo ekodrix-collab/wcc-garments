@@ -75,12 +75,12 @@ export const ENQUIRY_STATUSES = [
 
 export const MOCK_IMAGES = {
   hero: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1920&q=90',
-  garments: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=85',
-  uniforms: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=85',
-  hospitality: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=85',
-  home: 'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=800&q=85',
-  fragrance: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=85',
-  households: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=85',
+  garments: '/images/garments-category.png',
+  uniforms: '/images/uniform-workwear.png',
+  hospitality: '/images/hospitality.png',
+  home: '/images/home furnishing.png',
+  fragrance: '/images/fragrance.png',
+  households: '/images/household.png',
   factory: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=85',
   team: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=85',
   quality: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=85',
