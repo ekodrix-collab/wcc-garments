@@ -4,35 +4,28 @@ import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
-/* ── Mercator coordinate → SVG viewBox mapping ── */
-function mc(lng: number, lat: number) {
-  const x = 40 + ((lng + 180) / 360) * 920
-  const y = 72 + ((90 - lat) / 180) * 456
-  return { x: Math.round(x), y: Math.round(y) }
-}
-
-const HQ = { ...mc(55.27, 25.20) }
+const HQ = { x: 640, y: 310 }
 
 /* Label offsets (lx, ly) position text away from node to avoid overlap.
    anchor: 'start' | 'middle' | 'end' controls SVG text-anchor. */
 const HUBS = [
-  { id: 'ahm', city: 'Ahmedabad', country: 'India', role: 'Textile Weaving',           ...mc(72.57, 23.02), lx: -45, ly: 6,   anchor: 'end' as const },
-  { id: 'lud', city: 'Ludhiana',  country: 'India', role: 'Knitwear & Hosiery',        ...mc(75.86, 30.90), lx: -40, ly: -8,  anchor: 'end' as const },
-  { id: 'del', city: 'New Delhi', country: 'India', role: 'Fashion & Uniforms',        ...mc(77.21, 28.61), lx: 20,  ly: -18, anchor: 'start' as const },
-  { id: 'ban', city: 'Bangalore', country: 'India', role: 'Origin R&D Centre',         ...mc(77.59, 12.97), lx: -45, ly: 10,  anchor: 'end' as const },
-  { id: 'tir', city: 'Tirupur',   country: 'India', role: 'Bulk Garment Export',       ...mc(77.34, 11.11), lx: 20,  ly: 18,  anchor: 'start' as const },
-  { id: 'dha', city: 'Dhaka',     country: 'Bangladesh', role: 'Volume Production',    ...mc(90.41, 23.81), lx: 18,  ly: -14, anchor: 'start' as const },
-  { id: 'gua', city: 'Guangzhou', country: 'China', role: 'Specialised Manufacturing', ...mc(113.26, 23.13),lx: 18,  ly: -12, anchor: 'start' as const },
+  { id: 'ahm', city: 'Ahmedabad', country: 'India', role: 'Textile Weaving',           x: 680, y: 312, lx: -45, ly: 6,   anchor: 'end' as const },
+  { id: 'lud', city: 'Ludhiana',  country: 'India', role: 'Knitwear & Hosiery',        x: 692, y: 285, lx: -40, ly: -8,  anchor: 'end' as const },
+  { id: 'del', city: 'New Delhi', country: 'India', role: 'Fashion & Uniforms',        x: 698, y: 297, lx: 20,  ly: -18, anchor: 'start' as const },
+  { id: 'ban', city: 'Bangalore', country: 'India', role: 'Origin R&D Centre',         x: 699, y: 335, lx: -45, ly: 10,  anchor: 'end' as const },
+  { id: 'tir', city: 'Tirupur',   country: 'India', role: 'Bulk Garment Export',       x: 700, y: 349, lx: 20,  ly: 18,  anchor: 'start' as const },
+  { id: 'dha', city: 'Dhaka',     country: 'Bangladesh', role: 'Volume Production',    x: 723, y: 318, lx: 18,  ly: -14, anchor: 'start' as const },
+  { id: 'gua', city: 'Guangzhou', country: 'China', role: 'Specialised Manufacturing', x: 792, y: 308, lx: 18,  ly: -12, anchor: 'start' as const },
 ]
 
 const EXPORTS = [
-  { id: 'lon', label: 'London',    ...mc(-0.12,  51.51), lx: 14,  ly: -10, anchor: 'start' as const },
-  { id: 'cai', label: 'Cairo',     ...mc(31.23,  30.07), lx: 14,  ly: -10, anchor: 'start' as const },
-  { id: 'nai', label: 'Nairobi',   ...mc(36.82,  -1.29), lx: 14,  ly: 6,   anchor: 'start' as const },
-  { id: 'lag', label: 'Lagos',     ...mc(3.37,    6.45), lx: -12, ly: 10,  anchor: 'end' as const },
-  { id: 'nya', label: 'New York',  ...mc(-74.01, 40.71), lx: -14, ly: -10, anchor: 'end' as const },
-  { id: 'riy', label: 'Riyadh',    ...mc(46.69,  24.69), lx: -14, ly: 12,  anchor: 'end' as const },
-  { id: 'sin', label: 'Singapore', ...mc(103.82,  1.35), lx: 14,  ly: 12,  anchor: 'start' as const },
+  { id: 'lon', label: 'London',    x: 475, y: 180, lx: 14,  ly: -10, anchor: 'start' as const },
+  { id: 'cai', label: 'Cairo',     x: 565, y: 285, lx: 14,  ly: -10, anchor: 'start' as const },
+  { id: 'nai', label: 'Nairobi',   x: 595, y: 414, lx: 14,  ly: 6,   anchor: 'start' as const },
+  { id: 'lag', label: 'Lagos',     x: 500, y: 389, lx: -12, ly: 10,  anchor: 'end' as const },
+  { id: 'nya', label: 'New York',  x: 280, y: 230, lx: -14, ly: -10, anchor: 'end' as const },
+  { id: 'riy', label: 'Riyadh',    x: 615, y: 320, lx: -14, ly: 12,  anchor: 'end' as const },
+  { id: 'sin', label: 'Singapore', x: 763, y: 421, lx: 14,  ly: 12,  anchor: 'start' as const },
 ]
 
 function arc(x1: number, y1: number, x2: number, y2: number, lift = 0.38) {
