@@ -38,9 +38,9 @@ const config: Config = {
         charcoal: '#2C2C2C',
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Georgia', 'serif'],
-        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
+        display: ['var(--font-display)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        body: ['var(--font-body)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'SF Mono', 'Fira Code', 'Consolas', 'monospace'],
       },
       fontSize: {
         'display-xl': [
