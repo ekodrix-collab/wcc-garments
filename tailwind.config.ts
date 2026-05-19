@@ -28,10 +28,10 @@ const config: Config = {
           subtle: '#1E1E1E',
         },
         gold: {
-          DEFAULT: '#C9A84C',
-          light: '#E8D5A3',
-          dark: '#8B7355',
-          muted: 'rgba(201, 168, 76, 0.12)',
+          DEFAULT: '#3B82F6', // Electric Blue Standard
+          light: '#60A5FA',   // Electric Blue Light
+          dark: '#2563EB',    // Electric Blue Dark
+          muted: 'rgba(59, 130, 246, 0.12)',
         },
         bronze: '#8B7355',
         ivory: '#FAFAF5',

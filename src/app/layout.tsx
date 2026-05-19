@@ -117,10 +117,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PreLoader />
         <ThemeProvider>
           <SmoothScroll>
-            <GrainOverlay />
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
+            <div id="root-content">
+              <GrainOverlay />
+              <Navbar />
+              <main>{children}</main>
+              <Footer />
+            </div>
           </SmoothScroll>
         </ThemeProvider>
       </body>

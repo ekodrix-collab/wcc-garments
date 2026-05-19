@@ -203,7 +203,7 @@ export const MOCK_PRODUCTS: Array<{
     short_description: 'Industrial grade microfiber cleaning cloths. Ultra-absorbent, lint-free, and reusable for hundreds of wash cycles.',
     moq: '5000 units', lead_time: '7-10 working days',
     images: [
-      'https://images.unsplash.com/photo-1610399215015-593b334a3123?w=800&q=85',
+      'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&q=85',
       'https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=800&q=85',
     ],
     is_new: false, is_offer: true, offer_label: 'Clearance', offer_start: '2026-04-20', offer_end: '2026-05-31', offer_terms: 'Limited to available warehouse inventory. Bulk dispatch scheduling applies.', featured: false,

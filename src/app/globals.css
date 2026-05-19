@@ -19,10 +19,10 @@
   --text: #0A0A0A;
   --text-muted: rgba(10,10,10,0.55);
   --border: rgba(10,10,10,0.12);
-  --gold: #C9A84C;
-  --gold-light: #E8D5A3;
-  --gold-dark: #8B7355;
-  --gold-muted: rgba(201, 168, 76, 0.12);
+  --gold: #3B82F6;
+  --gold-light: #60A5FA;
+  --gold-dark: #2563EB;
+  --gold-muted: rgba(59, 130, 246, 0.12);
 }
 
 .dark {
@@ -32,10 +32,10 @@
   --text: #FFFFFF;
   --text-muted: rgba(255,255,255,0.45);
   --border: rgba(255,255,255,0.12);
-  --gold: #C9A84C;
-  --gold-light: #E8D5A3;
-  --gold-dark: #8B7355;
-  --gold-muted: rgba(201, 168, 76, 0.08);
+  --gold: #3B82F6;
+  --gold-light: #60A5FA;
+  --gold-dark: #2563EB;
+  --gold-muted: rgba(59, 130, 246, 0.08);
   color-scheme: dark;
 }
 
@@ -89,7 +89,7 @@ body {
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, #C9A84C, #E8D5A3, #C9A84C);
+    background: linear-gradient(135deg, #2563EB, #3B82F6, #60A5FA);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -127,10 +127,10 @@ body {
 
 /* ---- FLAGSHIP LUXURY UPGRADES ---- */
 .bg-radial-hero {
-  background: radial-gradient(circle at center, rgba(201,168,76,0.08), transparent 60%);
+  background: radial-gradient(circle at center, rgba(59,130,246,0.08), transparent 60%);
 }
 .dark .bg-radial-hero {
-  background: radial-gradient(circle at center, rgba(201,168,76,0.12), transparent 60%);
+  background: radial-gradient(circle at center, rgba(59,130,246,0.12), transparent 60%);
 }
 
 .shadow-headline {
@@ -224,4 +224,14 @@ select {
 select option {
   background-color: var(--bg-surface);
   color: var(--text);
+}
+
+/* Preloader content hide/reveal */
+body:not(.preloader-done) #root-content {
+  opacity: 0;
+  pointer-events: none;
+}
+#root-content {
+  opacity: 1;
+  transition: opacity 0.8s ease-in-out;
 }

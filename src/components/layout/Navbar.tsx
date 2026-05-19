@@ -97,7 +97,7 @@ export function Navbar() {
                   </Link>
                   <span
                     className={`absolute -bottom-1 left-0 h-[2px] bg-gold transition-all duration-500 ease-premium ${
-                      pathname === link.href || (isProducts && megaMenuOpen) ? 'w-full shadow-[0_0_10px_#C9A84C]' : 'w-0 group-hover:w-full'
+                      pathname === link.href || (isProducts && megaMenuOpen) ? 'w-full shadow-[0_0_10px_#3B82F6]' : 'w-0 group-hover:w-full'
                     }`}
                   />
                 </div>
@@ -110,7 +110,7 @@ export function Navbar() {
             <ThemeToggle className="hidden sm:flex" />
             <Link
               href="/contact"
-              className="group relative hidden lg:inline-flex items-center gap-2 rounded-full border border-gold bg-gold/10 px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-gold backdrop-blur-md transition-all hover:bg-gold hover:text-black hover:shadow-[0_0_25px_rgba(201,168,76,0.4)]"
+              className="group relative hidden lg:inline-flex items-center gap-2 rounded-full border border-gold bg-gold/10 px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-gold backdrop-blur-md transition-all hover:bg-gold hover:text-black hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]"
             >
               <span>Get in Touch</span>
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:rotate-45" />

@@ -71,7 +71,7 @@ export function WhyWCC() {
             
             {/* Card 1: Real-Time Telemetry */}
             <motion.div
-              className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#121212] border border-white/5 p-8 lg:p-10 transition-all duration-500 hover:border-gold/40 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(201,168,76,0.15)]"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#121212] border border-white/5 p-8 lg:p-10 transition-all duration-500 hover:border-gold/40 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)]"
               onHoverStart={() => setHoveredCard('telemetry')}
               onHoverEnd={() => setHoveredCard(null)}
             >
@@ -114,7 +114,7 @@ export function WhyWCC() {
 
             {/* Card 2: Secure Pattern Encryption */}
             <motion.div
-              className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#121212] border border-white/5 p-8 lg:p-10 transition-all duration-500 hover:border-gold/40 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(201,168,76,0.15)]"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#121212] border border-white/5 p-8 lg:p-10 transition-all duration-500 hover:border-gold/40 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)]"
               onHoverStart={() => setHoveredCard('vault')}
               onHoverEnd={() => setHoveredCard(null)}
             >
@@ -153,7 +153,7 @@ export function WhyWCC() {
 
             {/* Card 3: Dedicated B2B Workspaces */}
             <motion.div
-              className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#121212] border border-white/5 p-8 lg:p-10 transition-all duration-500 hover:border-gold/40 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(201,168,76,0.15)]"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#121212] border border-white/5 p-8 lg:p-10 transition-all duration-500 hover:border-gold/40 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)]"
               onHoverStart={() => setHoveredCard('portals')}
               onHoverEnd={() => setHoveredCard(null)}
             >
