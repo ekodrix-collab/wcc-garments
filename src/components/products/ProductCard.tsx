@@ -52,19 +52,19 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: Prod
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.8, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-      className="group flex flex-col w-full"
+      className="group flex w-full flex-col"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <Link
         href={`/products/${product.slug}`}
-        className="relative w-full overflow-hidden block"
-        style={{ aspectRatio: '3/4', background: coverColor }}
+        className="relative mx-auto block w-full max-w-[420px] overflow-hidden border border-[var(--border)] bg-[var(--bg-surface)]"
+        style={{ aspectRatio: '1/1', background: coverColor }}
         ref={containerRef}
       >
         {/* Product Image */}
         <motion.div
-          animate={{ scale: hovered ? 1.05 : 1 }}
+          animate={{ scale: hovered ? 1.01 : 1 }}
           transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="absolute inset-0 h-full w-full"
         >
@@ -72,8 +72,8 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: Prod
             src={product.images?.[0] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=85'}
             alt={product.name}
             fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
           />
         </motion.div>
 
@@ -87,14 +87,14 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: Prod
         />
 
         {/* Editorial Badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-20 pointer-events-none">
+        <div className="pointer-events-none absolute left-4 top-4 z-20 flex flex-col gap-2">
           {product.is_new && (
-            <span className="bg-[#0A0A0A] text-white px-2.5 py-1 text-[8px] font-bold uppercase tracking-[0.3em] font-body">
+            <span className="bg-[#0A0A0A]/90 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-white">
               NEW
             </span>
           )}
           {product.is_offer && (
-            <span className="bg-[#8B1A1A] text-white px-2.5 py-1 text-[8px] font-bold uppercase tracking-[0.3em] font-body">
+            <span className="bg-[#8B1A1A]/90 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-white">
               {product.offer_label || 'OFFER'}
             </span>
           )}
@@ -108,10 +108,10 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: Prod
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-2 bg-[#0A0A0A] text-white py-4"
+              className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-2 bg-[#0A0A0A]/90 py-4 text-white backdrop-blur-sm"
             >
               <FileText size={11} strokeWidth={1.5} />
-              <span className="font-body text-[9px] font-bold tracking-[0.4em] uppercase text-white">
+              <span className="text-[10px] font-semibold tracking-[0.28em] uppercase text-white">
                 REQUEST DETAILS
               </span>
               <ArrowRight size={10} className="text-white/70 ml-0.5" />
@@ -121,22 +121,28 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: Prod
       </Link>
 
       {/* Editorial Typographic Info */}
-      <div className="mt-4 px-1 flex flex-col gap-1">
-        <span className="font-body text-[9px] font-medium tracking-[0.3em] text-[var(--gold)] uppercase block">
+      <div className="mt-4 px-1">
+        <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-gold/90">
           {product.division?.name || 'WCC DIVISION'}
         </span>
-        
-        <h3 className="font-body text-[11px] font-light tracking-[0.15em] text-[#0A0A0A] dark:text-white uppercase leading-relaxed transition-colors duration-300">
+
+        <h3 className="mt-2 text-base font-semibold leading-snug text-[var(--text)] transition-colors duration-300 md:text-lg">
           {product.name}
         </h3>
 
-        <div className="flex items-center justify-between mt-0.5 border-t border-[var(--border)] pt-2.5">
-          <span className="font-display text-[14px] italic text-[var(--text-muted)] leading-none">
+        {product.short_description && (
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[var(--text-muted)]">
+            {product.short_description}
+          </p>
+        )}
+
+        <div className="mt-4 flex items-center justify-between border-t border-[var(--border)] pt-3">
+          <span className="text-sm text-[var(--text-muted)]">
             {product.category?.name || 'Textile'}
           </span>
           {product.moq && (
-            <span className="font-body text-[8px] font-bold tracking-[0.15em] text-[#0A0A0A]/50 dark:text-white/40 uppercase">
-              MOQ: {product.moq} UNITS
+            <span className="border border-[var(--border)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+              MOQ {product.moq}
             </span>
           )}
         </div>

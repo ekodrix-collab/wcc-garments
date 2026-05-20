@@ -21,7 +21,7 @@ export function DivisionCutouts() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section className="bg-[var(--bg)] py-section" ref={ref}>
+    <section className="bg-[var(--bg)] " ref={ref}>
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         {/* Section Header */}
         <div className="mb-16">
@@ -31,19 +31,18 @@ export function DivisionCutouts() {
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
           >
             <div className="flex items-center gap-3">
-              <span className="h-[1px] w-8 bg-gold" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
                 Our Divisions
               </span>
             </div>
           </motion.div>
           <motion.h2
-            className="mt-4 font-display text-display-md font-semibold text-[var(--text)]"
+            className="mt-4 font-display text-display-md font-semibold text-[var(--text)] uppercase"
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            What We Make
+            What We <span className='text-blue-500'>Make</span>
           </motion.h2>
         </div>
 
@@ -67,15 +66,13 @@ export function DivisionCutouts() {
               >
                 {/* Image */}
                 <div
-                  className={`relative overflow-hidden ${
-                    index === 0 || index === 2 ? 'aspect-[3/4]' : 'aspect-[4/5]'
-                  }`}
+                  className="relative overflow-hidden aspect-[3/4]"
                 >
                   <Image
                     src={division.image}
                     alt={division.name}
                     fill
-                    className="object-cover transition-transform duration-700 ease-premium group-hover:scale-105"
+                    className="object-cover border transition-transform duration-700 ease-premium group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   {/* Hover overlay */}
@@ -94,7 +91,7 @@ export function DivisionCutouts() {
                       </p>
                     </div>
                     <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
-                      <ArrowUpRight className="h-3.5 w-3.5 text-[var(--text-muted)] transition-colors group-hover:text-black" />
+                      <ArrowUpRight className="h-3.5 w-3.5 text-[var(--text-muted)] transition-colors group-hover:text-white" />
                     </div>
                   </div>
                   {/* Gold accent line */}

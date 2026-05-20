@@ -45,7 +45,7 @@ export async function GET(
         id: product.id,
         name: product.division,
         slug: product.division_slug,
-        accent_color: '#C9A84C',
+        accent_color: '#3B82F6',
         tagline: null,
         description: null,
         short_description: null,

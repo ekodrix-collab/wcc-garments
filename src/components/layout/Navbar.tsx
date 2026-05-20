@@ -38,10 +38,10 @@ export function Navbar() {
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 z-[100] transition-all duration-500 ${
+        className={`fixed left-0 right-0 top-0 z-[999] transition-all duration-500 bg-black backdrop-blur-xl ${
           isScrolled || megaMenuOpen
-            ? 'border-b border-white/10 bg-[#0A0A0A]/95 backdrop-blur-xl py-3 shadow-2xl'
-            : 'bg-transparent py-5'
+            ? 'py-3 shadow-2xl'
+            : 'py-5'
         }`}
       >
         <nav className="mx-auto flex max-w-[1440px] items-center justify-between px-6 lg:px-12">
@@ -58,10 +58,10 @@ export function Navbar() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-display text-lg font-bold tracking-tight text-white sm:text-xl">
-                WCC <span className="font-light text-gold">—</span> GARMENTS
+              <span className="font-poppins font-bold text-white tracking-widest text-[13px]">
+                WCC GARMENTS
               </span>
-              <span className="font-mono text-[8px] font-medium uppercase tracking-[0.35em] text-gold/80 sm:text-[9px]">
+              <span className="font-poppins text-[7px] font-medium uppercase tracking-[0.40em] text-gold/80">
                 Western Clothing Co.
               </span>
             </div>
@@ -95,11 +95,6 @@ export function Navbar() {
                       <ChevronDown className={`h-3.5 w-3.5 text-white/50 transition-transform duration-300 ${megaMenuOpen ? 'rotate-180 text-gold' : 'group-hover:text-gold'}`} />
                     )}
                   </Link>
-                  <span
-                    className={`absolute -bottom-1 left-0 h-[2px] bg-gold transition-all duration-500 ease-premium ${
-                      pathname === link.href || (isProducts && megaMenuOpen) ? 'w-full shadow-[0_0_10px_#C9A84C]' : 'w-0 group-hover:w-full'
-                    }`}
-                  />
                 </div>
               )
             })}
@@ -110,7 +105,7 @@ export function Navbar() {
             <ThemeToggle className="hidden sm:flex" />
             <Link
               href="/contact"
-              className="group relative hidden lg:inline-flex items-center gap-2 rounded-full border border-gold bg-gold/10 px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-gold backdrop-blur-md transition-all hover:bg-gold hover:text-black hover:shadow-[0_0_25px_rgba(201,168,76,0.4)]"
+              className="group relative hidden lg:inline-flex items-center gap-2 rounded-full border border-white bg-white px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-black backdrop-blur-md transition-all hover:bg-[#3b82f6] hover:border-[#3b82f6] hover:text-white hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]"
             >
               <span>Get in Touch</span>
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:rotate-45" />
@@ -146,28 +141,28 @@ export function Navbar() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onMouseLeave={() => setMegaMenuOpen(false)}
-              className="absolute left-0 right-0 top-full z-[90] border-b border-white/10 bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_30px_100px_rgba(0,0,0,0.95)]"
+              className="absolute left-0 right-0 top-full z-[90] border-b border-white/10 bg-black shadow-[0_30px_100px_rgba(0,0,0,0.95)]"
             >
-              <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+
 
               <div className="mx-auto max-w-[1440px] px-6 py-10 lg:px-12">
                 <div className="grid gap-10 lg:grid-cols-12">
                   {/* Left Column (8 Cols): Structured Industrial Divisions */}
                   <div className="lg:col-span-8 space-y-6">
                     <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                      <span className="font-mono text-xs font-bold uppercase tracking-widest text-white/50">
+                      <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
                         Explore by Industrial Division
                       </span>
-                      <span className="font-mono text-xs text-gold font-bold">10,000+ SKUs Available</span>
+                      <span className="font-body text-[10px] text-gold font-bold uppercase tracking-[0.1em]">10,000+ SKUs Available</span>
                     </div>
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 font-sans text-xs">
                       <Link
                         href="/products?division=garments"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
+                        className="group rounded-none border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
                       >
-                        <div className="flex items-center gap-3 font-bold text-white group-hover:text-gold font-display text-sm">
+                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-white group-hover:text-gold">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black border border-white/10 group-hover:border-gold text-gold"><Factory className="h-4 w-4" /></div>
                           <span>Garments Division</span>
                         </div>
@@ -177,9 +172,9 @@ export function Navbar() {
                       <Link
                         href="/products?division=uniforms"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
+                        className="group rounded-none border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
                       >
-                        <div className="flex items-center gap-3 font-bold text-white group-hover:text-gold font-display text-sm">
+                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-white group-hover:text-gold">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black border border-white/10 group-hover:border-gold text-blue-400"><ShieldCheck className="h-4 w-4" /></div>
                           <span>Uniforms &amp; Safety</span>
                         </div>
@@ -189,9 +184,9 @@ export function Navbar() {
                       <Link
                         href="/products?division=hospitality"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group rounded-xl border border-gold/30 bg-gold/5 p-4 transition-all hover:bg-gold/15 hover:border-gold flex flex-col justify-between space-y-3 shadow-lg"
+                        className="group rounded-none border border-gold/30 bg-gold/5 p-4 transition-all hover:bg-gold/15 hover:border-gold flex flex-col justify-between space-y-3 shadow-lg"
                       >
-                        <div className="flex items-center gap-3 font-bold text-gold font-display text-sm">
+                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-gold">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold/10 border border-gold/30 text-gold"><Building2 className="h-4 w-4" /></div>
                           <span>Hospitality Division</span>
                         </div>
@@ -201,9 +196,9 @@ export function Navbar() {
                       <Link
                         href="/products?division=fragrance"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
+                        className="group rounded-none border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
                       >
-                        <div className="flex items-center gap-3 font-bold text-white group-hover:text-gold font-display text-sm">
+                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-white group-hover:text-gold">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black border border-white/10 group-hover:border-gold text-purple-400"><Briefcase className="h-4 w-4" /></div>
                           <span>Fragrance &amp; Oud</span>
                         </div>
@@ -213,9 +208,9 @@ export function Navbar() {
                       <Link
                         href="/products?division=home"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
+                        className="group rounded-none border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
                       >
-                        <div className="flex items-center gap-3 font-bold text-white group-hover:text-gold font-display text-sm">
+                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-white group-hover:text-gold">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black border border-white/10 group-hover:border-gold text-emerald-400"><Home className="h-4 w-4" /></div>
                           <span>Home Furnishings</span>
                         </div>
@@ -225,9 +220,9 @@ export function Navbar() {
                       <Link
                         href="/products?division=households"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
+                        className="group rounded-none border border-white/10 bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
                       >
-                        <div className="flex items-center gap-3 font-bold text-white group-hover:text-gold font-display text-sm">
+                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-white group-hover:text-gold">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black border border-white/10 group-hover:border-gold text-amber-400"><Package className="h-4 w-4" /></div>
                           <span>Households Supply</span>
                         </div>
@@ -239,7 +234,7 @@ export function Navbar() {
                   {/* Right Column (4 Cols): Featured Highlights & Quick Links */}
                   <div className="lg:col-span-4 space-y-6 lg:border-l lg:border-white/10 lg:pl-8">
                     <div className="border-b border-white/10 pb-3">
-                      <span className="font-mono text-xs font-bold uppercase tracking-widest text-gold flex items-center gap-2">
+                      <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em] text-gold flex items-center gap-2">
                         <Award className="h-4 w-4 text-gold" />
                         <span>Featured Commercial Highlights</span>
                       </span>
@@ -249,15 +244,15 @@ export function Navbar() {
                       <Link
                         href="/products/hotel-bed-linen-collection"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-3.5 transition-all hover:border-gold hover:bg-white/10"
+                        className="group flex items-center gap-4 rounded-none border border-white/10 bg-white/5 p-3.5 transition-all hover:border-gold hover:bg-white/10"
                       >
-                        <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden bg-black border border-white/10">
+                        <div className="relative h-16 w-16 flex-shrink-0 rounded-none overflow-hidden bg-black border border-white/10">
                           <Image src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80" alt="Bedding" fill className="object-cover transition-transform group-hover:scale-110" />
                         </div>
                         <div>
-                          <h5 className="font-sans font-bold text-white group-hover:text-gold transition-colors text-sm">Hotel Bed Linen Collection</h5>
-                          <p className="text-[11px] text-white/60 font-mono mt-0.5">MOQ: 200 Sets / 100% Combed Cotton</p>
-                          <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 font-mono font-bold mt-1 bg-amber-400/10 px-2 py-0.5 rounded">
+                          <h5 className="font-body text-xs font-bold uppercase tracking-wider text-white group-hover:text-gold transition-colors">Hotel Bed Linen Collection</h5>
+                          <p className="text-[10px] text-white/60 font-body mt-0.5 tracking-wide">MOQ: 200 Sets / 100% Combed Cotton</p>
+                          <span className="inline-flex items-center gap-1 text-[9px] text-amber-400 font-body font-bold mt-1 bg-amber-400/10 px-2 py-0.5 rounded uppercase tracking-wider">
                             <Clock className="h-3 w-3" /> Quick Ship (15-20 Days)
                           </span>
                         </div>
@@ -266,15 +261,15 @@ export function Navbar() {
                       <Link
                         href="/products/egyptian-cotton-premium-shirts"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-3.5 transition-all hover:border-gold hover:bg-white/10"
+                        className="group flex items-center gap-4 rounded-none border border-white/10 bg-white/5 p-3.5 transition-all hover:border-gold hover:bg-white/10"
                       >
-                        <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden bg-black border border-white/10">
+                        <div className="relative h-16 w-16 flex-shrink-0 rounded-none overflow-hidden bg-black border border-white/10">
                           <Image src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80" alt="Shirt" fill className="object-cover transition-transform group-hover:scale-110" />
                         </div>
                         <div>
-                          <h5 className="font-sans font-bold text-white group-hover:text-gold transition-colors text-sm">Egyptian Cotton Premium Shirts</h5>
-                          <p className="text-[11px] text-white/60 font-mono mt-0.5">300TC Weave / Global Wholesale</p>
-                          <span className="inline-flex items-center gap-1 text-[10px] text-purple-400 font-mono font-bold mt-1 bg-purple-400/10 px-2 py-0.5 rounded">
+                          <h5 className="font-body text-xs font-bold uppercase tracking-wider text-white group-hover:text-gold transition-colors">Egyptian Cotton Premium Shirts</h5>
+                          <p className="text-[10px] text-white/60 font-body mt-0.5 tracking-wide">300TC Weave / Global Wholesale</p>
+                          <span className="inline-flex items-center gap-1 text-[9px] text-purple-400 font-body font-bold mt-1 bg-purple-400/10 px-2 py-0.5 rounded uppercase tracking-wider">
                             Premium Tier Selection
                           </span>
                         </div>
@@ -285,7 +280,7 @@ export function Navbar() {
                       <Link
                         href="/products"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group flex items-center justify-between rounded-xl bg-gold py-3.5 px-5 font-mono text-xs font-bold uppercase tracking-widest text-black transition-all hover:bg-gold-light shadow-lg"
+                        className="group flex items-center justify-between rounded-none bg-gold py-3.5 px-5 font-body text-[10px] font-bold uppercase tracking-[0.25em] text-white transition-all hover:bg-gold-light shadow-lg"
                       >
                         <span>Explore Complete Product Index</span>
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

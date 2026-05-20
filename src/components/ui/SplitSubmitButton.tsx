@@ -32,7 +32,7 @@ export function SplitSubmitButton({
       className={`group relative z-30 cursor-pointer flex h-14 w-full items-center overflow-hidden border border-gold font-mono text-xs font-semibold uppercase tracking-[0.2em] transition-all duration-500 disabled:opacity-60 disabled:cursor-not-allowed ${
         success
           ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
-          : 'bg-gold text-black hover:shadow-[0_8px_30px_rgba(201,168,76,0.3)]'
+          : 'bg-gold text-black hover:shadow-[0_8px_30px_rgba(59,130,246,0.3)]'
       } ${className}`}
       whileHover={{ scale: disabled || loading || success ? 1 : 1.01 }}
       whileTap={{ scale: disabled || loading || success ? 1 : 0.98 }}

@@ -4,25 +4,26 @@
 
 /* ---- FONT IMPORTS — Premium Clean Fonts ---- */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600&family=Barlow:wght@300;400&display=swap');
 
 /* ---- CSS VARIABLES ---- */
 :root {
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Montserrat', sans-serif;
-  --font-mono: 'Montserrat', monospace;
+  --font-display: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
   color-scheme: light;
 
   /* Luxurious Warm Cream / Ivory Palette */
-  --bg: #F7F4F0;
+  --bg: #ffffff;
   --bg-surface: #FCFAF6;
   --bg-subtle: #EFECE6;
   --text: #0A0A0A;
   --text-muted: rgba(10,10,10,0.55);
   --border: rgba(10,10,10,0.12);
-  --gold: #C9A84C;
-  --gold-light: #E8D5A3;
-  --gold-dark: #8B7355;
-  --gold-muted: rgba(201, 168, 76, 0.12);
+  --gold: #3B82F6;
+  --gold-light: #60A5FA;
+  --gold-dark: #2563EB;
+  --gold-muted: rgba(59, 130, 246, 0.12);
 }
 
 .dark {
@@ -32,10 +33,10 @@
   --text: #FFFFFF;
   --text-muted: rgba(255,255,255,0.45);
   --border: rgba(255,255,255,0.12);
-  --gold: #C9A84C;
-  --gold-light: #E8D5A3;
-  --gold-dark: #8B7355;
-  --gold-muted: rgba(201, 168, 76, 0.08);
+  --gold: #3B82F6;
+  --gold-light: #60A5FA;
+  --gold-dark: #2563EB;
+  --gold-muted: rgba(59, 130, 246, 0.08);
   color-scheme: dark;
 }
 
@@ -48,6 +49,7 @@
 
 html {
   scroll-behavior: auto;
+  overflow-x: hidden;
 }
 
 body {
@@ -89,10 +91,35 @@ body {
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, #C9A84C, #E8D5A3, #C9A84C);
+    background: linear-gradient(135deg, #2563EB, #3B82F6, #60A5FA);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .text-shine-blue {
+    background: linear-gradient(
+      120deg,
+      #2563EB 20%,
+      #60A5FA 35%,
+      #FFFFFF 50%,
+      #60A5FA 65%,
+      #2563EB 80%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: textShine 4s linear infinite;
+  }
+
+  @keyframes textShine {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
   }
 
   .clip-diagonal {
@@ -109,6 +136,25 @@ body {
 
   .font-body {
     font-family: var(--font-body);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .noise-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1;
   }
 }
 
@@ -127,10 +173,10 @@ body {
 
 /* ---- FLAGSHIP LUXURY UPGRADES ---- */
 .bg-radial-hero {
-  background: radial-gradient(circle at center, rgba(201,168,76,0.08), transparent 60%);
+  background: radial-gradient(circle at center, rgba(59,130,246,0.08), transparent 60%);
 }
 .dark .bg-radial-hero {
-  background: radial-gradient(circle at center, rgba(201,168,76,0.12), transparent 60%);
+  background: radial-gradient(circle at center, rgba(59,130,246,0.12), transparent 60%);
 }
 
 .shadow-headline {
@@ -182,7 +228,7 @@ body {
 }
 
 .btn-gold:hover {
-  color: #0A0A0A !important;
+  color: #f5f3f3 !important;
   background: var(--gold);
 }
 
@@ -224,4 +270,14 @@ select {
 select option {
   background-color: var(--bg-surface);
   color: var(--text);
+}
+
+/* Preloader content hide/reveal */
+body:not(.preloader-done) #root-content {
+  opacity: 0;
+  pointer-events: none;
+}
+#root-content {
+  opacity: 1;
+  transition: opacity 0.8s ease-in-out;
 }

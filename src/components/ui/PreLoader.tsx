@@ -1,122 +1,140 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { motion, AnimatePresence, animate } from 'framer-motion'
 
 export function PreLoader() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [displayProgress, setDisplayProgress] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [isFading, setIsFading] = useState(false)
+  const [isDone, setIsDone] = useState(false)
 
   useEffect(() => {
-    // Check if the user has already seen the intro during this browser tab session
-    const hasSeenIntro = sessionStorage.getItem('wcc-has-seen-intro')
-    if (hasSeenIntro) {
-      setIsLoading(false)
+    setMounted(true)
+    
+    // Check session storage
+    if (sessionStorage.getItem('wcc-has-seen-intro')) {
+      setIsDone(true)
+      document.body.classList.add('preloader-done')
       return
     }
 
-    setIsLoading(true)
     document.body.style.overflow = 'hidden'
 
-    // Use Framer Motion's ultra-smooth animate function for the number counter
-    const controls = animate(0, 100, {
-      duration: 2.2, // Slightly longer for a more cinematic feel
-      ease: [0.76, 0, 0.24, 1], // Butter-smooth custom cubic-bezier
-      onUpdate: (val) => {
-        setDisplayProgress(Math.round(val))
-      },
-      onComplete: () => {
+    // Start progress counter
+    const startTime = performance.now()
+    const duration = 1800 // 1.8 seconds
+
+    let rafId: number
+    
+    const updateProgress = (now: number) => {
+      const elapsed = now - startTime
+      const percent = Math.min(elapsed / duration, 1)
+      
+      // easeInOutCubic
+      const ease = percent < 0.5 
+        ? 4 * percent * percent * percent 
+        : 1 - Math.pow(-2 * percent + 2, 3) / 2
+        
+      setProgress(Math.round(ease * 100))
+
+      if (percent < 1) {
+        rafId = requestAnimationFrame(updateProgress)
+      } else {
         sessionStorage.setItem('wcc-has-seen-intro', 'true')
         setTimeout(() => {
-          setIsLoading(false)
-          document.body.style.overflow = ''
-        }, 400) // Brief dramatic pause at 100% before exit
+          setIsFading(true)
+          setTimeout(() => {
+            setIsDone(true)
+            document.body.classList.add('preloader-done')
+            document.body.style.overflow = ''
+          }, 800) // fade transition duration
+        }, 300) // pause at 100%
       }
-    })
+    }
+
+    rafId = requestAnimationFrame(updateProgress)
 
     return () => {
-      controls.stop()
+      cancelAnimationFrame(rafId)
       document.body.style.overflow = ''
     }
   }, [])
 
+  if (!mounted || isDone) return null
+
   return (
-    <AnimatePresence mode="wait">
-      {isLoading && (
-        <motion.div
-          key="preloader"
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#050505] px-6" // Slightly darker background
-          initial={{ y: 0 }}
-          exit={{
-            y: '-100vh', // GPU accelerated transform
-            opacity: 0,
-            transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] },
+    <div
+      id="global-preloader"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 99999,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#050505',
+        opacity: isFading ? 0 : 1,
+        transform: isFading ? 'translateY(-100vh)' : 'translateY(0)',
+        transition: 'opacity 0.8s cubic-bezier(0.76, 0, 0.24, 1), transform 0.8s cubic-bezier(0.76, 0, 0.24, 1)',
+      }}
+    >
+      {/* Pulse Logo */}
+      <div
+        style={{
+          position: 'relative',
+          marginBottom: '24px',
+          width: '112px',
+          height: '112px',
+          animation: 'preloader-pulse 2s infinite ease-in-out',
+        }}
+      >
+        <img src="/images/wcc-logo.png" alt="WCC Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+      </div>
+
+      {/* Brand Text */}
+      <div style={{ textAlign: 'center', color: 'white', fontFamily: 'sans-serif' }}>
+        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+          WCC <span style={{ fontWeight: 300, color: '#3B82F6' }}>GARMENTS</span>
+        </h1>
+        <p style={{ margin: '6px 0 0 0', fontSize: '10px', fontWeight: 700, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>
+          Western Clothing Co. · Est. 2010
+        </p>
+      </div>
+
+      {/* Progress Bar Container */}
+      <div
+        style={{
+          marginTop: '48px',
+          width: '240px',
+          height: '2px',
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          borderRadius: '999px',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        {/* Progress Fill */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height: '100%',
+            width: `${progress}%`,
+            background: '#3B82F6',
+            transition: 'width 0.1s ease-out',
           }}
-        >
-          {/* Subtle background glow */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-40 blur-[120px]">
-            <div className="h-[400px] w-[400px] rounded-full bg-gold/10" />
-          </div>
+        />
+      </div>
 
-          <div className="relative z-10 flex flex-col items-center">
-            {/* Logo Animation */}
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0, filter: 'blur(10px)' }}
-              animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
-              transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-              className="relative mb-6 h-28 w-28 sm:h-36 sm:w-36"
-            >
-              <Image
-                src="/images/wcc-logo.png"
-                alt="WCC Garments Logo"
-                fill
-                className="object-contain drop-shadow-[0_0_30px_rgba(201,168,76,0.3)]"
-                priority
-                sizes="(max-width: 640px) 112px, 144px"
-              />
-            </motion.div>
-
-            {/* Brand Title */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: [0.76, 0, 0.24, 1] }}
-              className="text-center"
-            >
-              <h1 className="font-display text-2xl font-bold tracking-[0.15em] text-white sm:text-3xl">
-                WCC <span className="font-light text-gold">GARMENTS</span>
-              </h1>
-              <p className="mt-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.4em] text-white/50 sm:text-xs">
-                Western Clothing Co. · Est. 2010
-              </p>
-            </motion.div>
-
-            {/* Progress Bar & Number */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="mt-12 w-64 sm:w-80"
-            >
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-white/50 font-mono">
-                <span>Initializing Systems</span>
-                <span className="text-gold">{displayProgress}%</span>
-              </div>
-
-              <div className="mt-2.5 h-[2px] w-full overflow-hidden rounded-full bg-white/10">
-                {/* GPU Accelerated ScaleX Animation */}
-                <motion.div
-                  className="h-full bg-gradient-to-r from-gold/40 via-gold to-gold origin-left"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 2.2, ease: [0.76, 0, 0.24, 1] }}
-                />
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      {/* CSS Animation Rule */}
+      <style>{`
+        @keyframes preloader-pulse {
+          0%, 100% { transform: scale(0.95); opacity: 0.8; filter: drop-shadow(0 0 10px rgba(59,130,246,0.1)); }
+          50% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 30px rgba(59,130,246,0.4)); }
+        }
+      `}</style>
+    </div>
   )
 }

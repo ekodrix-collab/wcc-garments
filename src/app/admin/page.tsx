@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Package, Inbox, Film, Users, Plus, ArrowUpRight, TrendingUp, CheckCircle2, Clock, AlertCircle, ArrowRight, Eye, RefreshCw } from 'lucide-react'
 
 const STATS = [
-  { label: 'Total Products in Catalog', value: '14', change: '+18% this month', icon: Package, color: '#C9A84C' },
+  { label: 'Total Products in Catalog', value: '14', change: '+18% this month', icon: Package, color: '#3B82F6' },
   { label: 'Pending Enquiries', value: '3', change: '2 requires urgent action', icon: Inbox, color: '#3B82F6' },
   { label: 'Digital Assets & Media', value: '6', change: '100% optimized', icon: Film, color: '#8B5CF6' },
   { label: 'Active Global Contacts', value: '12', change: '+4 new this week', icon: Users, color: '#10B981' },
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
           </button>
           <Link
             href="/admin/products/new"
-            className="flex items-center gap-2 rounded-lg bg-gold px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_20px_rgba(201,168,76,0.3)]"
+            className="flex items-center gap-2 rounded-lg bg-gold px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]"
           >
             <Plus className="h-4 w-4" />
             <span>Add Listing</span>

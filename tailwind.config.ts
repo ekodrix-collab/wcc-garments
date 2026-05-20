@@ -28,10 +28,10 @@ const config: Config = {
           subtle: '#1E1E1E',
         },
         gold: {
-          DEFAULT: '#C9A84C',
-          light: '#E8D5A3',
-          dark: '#8B7355',
-          muted: 'rgba(201, 168, 76, 0.12)',
+          DEFAULT: '#3B82F6', // Electric Blue Standard
+          light: '#60A5FA',   // Electric Blue Light
+          dark: '#2563EB',    // Electric Blue Dark
+          muted: 'rgba(59, 130, 246, 0.12)',
         },
         bronze: '#8B7355',
         ivory: '#FAFAF5',
@@ -41,6 +41,9 @@ const config: Config = {
         display: ['var(--font-display)', 'Georgia', 'serif'],
         body: ['var(--font-body)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
+        bebas: ['"Bebas Neue"', 'sans-serif'],
+        'barlow-cond': ['"Barlow Condensed"', 'sans-serif'],
+        'barlow-body': ['Barlow', 'sans-serif'],
       },
       fontSize: {
         'display-xl': [
@@ -73,6 +76,11 @@ const config: Config = {
         'marquee-reverse': 'marquee-reverse 25s linear infinite',
         grain: 'grain 8s steps(10) infinite',
         float: 'float 6s ease-in-out infinite',
+        'spin-slow': 'spinSlow 20s linear infinite',
+        'float-decor': 'floatDecor 8s ease-in-out infinite',
+        'fade-up': 'fadeUp 1s ease both',
+        'fade-down': 'fadeDown 0.8s ease both',
+        'glow-pulse': 'glowPulse 6s ease-in-out infinite',
       },
       keyframes: {
         marquee: {
@@ -98,6 +106,26 @@ const config: Config = {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-20px)' },
+        },
+        spinSlow: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
+        floatDecor: {
+          '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+          '50%': { transform: 'translateY(-12px) translateX(4px)' },
+        },
+        fadeUp: {
+          from: { opacity: '0', transform: 'translateY(28px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeDown: {
+          from: { opacity: '0', transform: 'translateY(-20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        glowPulse: {
+          '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.12)' },
         },
       },
     },

@@ -91,16 +91,38 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const saved = localStorage.getItem('wcc-theme');
+                  const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  const theme = saved || preferred;
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="font-body">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
+        <PreLoader />
         <ThemeProvider>
-          <PreLoader />
           <SmoothScroll>
-            <GrainOverlay />
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
+            <div id="root-content">
+              <GrainOverlay />
+              <Navbar />
+              <main>{children}</main>
+              <Footer />
+            </div>
           </SmoothScroll>
         </ThemeProvider>
       </body>
