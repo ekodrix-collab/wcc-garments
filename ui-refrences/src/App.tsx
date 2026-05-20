@@ -78,7 +78,7 @@ const mockProducts: Product[] = [
   },
 ]
 
-export default function App() {
+export default function AddSubscribe() {
   const [introComplete, setIntroComplete] = useState(false)
   const [mainVisible, setMainVisible] = useState(false)
   const [fullPageDone, setFullPageDone] = useState(false)

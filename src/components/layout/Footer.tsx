@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { ArrowUpRight, Phone, Mail, MapPin } from 'lucide-react'
 import { SITE_CONFIG, DIVISIONS, NAV_LINKS } from '@/lib/constants'
+import NewsletterSubscribe from '../home/NewsletterSubscribe'
 
 export function Footer() {
   const pathname = usePathname()
@@ -15,7 +16,7 @@ export function Footer() {
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--bg-surface)]">
       {/* Flagship Cinematic Emotional Ending Statement */}
-      <div className="border-b border-[var(--border)] bg-[#0A0A0A] py-32 text-center text-white px-6">
+      {/* <div className="border-b border-[var(--border)] bg-[#0A0A0A] py-32 text-center text-white px-6">
         <div className="mx-auto max-w-4xl">
           <span className="font-mono text-xs font-bold uppercase tracking-[0.4em] text-gold">
             The UAE Industrial Epicenter
@@ -36,7 +37,8 @@ export function Footer() {
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
+      <NewsletterSubscribe/>
 
       {/* Main Footer */}
       <div className="mx-auto max-w-[1440px] px-6 py-20 lg:px-12">

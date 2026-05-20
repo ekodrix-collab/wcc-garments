@@ -60,8 +60,8 @@ export function HospitalitySpotlight() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
                 Hospitality Excellence
               </span>
-              <h2 className="mt-3 font-display text-display-sm font-semibold text-[var(--text)]">
-                From Hotel Linens to Staff Uniforms
+              <h2 className="mt-3 font-display text-display-sm font-semibold uppercase text-[var(--text)]">
+                From Hotel Linens to Staff <span className='text-gold'>Uniforms</span>
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-[var(--text-muted)]">
                 Complete hospitality textile solutions including premium bed linen,

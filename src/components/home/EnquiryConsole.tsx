@@ -46,7 +46,7 @@ export function EnquiryConsole({
     { text: 'Your' },
     { text: 'Custom' },
     { text: 'Garment' },
-    { text: 'Supply Chain.', className: 'text-gold font-light italic' },
+    { text: 'Supply Chain', className: 'text-gold font-bold' },
   ]
 
   const {
@@ -107,16 +107,15 @@ export function EnquiryConsole({
   }
 
   return (
-    <section className="relative overflow-hidden bg-[var(--bg-surface)] py-section" ref={ref} id="enquiry" data-cursor="view">
+    <section className="relative overflow-hidden bg-[var(--bg-surface)] py-20" ref={ref} id="enquiry" data-cursor="view">
       {/* Background architectural grid line pattern */}
       <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.03]">
         <div className="h-full w-full bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-12">
-        <div className="mb-12 flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-          <span className="h-[1px] w-6 bg-gold" />
-          <span>10 — Enterprise Enquiries</span>
+        <div className=" flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+          <span> Wholesale &amp; Enterprise Portal</span>
         </div>
 
         <div className="grid gap-16 lg:grid-cols-5">
@@ -127,10 +126,7 @@ export function EnquiryConsole({
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-              Wholesale &amp; Enterprise Portal
-            </span>
-            <div className="mt-2">
+            <div className="mt-2 uppercase">
               <TypewriterEffect words={words} />
             </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-[var(--text-muted)]">

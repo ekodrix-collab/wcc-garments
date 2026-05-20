@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, JSX } from "react";
+import React, { useEffect, useState, JSX } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -58,167 +58,6 @@ function StarburstLogo(): JSX.Element {
 }
 
 // ─── Canvas Ball with Smoke Trail ─────────────────────────────────────────────
-function BallCanvas(): JSX.Element {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef = useRef<number>(0);
-  const timeRef = useRef<number>(0);
-  const particlesRef = useRef<Particle[]>([]);
-  const prevPosRef = useRef<Vec2>({ x: 0, y: 0 });
-  const currentRRef = useRef<number>(16);
-  const blendFactorRef = useRef<number>(0);
-
-  useEffect((): (() => void) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return () => { };
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return () => { };
-
-
-
-    const getPos = (t: number): Vec2 => {
-      const isDesktop = canvas.width >= 1024;
-      if (isDesktop) {
-        return {
-          x: canvas.width * 0.28 + canvas.width * 0.10 * Math.sin(t),
-          y: canvas.height * 0.42 + canvas.height * 0.16 * Math.sin(t * 1.6 + 0.5),
-        };
-      } else {
-        return {
-          x: canvas.width * 0.5 + canvas.width * 0.22 * Math.sin(t),
-          y: canvas.height * 0.22 + canvas.height * 0.08 * Math.sin(t * 1.6 + 0.5),
-        };
-      }
-    };
-
-    const spawnSmoke = (
-      x: number,
-      y: number,
-      vx: number,
-      vy: number
-    ): void => {
-      for (let i = 0; i < 3; i++) {
-        particlesRef.current.push({
-          x: x + (Math.random() - 0.5) * 8,
-          y: y + (Math.random() - 0.5) * 8,
-          vx: -vx * 0.15 + (Math.random() - 0.5) * 0.8,
-          vy: -vy * 0.15 + (Math.random() - 0.5) * 0.8,
-          life: 0,
-          maxLife: 60 + Math.random() * 60,
-          size: 4 + Math.random() * 14,
-          opacity: 0.5 + Math.random() * 0.4,
-        });
-      }
-    };
-
-    prevPosRef.current = getPos(0);
-
-    const draw = (): void => {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      if (canvas.width !== w || canvas.height !== h) {
-        canvas.width = w;
-        canvas.height = h;
-      }
-
-      const t = timeRef.current;
-      timeRef.current += 0.018;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const pos = getPos(t);
-
-      // Check if over content area
-      const isDesktop = canvas.width >= 1024;
-      let isHovering = false;
-      if (isDesktop) {
-        const dx = Math.abs(pos.x - canvas.width * 0.28);
-        const dy = Math.abs(pos.y - canvas.height * 0.42);
-        isHovering = dx < (canvas.width * 0.2) && dy < (canvas.height * 0.3);
-      } else {
-        const dx = Math.abs(pos.x - canvas.width * 0.5);
-        const dy = Math.abs(pos.y - canvas.height * 0.22);
-        isHovering = dx < (canvas.width * 0.4) && dy < (canvas.height * 0.15);
-      }
-
-      const targetR = isHovering ? 45 : 16;
-      currentRRef.current += (targetR - currentRRef.current) * 0.05;
-      const r = currentRRef.current;
-
-      const targetBlend = isHovering ? 1 : 0;
-      blendFactorRef.current += (targetBlend - blendFactorRef.current) * 0.05;
-      const bf = blendFactorRef.current;
-
-      // Flat beige circle for difference blending
-      if (bf > 0.01) {
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(240, 236, 224, ${bf})`;
-        ctx.fill();
-      }
-
-      // Normal rendered ball, faded out when zoomed
-      if (bf < 0.99) {
-        ctx.globalAlpha = 1 - bf;
-
-        const bg = ctx.createRadialGradient(
-          pos.x - r * 0.3,
-          pos.y - r * 0.3,
-          2,
-          pos.x,
-          pos.y,
-          r
-        );
-
-        bg.addColorStop(0, "#f0ece0");
-        bg.addColorStop(0.4, "#c8bfa0");
-        bg.addColorStop(0.75, "#8c8070");
-        bg.addColorStop(1, "#3a3530");
-
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = bg;
-        ctx.fill();
-
-        const sg = ctx.createRadialGradient(
-          pos.x - r * 0.3,
-          pos.y - r * 0.4,
-          0,
-          pos.x - r * 0.3,
-          pos.y - r * 0.4,
-          r * 0.6
-        );
-
-        sg.addColorStop(0, "rgba(255, 252, 240, 0.85)");
-        sg.addColorStop(1, "rgba(255, 252, 240, 0)");
-
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = sg;
-        ctx.fill();
-
-        ctx.globalAlpha = 1.0;
-      }
-
-      prevPosRef.current = { ...pos };
-
-      animRef.current = requestAnimationFrame(draw);
-    };
-
-    animRef.current = requestAnimationFrame(draw);
-
-    return (): void => {
-      cancelAnimationFrame(animRef.current);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-    />
-  );
-}
 
 // ─── Social Icon Wrapper ──────────────────────────────────────────────────────
 function SocialIcon({
@@ -353,11 +192,6 @@ export function HeroSection(): JSX.Element {
             </SocialIcon>
           </div>
         </nav>
-
-        {/* Ball Canvas */}
-        <div className="hidden md:block absolute inset-x-0 bottom-0 top-24 z-[50] pointer-events-none" style={{ mixBlendMode: 'difference' }}>
-          <BallCanvas />
-        </div>
 
         {/* Hero Content */}
         <div className="relative z-[5] w-full flex flex-col items-center justify-center min-h-[calc(100svh-120px)] md:min-h-[calc(78svh-120px)] lg:min-h-[calc(88svh-120px)] xl:min-h-[calc(92svh-120px)] pt-0 hover-trigger cursor-default">

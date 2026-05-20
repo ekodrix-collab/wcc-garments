@@ -28,12 +28,11 @@ export function WhyWCC() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
 
   return (
-    <section className="bg-[var(--bg)] py-section" ref={ref} data-cursor="view">
+    <section className="bg-[var(--bg)] py-20" ref={ref} data-cursor="view">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         {/* Margined Section Number */}
-        <div className="mb-6 flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-          <span className="h-[1px] w-6 bg-gold" />
-          <span>06 — Sovereign Infrastructure</span>
+        <div className=" flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+          <span>Sovereign Infrastructure</span>
         </div>
 
         {/* Section Header */}
@@ -43,21 +42,18 @@ export function WhyWCC() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-              Enterprise Operating System
-            </span>
-            <h2 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text)]">
-              Engineered for Sovereign Scale.
+            <h2 className="mt-3 font-display text-4xl sm:text-3xl lg:text-5xl uppercase font-bold tracking-tight text-[var(--text)]">
+              Engineered for Sovereign <span className='text-gold'>Scale</span>
             </h2>
           </motion.div>
-          <motion.p
+          {/* <motion.p
             className="max-w-md text-sm text-[var(--text-muted)] leading-relaxed"
             initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
           >
             Our digital infrastructure perfectly mirrors our industrial floor — secure, instantaneous, and architected for high-volume commercial execution.
-          </motion.p>
+          </motion.p> */}
         </div>
 
         {/* Premium Bento Frame (Dark Glass Enclosure) */}
