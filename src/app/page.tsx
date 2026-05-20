@@ -24,7 +24,7 @@ export default function HomePage() {
       <HospitalitySpotlight />
       <ManufacturingStory />
       <CoverDemo />
-      <WhyWCC />
+      {/* <WhyWCC /> */}
       <EnquiryConsole />
     </>
   )
