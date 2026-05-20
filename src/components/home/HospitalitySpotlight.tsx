@@ -32,8 +32,8 @@ export function HospitalitySpotlight() {
           >
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=85"
-                alt="Luxury hotel hospitality textiles"
+                src="/images/hositalCat.png"
+                alt="Healthcare hospitality linens in hospital setting"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"

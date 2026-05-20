@@ -28,7 +28,7 @@ export function WhoWeAre() {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
               <h2 className="font-display text-4xl font-bold leading-tight tracking-tight text-[var(--text)] sm:text-5xl">
-                WCC <span className="font-bold text-gold font-['Anton'] uppercase">Since 2010</span>
+                WCC <span className="font-bold text-gold font-['Anton'] uppercase">Since 2001</span>
               </h2>
             </motion.div>
           </div>
