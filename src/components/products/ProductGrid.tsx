@@ -21,15 +21,15 @@ interface ProductGridProps {
 export function ProductGrid({ products }: ProductGridProps) {
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <p className="font-display text-xl text-[var(--text-muted)]">No products found</p>
-        <p className="mt-2 text-sm text-[var(--text-muted)]">Try adjusting your filters</p>
+      <div className="border border-[var(--border)] bg-[var(--bg-surface)] px-6 py-20 text-center">
+        <p className="font-display text-2xl text-[var(--text)]">No products found</p>
+        <p className="mt-3 text-sm text-[var(--text-muted)]">Try a different division or clear filters.</p>
       </div>
     )
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 2xl:gap-8">
       {products.map((product, index) => (
         <ProductCard key={product.id} product={product} index={index} />
       ))}
