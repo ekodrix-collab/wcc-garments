@@ -8,9 +8,9 @@
 
 /* ---- CSS VARIABLES ---- */
 :root {
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Montserrat', sans-serif;
-  --font-mono: 'Montserrat', monospace;
+  --font-display: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
   color-scheme: light;
 
   /* Luxurious Warm Cream / Ivory Palette */
