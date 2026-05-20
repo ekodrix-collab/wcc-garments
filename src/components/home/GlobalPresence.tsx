@@ -121,14 +121,14 @@ export function GlobalPresence() {
             Seven Hubs , Three Nations{' '}
             <span className="font-bold text-shine-blue block uppercase">Infinite Reach</span>
           </motion.h2>
-          <motion.p
+          {/* <motion.p
             className="max-w-xs text-sm leading-relaxed text-[var(--text-muted)]"
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ delay: 0.3 }}
           >
             A vertically integrated industrial manufacturing group, dispatching from Dubai to 50+ nations.
-          </motion.p>
+          </motion.p> */}
         </div>
 
         {/* ══════════════════════════════════════════════════
@@ -138,7 +138,7 @@ export function GlobalPresence() {
 
           {/* ── LEFT: World Map ── */}
           <motion.div
-            className="relative lg:col-span-7 overflow-hidden rounded-2xl border border-[var(--border)]"
+            className="relative lg:col-span-7 overflow-hidden rounded-none border-x-0 border-y border-[var(--border)] -mx-6 w-[calc(100%+3rem)] max-w-none lg:mx-0 lg:w-auto lg:rounded-2xl lg:border"
             style={{ background: 'var(--bg-subtle)' }}
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -337,7 +337,7 @@ export function GlobalPresence() {
             </div>
 
             {/* Map bottom stat strip */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-[var(--border)] bg-[var(--bg-surface)]/75 backdrop-blur-md">
+            <div className="hidden lg:grid grid-cols-4 border-t border-[var(--border)] bg-[var(--bg-surface)]/75 backdrop-blur-md">
               {[
                 { 
                   v: '7', 
@@ -450,54 +450,78 @@ export function GlobalPresence() {
               <p className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[var(--text-muted)] mb-1">
                 Production Centres
               </p>
-              {HUBS.map((hub, i) => (
-                <motion.div
-                  key={hub.id}
-                  className={`group flex items-center gap-3 rounded-lg border px-4 py-3 cursor-default transition-all duration-300 ${
-                    active === hub.id
-                      ? 'border-[var(--gold)]/40 bg-[var(--gold-muted)]'
-                      : 'border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--gold)]/20'
-                  }`}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.4, delay: 0.3 + i * 0.05 }}
-                  onMouseEnter={() => setActive(hub.id)}
-                  onMouseLeave={() => setActive(null)}
-                >
-                  {/* Index */}
-                  <span className="w-5 shrink-0 font-mono text-[10px] font-bold text-[var(--text-muted)]">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-
-                  {/* Status dot */}
-                  <span
-                    className={`h-2 w-2 shrink-0 rounded-full transition-all duration-300 ${
+              <div className="grid grid-cols-2 gap-2.5 lg:flex lg:flex-col lg:gap-1.5">
+                {HUBS.map((hub, i) => (
+                  <motion.div
+                    key={hub.id}
+                    className={`group relative flex flex-col justify-between items-start gap-2 rounded-xl border p-3.5 cursor-default transition-all duration-500 overflow-hidden lg:flex-row lg:items-center lg:gap-3 lg:px-4 lg:py-3 ${
                       active === hub.id
-                        ? 'bg-[var(--gold)] shadow-[0_0_6px_var(--gold)]'
-                        : 'bg-[var(--text-muted)]/30'
+                        ? 'border-[var(--gold)]/40 bg-[var(--gold-muted)] shadow-[0_4px_20px_rgba(212,175,55,0.08)]'
+                        : 'border-[var(--border)] bg-[var(--bg-surface)]/60 hover:border-[var(--gold)]/20 hover:bg-[var(--bg-surface)] hover:shadow-[0_4px_15px_rgba(0,0,0,0.03)]'
                     }`}
-                  />
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.4, delay: 0.3 + i * 0.05 }}
+                    onMouseEnter={() => setActive(hub.id)}
+                    onMouseLeave={() => setActive(null)}
+                  >
+                    {/* Ambient card hover glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[var(--gold-muted)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                  {/* City + role */}
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={`font-display text-base font-bold leading-none transition-colors duration-300 ${
-                        active === hub.id ? 'text-[var(--gold)]' : 'text-[var(--text)]'
-                      }`}
-                    >
-                      {hub.city}
-                    </p>
-                    <p className="mt-0.5 font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] truncate">
-                      {hub.role}
-                    </p>
-                  </div>
+                    {/* Index and Status indicator */}
+                    <div className="flex items-center gap-2 lg:gap-3 w-full lg:w-auto lg:shrink-0">
+                      <span className="hidden lg:inline-block w-5 shrink-0 font-mono text-[10px] font-bold text-[var(--text-muted)]">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      
+                      <span
+                        className={`h-2 w-2 shrink-0 rounded-full transition-all duration-300 ${
+                          active === hub.id
+                            ? 'bg-[var(--gold)] shadow-[0_0_8px_var(--gold)] scale-110'
+                            : 'bg-[var(--text-muted)]/30'
+                        }`}
+                      />
 
-                  {/* Country tag */}
-                  <span className="shrink-0 rounded-full border border-[var(--border)] px-2 py-0.5 font-mono text-[8px] uppercase tracking-wider text-[var(--text-muted)]">
-                    {hub.country}
-                  </span>
-                </motion.div>
-              ))}
+                      {/* City (on mobile, we group the city inside this top header) */}
+                      <div className="min-w-0 flex-1 lg:hidden">
+                        <p
+                          className={`font-display text-sm sm:text-base font-bold leading-none transition-colors duration-300 truncate ${
+                            active === hub.id ? 'text-[var(--gold)]' : 'text-[var(--text)]'
+                          }`}
+                        >
+                          {hub.city}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* City and Role (Desktop layout, or mobile layout wrapped nicely) */}
+                    <div className="min-w-0 flex-1 hidden lg:block">
+                      <p
+                        className={`font-display text-base font-bold leading-none transition-colors duration-300 ${
+                          active === hub.id ? 'text-[var(--gold)] font-bold' : 'text-[var(--text)]'
+                        }`}
+                      >
+                        {hub.city}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] truncate">
+                        {hub.role}
+                      </p>
+                    </div>
+
+                    {/* Role for mobile layout (below the header) */}
+                    <div className="w-full min-w-0 lg:hidden mt-0.5">
+                      <p className="font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] truncate">
+                        {hub.role}
+                      </p>
+                    </div>
+
+                    {/* Country tag */}
+                    <span className="shrink-0 rounded-full border border-[var(--border)] bg-[var(--bg-subtle)]/40 px-2 py-0.5 font-mono text-[8px] uppercase tracking-wider text-[var(--text-muted)] group-hover:border-[var(--gold)]/30 group-hover:text-[var(--text)] transition-all duration-300">
+                      {hub.country}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>
