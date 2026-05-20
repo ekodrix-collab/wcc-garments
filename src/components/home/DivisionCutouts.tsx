@@ -44,6 +44,7 @@ export function DivisionCutouts() {
           >
             What We <span className='text-blue-500'>Make</span>
           </motion.h2>
+          <p className='text-gray-500'>High-quality garments, uniforms, and custom apparel crafted with precision and style</p>
         </div>
 
         {/* Division Grid */}

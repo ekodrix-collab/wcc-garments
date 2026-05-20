@@ -43,15 +43,15 @@ const SCENES = [
 
 export function ManufacturingStory() {
   return (
-    <section className="bg-[#0A0A0A] text-white py-12 px-6 lg:px-12">
+    <section className="bg-[#0A0A0A] text-white py-20 px-6 lg:px-12">
 
       {/* Heading */}
       <div className="mb-10">
         <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
           <span>Horizontal Signature Story</span>
         </div>
-        <h2 className="mt-3 font-display text-4xl sm:text-6xl font-bold tracking-tight">
-          The Dubai Manufacturing Pipeline
+        <h2 className="mt-3 font-display text-4xl sm:text-5xl uppercase font-bold tracking-tight">
+          The Dubai Manufacturing <span className='text-gold'>Pipeline</span>
         </h2>
         <p className="mt-2 text-xs uppercase tracking-widest text-white/50">
           Five stages from raw textile to global distribution

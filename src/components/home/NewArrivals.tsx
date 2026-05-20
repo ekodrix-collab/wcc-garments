@@ -33,14 +33,8 @@ export function NewArrivals() {
   const whatsappBase = SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')
 
   return (
-    <section className="bg-[var(--bg)] py-5" data-cursor="view">
+    <section className="bg-[var(--bg)] py-20" data-cursor="view">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        {/* Margined Section Number */}
-        {/* <div className="mb-8 flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-          <span className="h-[1px] w-6 bg-gold" />
-          <span>03 — Seasonal Editorial</span>
-        </div> */}
-
         <div className="flex flex-col gap-8 justify-between lg:flex-row lg:items-center lg:gap-20">
           <div className="max-w-xl">
             <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
