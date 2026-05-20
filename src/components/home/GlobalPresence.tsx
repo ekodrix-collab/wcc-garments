@@ -107,20 +107,19 @@ export function GlobalPresence() {
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
-          <span className="h-[1px] w-6 bg-[var(--gold)]" />
-          <span>05 — Global Presence</span>
+          <span>Global Presence</span>
         </motion.div>
 
         {/* ── Section header ── */}
         <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <motion.h2
-            className="font-display text-4xl leading-[1.15] tracking-tight text-[var(--text)] sm:text-5xl lg:text-display-sm"
+            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text)] leading-tight uppercase"
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <span className="font-extralight text-[var(--text-muted)]">Seven Hubs , Three Nations ,</span>{' '}
-            <span className="font-semibold italic text-gradient-gold block sm:inline">Infinite Reach</span>
+            Seven Hubs , Three Nations{' '}
+            <span className="font-bold text-shine-blue block uppercase">Infinite Reach</span>
           </motion.h2>
           <motion.p
             className="max-w-xs text-sm leading-relaxed text-[var(--text-muted)]"
