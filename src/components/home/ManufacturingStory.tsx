@@ -1,9 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
 import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { Scissors, Layers, ShieldCheck, Truck, Search, Package } from 'lucide-react'
+import { Scissors, Layers, ShieldCheck, Truck, Search } from 'lucide-react'
 
 const SCENES = [
   {
@@ -44,69 +42,62 @@ const SCENES = [
 ]
 
 export function ManufacturingStory() {
-  const targetRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: targetRef })
-
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-75%'])
-
   return (
-    <section ref={targetRef} className="relative h-[400vh] bg-[#0A0A0A] text-white">
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
-        <div className="absolute top-12 left-6 lg:left-12 z-20">
-          <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-            <span className="h-[1px] w-6 bg-gold" />
-            <span>04 — Horizontal Signature Story</span>
-          </div>
-          <h2 className="mt-3 font-display text-4xl sm:text-6xl font-bold tracking-tight">
-            The Dubai Manufacturing Pipeline
-          </h2>
-          <p className="mt-2 text-xs uppercase tracking-widest text-white/50">
-            Scroll vertically to traverse the factory assembly stages
-          </p>
+    <section className="bg-[#0A0A0A] text-white py-12 px-6 lg:px-12">
+
+      {/* Heading */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+          <span>Horizontal Signature Story</span>
         </div>
+        <h2 className="mt-3 font-display text-4xl sm:text-6xl font-bold tracking-tight">
+          The Dubai Manufacturing Pipeline
+        </h2>
+        <p className="mt-2 text-xs uppercase tracking-widest text-white/50">
+          Five stages from raw textile to global distribution
+        </p>
+      </div>
 
-        {/* Horizontal Track */}
-        <motion.div style={{ x }} className="flex gap-12 px-6 lg:px-12 pt-32">
-          {SCENES.map((scene, idx) => {
-            const Icon = scene.icon
-            return (
-              <div
-                key={scene.step}
-                className="relative h-[550px] w-[80vw] sm:w-[60vw] lg:w-[45vw] flex-shrink-0 overflow-hidden border border-white/10 bg-[#111] p-8 sm:p-12 transition-all duration-500 hover:border-gold/40 flex flex-col justify-between"
-              >
-                {/* Background Image Layer */}
-                <div className="absolute inset-0 z-0 opacity-40 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700">
-                  <Image src={scene.image} alt={scene.title} fill className="object-cover" sizes="800px" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                </div>
+      {/* Cards Row */}
+      <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+        {SCENES.map((scene, idx) => {
+          const Icon = scene.icon
+          return (
+            <div
+              key={scene.step}
+              className="relative h-[520px] w-[340px] flex-shrink-0 overflow-hidden border border-white/10 bg-[#111] p-8 transition-all duration-500 hover:border-gold/40 flex flex-col justify-between"
+            >
+              {/* Background Image */}
+              <div className="absolute inset-0 z-0 opacity-40 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700">
+                <Image
+                  src={scene.image}
+                  alt={scene.title}
+                  fill
+                  className="object-cover"
+                  sizes="340px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+              </div>
 
-                {/* Top Number & Icon */}
-                <div className="relative z-10 flex items-center justify-between">
-                  <span className="font-display text-6xl font-bold text-gold opacity-80">
-                    {scene.step}
-                  </span>
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/30 bg-black/60 backdrop-blur-md">
-                    <Icon className="h-6 w-6 text-gold" />
-                  </div>
-                </div>
+              {/* Top: Number & Icon */}
+           
 
-                {/* Bottom Title & Description */}
-                <div className="relative z-10 max-w-xl">
-                  <span className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-                    Phase 0{idx + 1}
-                  </span>
-                  <h3 className="mt-2 font-display text-3xl sm:text-4xl font-bold">
+              {/* Bottom: Title & Description */}
+              <div className="relative z-10 mt-auto">
+                <div className="rounded-3x1 ">
+                  <h3 className="font-display text-2xl font-bold text-white">
                     {scene.title}
                   </h3>
-                  <p className="mt-4 text-sm sm:text-base leading-relaxed text-white/70">
+                  <p className="mt-3 text-sm leading-relaxed text-white/70">
                     {scene.desc}
                   </p>
                 </div>
               </div>
-            )
-          })}
-        </motion.div>
+            </div>
+          )
+        })}
       </div>
+
     </section>
   )
 }
