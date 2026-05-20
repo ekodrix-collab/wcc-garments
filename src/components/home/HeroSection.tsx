@@ -286,7 +286,7 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full min-h-screen md:min-h-[72vh] overflow-hidden noise-layer z-10",
+          "relative w-full min-h-screen md:min-h-[78svh] lg:min-h-[88svh] xl:min-h-[92svh] overflow-hidden noise-layer z-10",
           "bg-black",
           mounted ? "opacity-100" : "opacity-0",
           "transition-opacity duration-500",
@@ -360,7 +360,7 @@ export function HeroSection(): JSX.Element {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-[5] w-full flex flex-col items-center justify-center min-h-[calc(100vh-120px)] md:min-h-[calc(72vh-120px)] pt-0 hover-trigger cursor-default">
+        <div className="relative z-[5] w-full flex flex-col items-center justify-center min-h-[calc(100svh-120px)] md:min-h-[calc(78svh-120px)] lg:min-h-[calc(88svh-120px)] xl:min-h-[calc(92svh-120px)] pt-0 hover-trigger cursor-default">
           <div className="relative w-full max-w-[1440px] px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 md:grid-rows-[auto_auto] gap-y-0 md:gap-8 items-center">
 
             {/* ── Block 1: Heading (mobile order-1, desktop left col row-1) ── */}
