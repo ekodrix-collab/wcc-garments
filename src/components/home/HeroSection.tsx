@@ -490,7 +490,7 @@ export function HeroSection(): JSX.Element {
               </div>
 
               {/* Action Button */}
-              <div className="flex items-start justify-center md:justify-start w-full mt-6 animate-fade-up [animation-delay:1200ms]">
+              <div className="flex items-start justify-center md:justify-start md:mb-20 w-full mt-6 animate-fade-up [animation-delay:1200ms]">
                 <Link
                   href="/contact"
                   className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full md:w-auto px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-white hover:border-white hover:text-black hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"

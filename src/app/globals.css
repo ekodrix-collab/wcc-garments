@@ -14,7 +14,7 @@
   color-scheme: light;
 
   /* Luxurious Warm Cream / Ivory Palette */
-  --bg: #F7F4F0;
+  --bg: #ffffff;
   --bg-surface: #FCFAF6;
   --bg-subtle: #EFECE6;
   --text: #0A0A0A;
@@ -113,6 +113,15 @@ body {
     font-family: var(--font-body);
   }
 
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .noise-layer::before {
     content: '';
     position: absolute;
@@ -194,7 +203,7 @@ body {
 }
 
 .btn-gold:hover {
-  color: #0A0A0A !important;
+  color: #f5f3f3 !important;
   background: var(--gold);
 }
 

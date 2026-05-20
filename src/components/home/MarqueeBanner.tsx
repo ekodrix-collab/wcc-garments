@@ -18,7 +18,7 @@ const BOLD_ITEMS = [
 
 export function MarqueeBanner() {
   return (
-    <div className="border-y border-[var(--border)] bg-yellow-500 py-3.5 overflow-hidden font-body text-[10px] font-bold uppercase tracking-[0.25em] text-white">
+    <div className="border-y border-[var(--border)] bg-[#1e68f1] py-3.5 overflow-hidden font-body text-[10px] font-bold uppercase tracking-[0.25em] text-white">
       {/* Row 1 — Moving Left */}
       <div className="marquee-container">
         <motion.div
