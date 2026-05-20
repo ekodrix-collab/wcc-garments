@@ -12,18 +12,30 @@ export function WhoWeAre() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section className="relative overflow-hidden bg-[var(--bg)] py-section" ref={ref} data-cursor="view">
+    <section className="relative overflow-hidden bg-[var(--bg)] py-20" ref={ref} data-cursor="view">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         {/* Margined Section Number */}
-        <div className="mb-12 flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-          <span className="h-[1px] w-6 bg-gold" />
-          <span>02 — Corporate Identity</span>
+        <div className=" flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+          <span className='text-[11px] font-semibold uppercase tracking-[0.4em] text-gold'>Corporate Identity</span>
         </div>
 
         <div className="grid gap-16 lg:grid-cols-12 lg:items-center">
+          {/* Mobile heading first, desktop hidden until right side */}
+          <div className="lg:hidden">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
+            >
+              <h2 className="font-display text-4xl font-bold leading-tight tracking-tight text-[var(--text)] sm:text-5xl">
+                WCC <span className="font-bold text-gold font-['Anton'] uppercase">Since 2010</span>
+              </h2>
+            </motion.div>
+          </div>
+
           {/* Left Side — Stunning High-End Editorial Image with Floating Badge (5 Cols) */}
           <motion.div
-            className="relative lg:col-span-5"
+            className="relative lg:col-span-5 order-1 lg:order-1"
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
@@ -71,14 +83,14 @@ export function WhoWeAre() {
           </motion.div>
 
           {/* Right Side — Editorial Copy & 3 Authority Stats (7 Cols) */}
-          <div className="lg:col-span-7 lg:pl-8 xl:pl-16">
+          <div className="lg:col-span-7 lg:pl-8 xl:pl-16 order-2 lg:order-2">
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
-              <h2 className="font-display text-4xl font-bold leading-tight tracking-tight text-[var(--text)] sm:text-5xl lg:text-6xl">
-                WCC <span className="font-light text-gold">— Since 2010</span>
+              <h2 className="hidden lg:block font-display text-4xl font-bold leading-tight tracking-tight text-[var(--text)] sm:text-5xl lg:text-6xl">
+                WCC <span className="font-bold text-gold font-['Anton'] uppercase">Since 2010</span>
               </h2>
 
               <div className="mt-8 space-y-6 text-sm font-normal leading-relaxed text-[var(--text-muted)] sm:text-base font-body">
@@ -106,13 +118,13 @@ export function WhoWeAre() {
 
             {/* 3 Authority Stats Grid */}
             <motion.div
-              className="mt-16 grid grid-cols-1 gap-8 border-t border-[var(--border)] pt-12 sm:grid-cols-3"
+              className="mt-10 grid grid-cols-1 gap-8 border-t border-[var(--border)] pt-12 sm:grid-cols-3"
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
               <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
-                <CounterStat end={15} suffix="+" label="Years Expertise" />
+                <CounterStat end={25} suffix="+" label="Years Expertise" />
                 <p className="mt-2 font-body text-xs text-[var(--text-muted)]">
                   Unrivaled manufacturing history and procurement experience since our Dubai inception.
                 </p>
