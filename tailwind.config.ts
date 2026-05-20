@@ -38,9 +38,12 @@ const config: Config = {
         charcoal: '#2C2C2C',
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        body: ['var(--font-body)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-mono)', 'SF Mono', 'Fira Code', 'Consolas', 'monospace'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
+        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+        bebas: ['"Bebas Neue"', 'sans-serif'],
+        'barlow-cond': ['"Barlow Condensed"', 'sans-serif'],
+        'barlow-body': ['Barlow', 'sans-serif'],
       },
       fontSize: {
         'display-xl': [
@@ -73,6 +76,11 @@ const config: Config = {
         'marquee-reverse': 'marquee-reverse 25s linear infinite',
         grain: 'grain 8s steps(10) infinite',
         float: 'float 6s ease-in-out infinite',
+        'spin-slow': 'spinSlow 20s linear infinite',
+        'float-decor': 'floatDecor 8s ease-in-out infinite',
+        'fade-up': 'fadeUp 1s ease both',
+        'fade-down': 'fadeDown 0.8s ease both',
+        'glow-pulse': 'glowPulse 6s ease-in-out infinite',
       },
       keyframes: {
         marquee: {
@@ -98,6 +106,26 @@ const config: Config = {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-20px)' },
+        },
+        spinSlow: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
+        floatDecor: {
+          '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+          '50%': { transform: 'translateY(-12px) translateX(4px)' },
+        },
+        fadeUp: {
+          from: { opacity: '0', transform: 'translateY(28px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeDown: {
+          from: { opacity: '0', transform: 'translateY(-20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        glowPulse: {
+          '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.12)' },
         },
       },
     },
