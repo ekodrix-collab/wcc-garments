@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
@@ -41,6 +41,50 @@ const ZONES = [
   { name: 'Asia & Americas', pct: 10, cities: 'Singapore · Japan · USA · Canada' },
 ]
 
+function Counter({ value, inView }: { value: string; inView: boolean }) {
+  const [count, setCount] = useState(0)
+  const numericPart = value.replace(/[^0-9]/g, '')
+  const suffix = value.replace(/[0-9]/g, '')
+  const target = parseInt(numericPart, 10)
+
+  useEffect(() => {
+    if (!inView || isNaN(target)) return
+
+    let start = 0
+    if (target > 1000) {
+      start = target - 50
+    }
+    
+    const duration = 1200
+    const startTime = performance.now()
+
+    const animate = (time: number) => {
+      const elapsed = time - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const ease = 1 - Math.pow(1 - progress, 4)
+      const current = Math.floor(start + ease * (target - start))
+      setCount(current)
+
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      }
+    }
+
+    requestAnimationFrame(animate)
+  }, [inView, target])
+
+  if (isNaN(target)) {
+    return <span>{value}</span>
+  }
+
+  return (
+    <span>
+      {count}
+      {suffix}
+    </span>
+  )
+}
+
 export function GlobalPresence() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
@@ -63,29 +107,28 @@ export function GlobalPresence() {
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
-          <span className="h-[1px] w-6 bg-[var(--gold)]" />
-          <span>05 — Global Presence</span>
+          <span>Global Presence</span>
         </motion.div>
 
         {/* ── Section header ── */}
         <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <motion.h2
-            className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--text)] sm:text-5xl lg:text-display-sm"
+            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text)] leading-tight uppercase"
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            7 Cities. 3 Nations.{' '}
-            <span className="font-light italic text-[var(--gold)]">One Chain.</span>
+            Seven Hubs , Three Nations{' '}
+            <span className="font-bold text-shine-blue block uppercase">Infinite Reach</span>
           </motion.h2>
-          <motion.p
+          {/* <motion.p
             className="max-w-xs text-sm leading-relaxed text-[var(--text-muted)]"
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ delay: 0.3 }}
           >
             A vertically integrated industrial manufacturing group, dispatching from Dubai to 50+ nations.
-          </motion.p>
+          </motion.p> */}
         </div>
 
         {/* ══════════════════════════════════════════════════
@@ -95,7 +138,7 @@ export function GlobalPresence() {
 
           {/* ── LEFT: World Map ── */}
           <motion.div
-            className="relative lg:col-span-7 overflow-hidden rounded-2xl border border-[var(--border)]"
+            className="relative lg:col-span-7 overflow-hidden rounded-none border-x-0 border-y border-[var(--border)] -mx-6 w-[calc(100%+3rem)] max-w-none lg:mx-0 lg:w-auto lg:rounded-2xl lg:border"
             style={{ background: 'var(--bg-subtle)' }}
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -294,17 +337,85 @@ export function GlobalPresence() {
             </div>
 
             {/* Map bottom stat strip */}
-            <div className="flex items-center justify-around border-t border-[var(--border)] bg-[var(--bg-surface)]/80 px-4 py-3 backdrop-blur-sm">
+            <div className="hidden lg:grid grid-cols-4 border-t border-[var(--border)] bg-[var(--bg-surface)]/75 backdrop-blur-md">
               {[
-                ['7', 'Hubs'],
-                ['3', 'Countries'],
-                ['50+', 'Nations'],
-                ['2001', 'Founded'],
-              ].map(([v, l]) => (
-                <div key={l} className="text-center">
-                  <p className="font-display text-xl font-bold text-[var(--text)]">{v}</p>
-                  <p className="mt-0.5 font-mono text-[7px] uppercase tracking-widest text-[var(--text-muted)]">
+                { 
+                  v: '7', 
+                  l: 'Hubs', 
+                  desc: 'Regional manufacturing centres',
+                  icon: (
+                    <svg className="w-5 h-5 text-[var(--gold)] group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <circle cx="12" cy="12" r="3" fill="currentColor" fillOpacity={0.2} />
+                      <circle cx="12" cy="4" r="2" />
+                      <circle cx="4" cy="12" r="2" />
+                      <circle cx="20" cy="12" r="2" />
+                      <circle cx="12" cy="20" r="2" />
+                      <path d="M12 6v3M12 15v3M6 12h3M15 12h3" />
+                    </svg>
+                  )
+                },
+                { 
+                  v: '3', 
+                  l: 'Countries', 
+                  desc: 'Sourcing & production bases',
+                  icon: (
+                    <svg className="w-5 h-5 text-[var(--gold)] group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M3.6 9h16.8M3.6 15h16.8" />
+                      <path d="M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" />
+                    </svg>
+                  )
+                },
+                { 
+                  v: '50+', 
+                  l: 'Nations', 
+                  desc: 'Global B2B cargo distribution',
+                  icon: (
+                    <svg className="w-5 h-5 text-[var(--gold)] group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  )
+                },
+                { 
+                  v: '2001', 
+                  l: 'Founded', 
+                  desc: 'Over two decades of heritage',
+                  icon: (
+                    <svg className="w-5 h-5 text-[var(--gold)] group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )
+                },
+              ].map(({ v, l, desc, icon }, idx) => (
+                <div 
+                  key={l} 
+                  className={`group relative flex flex-col items-center justify-center py-4 lg:py-5 px-6 text-center transition-all duration-500 overflow-hidden hover:bg-[var(--gold-muted)]/15 ${
+                    idx % 2 === 0 ? 'border-r border-[var(--border)]' : ''
+                  } ${
+                    idx >= 2 ? 'border-t border-[var(--border)] lg:border-t-0' : ''
+                  } lg:border-r lg:last:border-r-0`}
+                >
+                  {/* Subtle hover background radial gradient glow */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--gold-muted)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Icon wrapper with a subtle glowing circle on hover */}
+                  <div className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] group-hover:border-[var(--gold)]/30 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all duration-300 mb-3">
+                    {icon}
+                  </div>
+
+                  {/* Stat Number with elegant font and color-gradient */}
+                  <h3 className="relative z-10 font-bebas text-5xl lg:text-6xl font-bold tracking-wider leading-none text-gradient-gold select-none group-hover:scale-105 transition-transform duration-300">
+                    <Counter value={v} inView={inView} />
+                  </h3>
+
+                  {/* Label */}
+                  <p className="relative z-10 mt-1 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--text)] group-hover:text-[var(--gold)] transition-colors duration-300">
                     {l}
+                  </p>
+
+                  {/* Very short descriptive subtitle */}
+                  <p className="relative z-10 mt-1 font-body text-[10px] text-[var(--text-muted)] max-w-[140px] opacity-80 leading-tight">
+                    {desc}
                   </p>
                 </div>
               ))}
@@ -339,54 +450,78 @@ export function GlobalPresence() {
               <p className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[var(--text-muted)] mb-1">
                 Production Centres
               </p>
-              {HUBS.map((hub, i) => (
-                <motion.div
-                  key={hub.id}
-                  className={`group flex items-center gap-3 rounded-lg border px-4 py-3 cursor-default transition-all duration-300 ${
-                    active === hub.id
-                      ? 'border-[var(--gold)]/40 bg-[var(--gold-muted)]'
-                      : 'border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--gold)]/20'
-                  }`}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.4, delay: 0.3 + i * 0.05 }}
-                  onMouseEnter={() => setActive(hub.id)}
-                  onMouseLeave={() => setActive(null)}
-                >
-                  {/* Index */}
-                  <span className="w-5 shrink-0 font-mono text-[10px] font-bold text-[var(--text-muted)]">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-
-                  {/* Status dot */}
-                  <span
-                    className={`h-2 w-2 shrink-0 rounded-full transition-all duration-300 ${
+              <div className="grid grid-cols-2 gap-2.5 lg:flex lg:flex-col lg:gap-1.5">
+                {HUBS.map((hub, i) => (
+                  <motion.div
+                    key={hub.id}
+                    className={`group relative flex flex-col justify-between items-start gap-2 rounded-xl border p-3.5 cursor-default transition-all duration-500 overflow-hidden lg:flex-row lg:items-center lg:gap-3 lg:px-4 lg:py-3 ${
                       active === hub.id
-                        ? 'bg-[var(--gold)] shadow-[0_0_6px_var(--gold)]'
-                        : 'bg-[var(--text-muted)]/30'
+                        ? 'border-[var(--gold)]/40 bg-[var(--gold-muted)] shadow-[0_4px_20px_rgba(212,175,55,0.08)]'
+                        : 'border-[var(--border)] bg-[var(--bg-surface)]/60 hover:border-[var(--gold)]/20 hover:bg-[var(--bg-surface)] hover:shadow-[0_4px_15px_rgba(0,0,0,0.03)]'
                     }`}
-                  />
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.4, delay: 0.3 + i * 0.05 }}
+                    onMouseEnter={() => setActive(hub.id)}
+                    onMouseLeave={() => setActive(null)}
+                  >
+                    {/* Ambient card hover glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[var(--gold-muted)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                  {/* City + role */}
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={`font-display text-base font-bold leading-none transition-colors duration-300 ${
-                        active === hub.id ? 'text-[var(--gold)]' : 'text-[var(--text)]'
-                      }`}
-                    >
-                      {hub.city}
-                    </p>
-                    <p className="mt-0.5 font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] truncate">
-                      {hub.role}
-                    </p>
-                  </div>
+                    {/* Index and Status indicator */}
+                    <div className="flex items-center gap-2 lg:gap-3 w-full lg:w-auto lg:shrink-0">
+                      <span className="hidden lg:inline-block w-5 shrink-0 font-mono text-[10px] font-bold text-[var(--text-muted)]">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      
+                      <span
+                        className={`h-2 w-2 shrink-0 rounded-full transition-all duration-300 ${
+                          active === hub.id
+                            ? 'bg-[var(--gold)] shadow-[0_0_8px_var(--gold)] scale-110'
+                            : 'bg-[var(--text-muted)]/30'
+                        }`}
+                      />
 
-                  {/* Country tag */}
-                  <span className="shrink-0 rounded-full border border-[var(--border)] px-2 py-0.5 font-mono text-[8px] uppercase tracking-wider text-[var(--text-muted)]">
-                    {hub.country}
-                  </span>
-                </motion.div>
-              ))}
+                      {/* City (on mobile, we group the city inside this top header) */}
+                      <div className="min-w-0 flex-1 lg:hidden">
+                        <p
+                          className={`font-display text-sm sm:text-base font-bold leading-none transition-colors duration-300 truncate ${
+                            active === hub.id ? 'text-[var(--gold)]' : 'text-[var(--text)]'
+                          }`}
+                        >
+                          {hub.city}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* City and Role (Desktop layout, or mobile layout wrapped nicely) */}
+                    <div className="min-w-0 flex-1 hidden lg:block">
+                      <p
+                        className={`font-display text-base font-bold leading-none transition-colors duration-300 ${
+                          active === hub.id ? 'text-[var(--gold)] font-bold' : 'text-[var(--text)]'
+                        }`}
+                      >
+                        {hub.city}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] truncate">
+                        {hub.role}
+                      </p>
+                    </div>
+
+                    {/* Role for mobile layout (below the header) */}
+                    <div className="w-full min-w-0 lg:hidden mt-0.5">
+                      <p className="font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] truncate">
+                        {hub.role}
+                      </p>
+                    </div>
+
+                    {/* Country tag */}
+                    <span className="shrink-0 rounded-full border border-[var(--border)] bg-[var(--bg-subtle)]/40 px-2 py-0.5 font-mono text-[8px] uppercase tracking-wider text-[var(--text-muted)] group-hover:border-[var(--gold)]/30 group-hover:text-[var(--text)] transition-all duration-300">
+                      {hub.country}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>
