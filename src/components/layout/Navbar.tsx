@@ -280,7 +280,7 @@ export function Navbar() {
                       <Link
                         href="/products"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group flex items-center justify-between rounded-none bg-gold py-3.5 px-5 font-body text-[10px] font-bold uppercase tracking-[0.25em] text-black transition-all hover:bg-gold-light shadow-lg"
+                        className="group flex items-center justify-between rounded-none bg-gold py-3.5 px-5 font-body text-[10px] font-bold uppercase tracking-[0.25em] text-white transition-all hover:bg-gold-light shadow-lg"
                       >
                         <span>Explore Complete Product Index</span>
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
