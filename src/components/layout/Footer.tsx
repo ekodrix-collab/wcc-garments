@@ -14,7 +14,7 @@ export function Footer() {
   if (isAdmin) return null
 
   return (
-    <footer className="border-t border-[var(--border)] bg-[var(--bg-surface)]">
+    <footer className="relative z-20 border-t border-[var(--border)] bg-[var(--bg-surface)]">
       {/* Flagship Cinematic Emotional Ending Statement */}
       {/* <div className="border-b border-[var(--border)] bg-[#0A0A0A] py-32 text-center text-white px-6">
         <div className="mx-auto max-w-4xl">

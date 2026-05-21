@@ -14,18 +14,23 @@ import { CoverDemo } from '@/components/ui/cover-demo'
 export default function HomePage() {
   return (
     <>
-      <HeroSection />
-      <MarqueeBanner />
-      <WhoWeAre />
-      <DivisionCutouts />
-      <NewArrivals />
-      <KillingOffers />
-      <GlobalPresence />
-      <HospitalitySpotlight />
-      <ManufacturingStory />
-      <CoverDemo />
-      {/* <WhyWCC /> */}
-      <EnquiryConsole />
+      <div className="fixed inset-0 z-0">
+        <HeroSection />
+      </div>
+
+      <main className="relative z-20 mx-auto max-w-[1440px] px-0 pt-[100vh] md:pt-[78svh] lg:pt-[88svh] xl:pt-[92svh]">
+        <MarqueeBanner />
+        <WhoWeAre />
+        <DivisionCutouts />
+        <NewArrivals />
+        <KillingOffers />
+        <GlobalPresence />
+        <HospitalitySpotlight />
+        <ManufacturingStory />
+        <CoverDemo />
+        {/* <WhyWCC /> */}
+        <EnquiryConsole />
+      </main>
     </>
   )
 }
