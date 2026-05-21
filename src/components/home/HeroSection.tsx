@@ -126,7 +126,7 @@ export function HeroSection(): JSX.Element {
       <section
         className={[
           "relative w-full min-h-screen md:min-h-[78svh] lg:min-h-[88svh] xl:min-h-[92svh] overflow-hidden noise-layer z-10",
-          "bg-black",
+          "bg-white dark:bg-black",
           mounted ? "opacity-100" : "opacity-0",
           "transition-opacity duration-500",
         ].join(" ")}
@@ -222,7 +222,7 @@ export function HeroSection(): JSX.Element {
                   initial={{ opacity: 0, scale: 0.35, y: 80, skewY: 0 }}
                   animate={{ opacity: 1, scale: 1, y: 0, skewY: 0 }}
                   transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
-                  className="font-sans md:font-bold text-white text-[28px] md:text-[clamp(52px,8vw,110px)] leading-tight md:leading-[0.95] tracking-[-0.06em] origin-center whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)]"
+                  className="font-sans md:font-bold text-black dark:text-white text-[28px] md:text-[clamp(52px,8vw,110px)] leading-tight md:leading-[0.95] tracking-[-0.06em] origin-center whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)]"
                 >
                   CLOTHING
                 </motion.span>
@@ -232,7 +232,7 @@ export function HeroSection(): JSX.Element {
                   initial={{ opacity: 0, scale: 0.35, y: 80, skewY: 0 }}
                   animate={{ opacity: 1, scale: 1, y: 0, skewY: 0 }}
                   transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
-                  className="font-sans md:font-bold text-white text-[28px] md:text-[clamp(52px,8vw,110px)] leading-tight md:leading-[0.95] tracking-[-0.06em] origin-center whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)]"
+                  className="font-sans md:font-bold text-black dark:text-white text-[28px] md:text-[clamp(52px,8vw,110px)] leading-tight md:leading-[0.95] tracking-[-0.06em] origin-center whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)]"
                 >
                   COMPANY
                 </motion.span>
@@ -248,7 +248,7 @@ export function HeroSection(): JSX.Element {
                 initial={{ opacity: 0, x: -120, y: 0, rotate: -20 }}
                 animate={{ opacity: 0.4, x: -70, y: -30, rotate: -10 }}
                 transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-white/10 shadow-2xl"
+                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl"
               >
                 <Image
                   src={campaign.left}
@@ -265,7 +265,7 @@ export function HeroSection(): JSX.Element {
                 initial={{ opacity: 0, x: 120, y: 40, rotate: 20 }}
                 animate={{ opacity: 0.3, x: 70, y: 15, rotate: 8 }}
                 transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 1.0 }}
-                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-white/10 shadow-2xl"
+                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl"
               >
                 <Image
                   src={campaign.right}
@@ -282,7 +282,7 @@ export function HeroSection(): JSX.Element {
                 initial={{ opacity: 0, scale: 0.8, y: 80, rotate: 0 }}
                 animate={{ opacity: 1, scale: 1, y: -10, rotate: -2 }}
                 transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 1.4 }}
-                className="absolute w-[180px] h-[245px] md:w-[230px] md:h-[320px] overflow-hidden border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-10 group cursor-pointer"
+                className="absolute w-[180px] h-[245px] md:w-[230px] md:h-[320px] overflow-hidden border border-black/20 dark:border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-10 group cursor-pointer"
               >
                 <Image
                   src={campaign.center}
@@ -314,7 +314,7 @@ export function HeroSection(): JSX.Element {
                 <p
                   className={[
                     "font-barlow-body text-[9px] font-bold tracking-[0.15em]",
-                    "uppercase leading-[1.8] text-white md:text-blue-500/70 max-w-[700px] text-center md:text-left",
+                    "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[700px] text-center md:text-left",
                     "animate-fade-up [animation-delay:1100ms]",
                     "pt-2",
                   ].join(" ")}
@@ -327,7 +327,7 @@ export function HeroSection(): JSX.Element {
               <div className="flex items-start justify-center md:justify-start md:mb-20 w-full mt-6 animate-fade-up [animation-delay:1200ms]">
                 <Link
                   href="/contact"
-                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full md:w-auto px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-white hover:border-white hover:text-black hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"
+                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full md:w-auto px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black hover:shadow-[0_0_25px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"
                 >
                   <span>Request a Quotation</span>
                   <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
