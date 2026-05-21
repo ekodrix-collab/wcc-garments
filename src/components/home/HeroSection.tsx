@@ -125,7 +125,7 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full min-h-screen md:min-h-[78svh] lg:min-h-[88svh] xl:min-h-[92svh] overflow-hidden noise-layer z-10",
+          "relative w-full h-screen md:h-[78svh] lg:h-[88svh] xl:h-[92svh] overflow-hidden noise-layer z-5",
           "bg-white dark:bg-black",
           mounted ? "opacity-100" : "opacity-0",
           "transition-opacity duration-500",
