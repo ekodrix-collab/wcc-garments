@@ -16,9 +16,11 @@ interface ProductGridProps {
     offer_label: string | null
     short_description?: string | null
   }>
+  /** Division slug forwarded from the category page for correct link generation */
+  divisionSlug?: string
 }
 
-export function ProductGrid({ products }: ProductGridProps) {
+export function ProductGrid({ products, divisionSlug }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="border border-[var(--border)] bg-[var(--bg-surface)] px-6 py-20 text-center">
@@ -31,7 +33,12 @@ export function ProductGrid({ products }: ProductGridProps) {
   return (
     <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 2xl:gap-8">
       {products.map((product, index) => (
-        <ProductCard key={product.id} product={product} index={index} />
+        <ProductCard
+          key={product.id}
+          product={product}
+          index={index}
+          divisionSlug={divisionSlug || product.division?.slug}
+        />
       ))}
     </div>
   )

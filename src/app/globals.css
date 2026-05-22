@@ -18,8 +18,8 @@
   --bg-surface: #FCFAF6;
   --bg-subtle: #EFECE6;
   --text: #0A0A0A;
-  --text-muted: rgba(10,10,10,0.55);
-  --border: rgba(10,10,10,0.12);
+  --text-muted: rgba(10, 10, 10, 0.55);
+  --border: rgba(10, 10, 10, 0.12);
   --gold: #3B82F6;
   --gold-light: #60A5FA;
   --gold-dark: #2563EB;
@@ -31,8 +31,8 @@
   --bg-surface: #111111;
   --bg-subtle: #1A1A1A;
   --text: #FFFFFF;
-  --text-muted: rgba(255,255,255,0.45);
-  --border: rgba(255,255,255,0.12);
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --border: rgba(255, 255, 255, 0.12);
   --gold: #3B82F6;
   --gold-light: #60A5FA;
   --gold-dark: #2563EB;
@@ -70,9 +70,11 @@ body {
 ::-webkit-scrollbar {
   width: 4px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--gold);
   border-radius: 2px;
@@ -98,14 +100,12 @@ body {
   }
 
   .text-shine-blue {
-    background: linear-gradient(
-      120deg,
-      #2563EB 20%,
-      #60A5FA 35%,
-      #FFFFFF 50%,
-      #60A5FA 65%,
-      #2563EB 80%
-    );
+    background: linear-gradient(120deg,
+        #2563EB 20%,
+        #60A5FA 35%,
+        #FFFFFF 50%,
+        #60A5FA 65%,
+        #2563EB 80%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -117,6 +117,7 @@ body {
     0% {
       background-position: -200% center;
     }
+
     100% {
       background-position: 200% center;
     }
@@ -173,17 +174,19 @@ body {
 
 /* ---- FLAGSHIP LUXURY UPGRADES ---- */
 .bg-radial-hero {
-  background: radial-gradient(circle at center, rgba(59,130,246,0.08), transparent 60%);
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.08), transparent 60%);
 }
+
 .dark .bg-radial-hero {
-  background: radial-gradient(circle at center, rgba(59,130,246,0.12), transparent 60%);
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.12), transparent 60%);
 }
 
 .shadow-headline {
-  text-shadow: 0 10px 40px rgba(0,0,0,0.06);
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
 }
+
 .dark .shadow-headline {
-  text-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
 .divider-gold {
@@ -277,6 +280,7 @@ body:not(.preloader-done) #root-content {
   opacity: 0;
   pointer-events: none;
 }
+
 #root-content {
   opacity: 1;
   transition: opacity 0.8s ease-in-out;

@@ -22,9 +22,12 @@ interface ProductCardProps {
   }
   index?: number
   coverColor?: string
+  /** Division slug for building /products/[division]/[slug] URLs */
+  divisionSlug?: string
 }
 
-export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: ProductCardProps) {
+export function ProductCard({ product, index = 0, coverColor = '#e8e5e0', divisionSlug }: ProductCardProps) {
+  const effectiveDivision = divisionSlug || product.division?.slug || 'products'
   const [hovered, setHovered] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const containerRef = useRef<HTMLAnchorElement>(null)
@@ -57,7 +60,7 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0' }: Prod
       onMouseLeave={() => setHovered(false)}
     >
       <Link
-        href={`/products/${product.slug}`}
+        href={`/products/${effectiveDivision}/${product.slug}`}
         className="relative mx-auto block w-full max-w-[420px] overflow-hidden border border-[var(--border)] bg-[var(--bg-surface)]"
         style={{ aspectRatio: '1/1', background: coverColor }}
         ref={containerRef}
