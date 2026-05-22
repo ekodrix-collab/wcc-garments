@@ -37,12 +37,12 @@ export function DivisionCutouts() {
             </div>
           </motion.div>
           <motion.h2
-            className="mt-4 font-display text-display-md font-semibold text-[var(--text)] uppercase"
+            className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text)]"
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            What We <span className='text-blue-500'>Make</span>
+            What we <span className='text-blue-500'>make</span>
           </motion.h2>
           <p className='text-gray-500'>High-quality garments, uniforms, and custom apparel crafted with precision and style</p>
         </div>

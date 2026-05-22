@@ -248,7 +248,7 @@ export function HeroSection(): JSX.Element {
                 initial={{ opacity: 0, x: -120, y: 0, rotate: -20 }}
                 animate={{ opacity: 0.4, x: -70, y: -30, rotate: -10 }}
                 transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl"
+                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.08)]"
               >
                 <Image
                   src={campaign.left}

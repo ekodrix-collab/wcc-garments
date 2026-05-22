@@ -38,11 +38,8 @@ export function Navbar() {
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 z-[999] transition-all duration-500 bg-white/90 dark:bg-black/90 backdrop-blur-xl ${
-          isScrolled || megaMenuOpen
-            ? 'py-3 shadow-2xl border-b border-black/5 dark:border-white/5'
-            : 'py-5'
-        }`}
+        className={`fixed left-0 right-0 top-0 z-[999] py-3 transition-all duration-500 bg-white/90 dark:bg-black/90 backdrop-blur-xl ${isScrolled || megaMenuOpen ? 'shadow-2xl' : ''
+          }`}
       >
         <nav className="mx-auto flex max-w-[1440px] items-center justify-between px-6 lg:px-12">
           {/* Logo */}
@@ -83,11 +80,10 @@ export function Navbar() {
                     className="flex items-center gap-1.5"
                   >
                     <span
-                      className={`font-mono text-xs font-semibold uppercase tracking-[0.2em] transition-colors duration-300 ${
-                        pathname === link.href || (isProducts && megaMenuOpen)
+                      className={`font-mono text-xs font-semibold uppercase tracking-[0.2em] transition-colors duration-300 ${pathname === link.href || (isProducts && megaMenuOpen)
                           ? 'text-gold font-bold scale-105'
                           : 'text-black/80 dark:text-white/80 group-hover:text-gold'
-                      }`}
+                        }`}
                     >
                       {link.name}
                     </span>
@@ -184,13 +180,13 @@ export function Navbar() {
                       <Link
                         href="/products?division=hospitality"
                         onClick={() => setMegaMenuOpen(false)}
-                        className="group rounded-none border border-gold/30 bg-gold/5 p-4 transition-all hover:bg-gold/15 hover:border-gold flex flex-col justify-between space-y-3 shadow-lg"
+                        className="group rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
                       >
-                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-gold">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold/10 border border-gold/30 text-gold"><Building2 className="h-4 w-4" /></div>
+                        <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-black dark:text-white group-hover:text-gold">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-black border border-black/10 dark:border-white/10 group-hover:border-gold text-gold"><Building2 className="h-4 w-4" /></div>
                           <span>Hospitality Division</span>
                         </div>
-                        <p className="text-black/80 dark:text-white/80 leading-relaxed text-[11px]">400TC Egyptian sateen bed linen sets, plush luxury bath towels, and restaurant table napery.</p>
+                        <p className="text-black/60 dark:text-white/60 leading-relaxed text-[11px]">400TC Egyptian sateen bed linen sets, plush luxury bath towels, and restaurant table napery.</p>
                       </Link>
 
                       <Link
@@ -318,9 +314,8 @@ export function Navbar() {
                     onClick={() => setIsMobileOpen(false)}
                   >
                     <span
-                      className={`font-display text-3xl font-bold ${
-                        pathname === link.href ? 'text-gold' : 'text-black dark:text-white'
-                      }`}
+                      className={`font-display text-3xl font-bold ${pathname === link.href ? 'text-gold' : 'text-black dark:text-white'
+                        }`}
                     >
                       {link.name}
                     </span>

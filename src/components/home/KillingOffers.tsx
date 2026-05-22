@@ -54,7 +54,7 @@ export function KillingOffers() {
               </p>
               <Link
                 href="/contact"
-                className="mt-8 inline-flex items-center gap-2 border border-gold px-6 py-3 text-[10px] font-medium uppercase tracking-[0.2em] text-gold transition-all duration-400 hover:bg-gold hover:text-white"
+                className="mt-8 inline-flex items-center gap-2  bg-white px-6 py-3 text-[10px] font-medium uppercase tracking-[0.2em] text-black transition-all duration-400 hover:bg-gold hover:text-white"
               >
                 Enquire About Offers
                 <ArrowUpRight className="h-3 w-3" />
@@ -66,7 +66,7 @@ export function KillingOffers() {
           <div className="lg:col-span-3">
             <div
               className="grid grid-cols-2 grid-rows-2 gap-4 lg:gap-5"
-              style={{ height: 'calc(100vh - 80px)' }}
+              style={{ height: 'clamp(420px, 60vh, 680px)' }}
             >
               {offerProducts.map((product, index) => (
                 <motion.div

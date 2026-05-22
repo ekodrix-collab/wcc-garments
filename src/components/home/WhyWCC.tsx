@@ -42,8 +42,8 @@ export function WhyWCC() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <h2 className="mt-3 font-display text-4xl sm:text-3xl lg:text-5xl uppercase font-bold tracking-tight text-[var(--text)]">
-              Engineered for Sovereign <span className='text-gold'>Scale</span>
+            <h2 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text)]">
+              Engineered for sovereign <span className='text-gold'>scale</span>
             </h2>
           </motion.div>
           {/* <motion.p
