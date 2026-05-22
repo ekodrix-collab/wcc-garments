@@ -40,8 +40,8 @@ export function NewArrivals() {
             <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
               Curated Production
             </span>
-            <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-[var(--text)] sm:text-5xl lg:text-6xl whitespace-nowrap">
-              LATEST <span className="font-bold text-gold ">RELEASES</span>
+            <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-[var(--text)] sm:text-5xl lg:text-6xl">
+              Latest <span className="text-gold">releases</span>
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[var(--text-muted)]">
               B2B-only product launches for wholesale buyers. No public pricing; enquire based on MOQ, lead time, and customization scope.
