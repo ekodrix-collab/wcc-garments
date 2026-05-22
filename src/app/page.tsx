@@ -18,7 +18,7 @@ export default function HomePage() {
         <HeroSection />
       </div>
 
-      <main className="relative z-20 mx-auto max-w-[1440px] px-0 pt-[100vh]">
+      <main className="relative z-20 mx-auto max-w-[1440px] px-0 mt-[100vh]">
         {/* <MarqueeBanner /> */}
         <WhoWeAre />
         <DivisionCutouts />
