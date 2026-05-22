@@ -5,26 +5,31 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronRight, Phone, Mail, MessageCircle } from 'lucide-react'
-import { MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
+import { MOCK_PRODUCTS, SITE_CONFIG, DIVISIONS } from '@/lib/constants'
 import { ProductCard } from '@/components/products/ProductCard'
 
-export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params)
+export default function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ division: string; slug: string }>
+}) {
+  const { division: divisionSlug, slug } = use(params)
   const [activeImage, setActiveImage] = useState(0)
 
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug)
+  const product = MOCK_PRODUCTS.find((p) => p.slug === slug && p.division_slug === divisionSlug)
+  const divisionMeta = DIVISIONS.find((d) => d.slug === divisionSlug)
 
-  const relatedProducts = MOCK_PRODUCTS
-    .filter((p) => p.division_slug === product?.division_slug && p.slug !== slug)
-    .slice(0, 4)
+  const relatedProducts = MOCK_PRODUCTS.filter(
+    (p) => p.division_slug === divisionSlug && p.slug !== slug
+  ).slice(0, 4)
 
   if (!product) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] pt-20">
         <div className="border border-[var(--border)] bg-[var(--bg-surface)] px-8 py-10 text-center">
           <h1 className="font-display text-2xl text-[var(--text)]">Product Not Found</h1>
-          <Link href="/products" className="btn-gold mt-5 inline-flex text-[10px]">
-            Browse Products
+          <Link href={`/products/${divisionSlug}`} className="btn-gold mt-5 inline-flex text-[10px]">
+            Browse {divisionMeta?.name ?? 'Products'}
           </Link>
         </div>
       </div>
@@ -37,12 +42,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   return (
     <div className="min-h-screen bg-[var(--bg)] pt-24">
       <div className="mx-auto max-w-[1560px] px-6 lg:px-12">
-        <nav className="flex flex-wrap items-center gap-2 py-6 text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
-          <Link href="/" className="transition-colors hover:text-gold">Home</Link>
+        {/* Breadcrumb — now includes division */}
+        <nav
+          aria-label="Breadcrumb"
+          className="flex flex-wrap items-center gap-2 py-6 text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]"
+        >
+          <Link href="/" className="transition-colors hover:text-gold">
+            Home
+          </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link href="/products" className="transition-colors hover:text-gold">Products</Link>
+          <Link href="/products" className="transition-colors hover:text-gold">
+            Products
+          </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link href={`/products?division=${product.division_slug}`} className="transition-colors hover:text-gold">
+          <Link
+            href={`/products/${divisionSlug}`}
+            className="transition-colors hover:text-gold"
+          >
             {product.division}
           </Link>
           <ChevronRight className="h-3 w-3" />
@@ -51,13 +67,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
         <div className="border border-[var(--border)] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.08),transparent_45%),var(--bg-surface)] p-5 md:p-7 lg:p-10">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+            {/* ── Image Gallery ── */}
             <motion.section
               className="lg:col-span-6"
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
             >
-              <div className="relative mx-auto aspect-[1/1] w-full max-w-[640px] overflow-hidden border border-[var(--border)] bg-[var(--bg)]" data-cursor="view">
+              <div
+                className="relative mx-auto aspect-[1/1] w-full max-w-[640px] overflow-hidden border border-[var(--border)] bg-[var(--bg)]"
+                data-cursor="view"
+              >
                 <Image
                   src={product.images[activeImage] || product.images[0]}
                   alt={product.name}
@@ -100,6 +120,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               )}
             </motion.section>
 
+            {/* ── Product Info ── */}
             <motion.aside
               className="lg:col-span-6 lg:sticky lg:top-28 lg:self-start"
               initial={{ opacity: 0, y: 20 }}
@@ -120,25 +141,38 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 <div className="border border-[var(--border)] bg-[var(--bg)]/60 px-4 py-3">
-                  <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">Category</p>
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                    Category
+                  </p>
                   <p className="mt-1 text-sm font-medium text-[var(--text)]">{product.category}</p>
                 </div>
                 <div className="border border-[var(--border)] bg-[var(--bg)]/60 px-4 py-3">
                   <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">MOQ</p>
-                  <p className="mt-1 text-sm font-medium text-[var(--text)]">{product.moq || 'On request'}</p>
+                  <p className="mt-1 text-sm font-medium text-[var(--text)]">
+                    {product.moq || 'On request'}
+                  </p>
                 </div>
                 <div className="border border-[var(--border)] bg-[var(--bg)]/60 px-4 py-3 sm:col-span-2">
-                  <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">Lead Time</p>
-                  <p className="mt-1 text-sm font-medium text-[var(--text)]">{product.lead_time || 'As per production schedule'}</p>
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                    Lead Time
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-[var(--text)]">
+                    {product.lead_time || 'As per production schedule'}
+                  </p>
                 </div>
               </div>
 
               {Object.keys(specs).length > 0 && (
                 <div className="mt-7 border border-[var(--border)] bg-[var(--bg)]/45 p-5">
-                  <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">Specifications</h2>
+                  <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                    Specifications
+                  </h2>
                   <div className="mt-4 space-y-3">
                     {Object.entries(specs).map(([key, value]) => (
-                      <div key={key} className="flex items-start justify-between gap-5 border-b border-[var(--border)]/70 pb-3 last:border-none last:pb-0">
+                      <div
+                        key={key}
+                        className="flex items-start justify-between gap-5 border-b border-[var(--border)]/70 pb-3 last:border-none last:pb-0"
+                      >
                         <span className="text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
                           {key.replace(/_/g, ' ')}
                         </span>
@@ -151,10 +185,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
               {(product.suitable_for ?? []).length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">Suitable For</h3>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                    Suitable For
+                  </h3>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {product.suitable_for.map((item) => (
-                      <span key={item} className="border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--text)]">
+                      <span
+                        key={item}
+                        className="border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--text)]"
+                      >
                         {item}
                       </span>
                     ))}
@@ -165,7 +204,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               <div className="mt-8 grid gap-2.5 sm:grid-cols-3">
                 <a
                   href={`tel:${SITE_CONFIG.phone}`}
-                  className="inline-flex items-center justify-center gap-2 border border-gold bg-gold px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-black transition-colors hover:bg-gold-light"
+                  className="inline-flex items-center justify-center gap-2 border border-gold bg-gold px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-black transition-colors hover:bg-gold/90"
                 >
                   <Phone className="h-4 w-4" /> Call
                 </a>
@@ -184,11 +223,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   <MessageCircle className="h-4 w-4" /> WhatsApp
                 </a>
               </div>
-
             </motion.aside>
           </div>
         </div>
 
+        {/* ── Related Products ── */}
         {relatedProducts.length > 0 && (
           <section className="border-t border-[var(--border)] py-16 lg:py-20">
             <div className="flex items-end justify-between gap-4">
@@ -199,10 +238,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 </h2>
               </div>
               <Link
-                href={`/products?division=${product.division_slug}`}
+                href={`/products/${divisionSlug}`}
                 className="text-xs uppercase tracking-[0.14em] text-[var(--text-muted)] transition-colors hover:text-gold"
               >
-                View More
+                View All {product.division}
               </Link>
             </div>
 
@@ -216,6 +255,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                     category: { name: p.category },
                   }}
                   index={i}
+                  divisionSlug={divisionSlug}
                 />
               ))}
             </div>
