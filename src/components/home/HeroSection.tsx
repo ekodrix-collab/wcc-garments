@@ -53,7 +53,7 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full h-screen md:h-[78svh] lg:h-[88svh] xl:h-[92svh] overflow-hidden noise-layer z-5 py-20",
+          "relative w-full h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center py-8 md:py-0",
           "bg-white dark:bg-black",
           mounted ? "opacity-100" : "opacity-0",
           "transition-opacity duration-500",
@@ -69,11 +69,11 @@ export function HeroSection(): JSX.Element {
         />
 
         {/* Hero Content */}
-        <div className="relative z-[5] w-full flex flex-col items-center justify-center min-h-[calc(100svh-120px)] md:min-h-[calc(78svh-120px)] lg:min-h-[calc(88svh-120px)] xl:min-h-[calc(92svh-120px)] pt-0 hover-trigger cursor-default">
+        <div className="relative z-[5] w-full flex flex-col items-center justify-center hover-trigger cursor-default">
           <div className="relative w-full max-w-[1440px] px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 md:grid-rows-[auto_auto] gap-y-0 md:gap-8 items-center">
 
-            {/* ── Block 1: Heading (mobile order-1, desktop left col row-1) ── */}
-            <div className="relative flex flex-col order-1 md:col-start-1 md:col-span-7 md:row-start-1 md:self-end pb-0">
+            {/* ── Left Column: Heading + Description + Button (mobile order-1, desktop left col spans both rows) ── */}
+            <div className="relative flex flex-col order-1 md:col-start-1 md:col-span-7 md:row-start-1 md:row-span-2 md:self-center justify-center pb-0">
 
               {/* Mobile: all three on one line │ Desktop: stacked */}
               <div className="flex flex-row items-baseline justify-center gap-x-[0.5em] md:flex-col md:justify-start md:gap-x-0">
@@ -113,6 +113,32 @@ export function HeroSection(): JSX.Element {
                 </motion.span>
 
               </div>
+
+              {/* Body Text */}
+              <div className="flex items-start justify-center md:justify-start w-full overflow-hidden mt-10 md:mt-10">
+                <p
+                  className={[
+                    "font-barlow-body text-[9px] font-bold tracking-[0.15em]",
+                    "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[700px] text-center md:text-left",
+                    "animate-fade-up [animation-delay:1100ms]",
+                    "pt-2",
+                  ].join(" ")}
+                >
+                  An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
+                </p>
+              </div>
+
+              {/* Action Button */}
+              <div className="flex items-start justify-center md:justify-start w-full mt-10 md:mt-10 animate-fade-up [animation-delay:1200ms]">
+                <Link
+                  href="/contact"
+                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full md:w-auto px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black hover:shadow-[0_0_25px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"
+                >
+                  <span>Request a Quotation</span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </Link>
+              </div>
+
             </div>
 
             {/* ── Block 2: Image (mobile order-2, desktop right col spans both rows) ── */}
@@ -180,34 +206,6 @@ export function HeroSection(): JSX.Element {
                   </span>
                 </div>
               </motion.div>
-            </div>
-
-            {/* ── Block 3: Description + Button (mobile order-3, desktop left col row-2) ── */}
-            <div className="relative flex flex-col order-3 md:col-start-1 md:col-span-7 md:row-start-2 md:self-start pt-4 md:pt-0">
-              {/* Body Text */}
-              <div className="flex items-start justify-center md:justify-start w-full overflow-hidden">
-                <p
-                  className={[
-                    "font-barlow-body text-[9px] font-bold tracking-[0.15em]",
-                    "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[700px] text-center md:text-left",
-                    "animate-fade-up [animation-delay:1100ms]",
-                    "pt-2",
-                  ].join(" ")}
-                >
-                  An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
-                </p>
-              </div>
-
-              {/* Action Button */}
-              <div className="flex items-start justify-center md:justify-start md:mb-20 w-full mt-6 animate-fade-up [animation-delay:1200ms]">
-                <Link
-                  href="/contact"
-                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full md:w-auto px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black hover:shadow-[0_0_25px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"
-                >
-                  <span>Request a Quotation</span>
-                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </Link>
-              </div>
             </div>
 
           </div>
