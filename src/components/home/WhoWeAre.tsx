@@ -27,8 +27,8 @@ export function WhoWeAre() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
-              <h2 className="font-display text-4xl font-bold leading-tight tracking-tight text-[var(--text)] sm:text-5xl">
-                WCC <span className="font-bold text-gold font-['Anton'] uppercase">Since 2001</span>
+              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-[var(--text)]">
+                Wcc since <span className="text-gold">2001</span>
               </h2>
             </motion.div>
           </div>
@@ -89,18 +89,18 @@ export function WhoWeAre() {
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
-              <h2 className="hidden lg:block font-display text-4xl font-bold leading-tight tracking-tight text-[var(--text)] sm:text-5xl lg:text-6xl">
-                WCC <span className="font-bold text-gold font-['Anton'] uppercase">Since 2010</span>
+              <h2 className="hidden lg:block font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-[var(--text)]">
+                Wcc since <span className="text-gold">2010</span>
               </h2>
 
               <div className="mt-8 space-y-6 text-sm font-normal leading-relaxed text-[var(--text-muted)] sm:text-base font-body">
                 <p className="text-lg font-semibold text-[var(--text)]">
                   Western Clothing Company (WCC Garments LLC) is a premier UAE-based industrial fashion manufacturing group.
                 </p>
-                <p>
+                <p className='text-sm lg:text-base'>
                   Operating out of our advanced Dubai manufacturing infrastructure, we deliver end-to-end commercial solutions—from precision pattern CAD and fabric sourcing to full-scale container export across 50+ nations worldwide.
                 </p>
-                <p>
+                <p className='text-sm lg:text-base'>
                   Our multi-division capabilities bridge high-end fashion garments, heavy-duty industrial workwear, luxury hotel linens, and authentic Arabian fragrances under strict ISO quality benchmarks.
                 </p>
               </div>
