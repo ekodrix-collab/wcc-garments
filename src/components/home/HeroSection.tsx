@@ -5,77 +5,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  size: number;
-  opacity: number;
-}
-
-interface Vec2 {
-  x: number;
-  y: number;
-}
-
-// ─── Starburst SVG Logo ───────────────────────────────────────────────────────
-function StarburstLogo(): JSX.Element {
-  return (
-    <svg
-      width="36"
-      height="36"
-      viewBox="0 0 36 36"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="animate-spin-slow"
-    >
-      {Array.from({ length: 16 }).map((_, i: number) => {
-        const angle = (i * 360) / 16;
-        const rad = (angle * Math.PI) / 180;
-        const inner = 6;
-        const outer = i % 2 === 0 ? 17 : 13;
-
-        return (
-          <line
-            key={i}
-            x1={18 + Math.cos(rad) * inner}
-            y1={18 + Math.sin(rad) * inner}
-            x2={18 + Math.cos(rad) * outer}
-            y2={18 + Math.sin(rad) * outer}
-            stroke="#d4c9a8"
-            strokeWidth={i % 2 === 0 ? 1.2 : 0.7}
-          />
-        );
-      })}
-
-      <circle cx="18" cy="18" r="3" fill="#d4c9a8" />
-    </svg>
-  );
-}
-
-// ─── Canvas Ball with Smoke Trail ─────────────────────────────────────────────
-
-// ─── Social Icon Wrapper ──────────────────────────────────────────────────────
-function SocialIcon({
-  children,
-}: {
-  children: React.ReactNode;
-}): JSX.Element {
-  return (
-    <a
-      href="#"
-      className="text-[#7a7260] hover:text-[#d4c9a8] transition-colors duration-300"
-    >
-      {children}
-    </a>
-  );
-}
-
-// ─── Campaign Data Sets ───────────────────────────────────────────────────────
 const CAMPAIGN_SETS = [
   {
     id: 1,
@@ -103,7 +32,6 @@ const CAMPAIGN_SETS = [
   }
 ];
 
-// ─── Hero Section ─────────────────────────────────────────────────────────────
 export function HeroSection(): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const [campaignIdx, setCampaignIdx] = useState<number>(0);
@@ -115,7 +43,7 @@ export function HeroSection(): JSX.Element {
   useEffect(() => {
     const timer = setInterval(() => {
       setCampaignIdx((prev) => (prev + 1) % CAMPAIGN_SETS.length);
-    }, 4500); // Rotate every 4.5 seconds
+    }, 4500); 
     return () => clearInterval(timer);
   }, []);
 
@@ -125,7 +53,7 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full h-screen md:h-[78svh] lg:h-[88svh] xl:h-[92svh] overflow-hidden noise-layer z-5",
+          "relative w-full h-screen md:h-[78svh] lg:h-[88svh] xl:h-[92svh] overflow-hidden noise-layer z-5 py-20",
           "bg-white dark:bg-black",
           mounted ? "opacity-100" : "opacity-0",
           "transition-opacity duration-500",
@@ -139,59 +67,6 @@ export function HeroSection(): JSX.Element {
             "bg-[radial-gradient(circle,rgba(180,160,100,0.04)_0%,transparent_70%)]",
           ].join(" ")}
         />
-
-        {/* Navigation */}
-        <nav
-          className={[
-            "relative z-10 flex items-center justify-between px-12 py-7",
-            mounted ? "animate-fade-down" : "opacity-0",
-          ].join(" ")}
-        >
-          <div className="animate-spin-slow">
-            <StarburstLogo />
-          </div>
-
-          <div className="flex items-center gap-5">
-            <SocialIcon>
-              <svg
-                width="14"
-                height="14"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-              </svg>
-            </SocialIcon>
-
-            <SocialIcon>
-              <svg
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                viewBox="0 0 24 24"
-              >
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-              </svg>
-            </SocialIcon>
-
-            <SocialIcon>
-              <svg
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </SocialIcon>
-          </div>
-        </nav>
 
         {/* Hero Content */}
         <div className="relative z-[5] w-full flex flex-col items-center justify-center min-h-[calc(100svh-120px)] md:min-h-[calc(78svh-120px)] lg:min-h-[calc(88svh-120px)] xl:min-h-[calc(92svh-120px)] pt-0 hover-trigger cursor-default">
