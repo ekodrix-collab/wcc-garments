@@ -44,7 +44,7 @@ export function HospitalitySpotlight() {
                   Hospitality Division
                 </span>
                 <h3 className="mt-2 font-display text-3xl font-semibold text-white">
-                  Outfitting the World&apos;s Finest Hospitality
+                  the World&apos;s Finest Hospitality
                 </h3>
               </div>
             </div>
