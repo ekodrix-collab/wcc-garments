@@ -20,7 +20,7 @@ export function DivisionCutouts() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section className="bg-[var(--bg)] py-24" ref={ref}>
+    <section className="bg-[var(--bg)] py-16 md:py-24" ref={ref}>
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         {/* Section Header */}
         <div className="mb-16 max-w-4xl">
@@ -41,7 +41,7 @@ export function DivisionCutouts() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            What we <span className='text-blue-500'>manufacture</span>
+            Garments we <span className='text-gold'>manufacture</span>
           </motion.h2>
           <motion.p
             className="mt-4 text-sm sm:text-base leading-relaxed text-gray-500 max-w-3xl"
@@ -54,7 +54,7 @@ export function DivisionCutouts() {
         </div>
 
         {/* Division Grid - 3x2 Symmetrical */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {GARMENT_CATEGORIES.map((category, index) => (
             <motion.div
               key={category.slug}
@@ -72,7 +72,7 @@ export function DivisionCutouts() {
                 data-cursor="view"
               >
                 {/* Image aspect-[3/4] */}
-                <div className="relative overflow-hidden aspect-[3/4]">
+                <div className="relative overflow-hidden aspect-[4/3] sm:aspect-[3/4]">
                   <Image
                     src={category.image}
                     alt={category.name}

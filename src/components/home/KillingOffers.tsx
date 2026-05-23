@@ -51,7 +51,7 @@ export function KillingOffers() {
 
   return (
     <section
-      className="relative overflow-hidden bg-[#0A0A0A] py-24"
+      className="relative overflow-hidden bg-[#0A0A0A] py-16 md:py-24"
       ref={ref}
     >
       {/* Background texture gradient overlay */}
@@ -61,7 +61,7 @@ export function KillingOffers() {
       </div>
 
       <div className="relative mx-auto max-w-[1440px] px-6 lg:px-12">
-        <div className="grid gap-16 lg:grid-cols-5 items-center">
+        <div className="grid gap-10 md:gap-16 lg:grid-cols-5 items-center">
           {/* Left — Expansion Statement */}
           <div className="lg:col-span-2 flex items-center">
             <motion.div
@@ -103,7 +103,7 @@ export function KillingOffers() {
                 >
                   <Link
                     href={`/products?division=${card.id.split('-')[0]}`}
-                    className="group relative block h-[260px] overflow-hidden border border-white/10 rounded-2xl bg-neutral-950 transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(218,165,32,0.05)]"
+                    className="group relative block h-[220px] sm:h-[260px] overflow-hidden border border-white/10 rounded-2xl bg-neutral-950 transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(218,165,32,0.05)]"
                     data-cursor="view"
                   >
                     {/* Background Image with strong contrast overlay */}
