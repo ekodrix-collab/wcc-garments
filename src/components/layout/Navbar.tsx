@@ -56,7 +56,7 @@ export function Navbar() {
             </div>
             <div className="flex flex-col">
               <span className="font-poppins font-bold text-black dark:text-white tracking-widest text-[13px]">
-                WCC GARMENTS
+                WCC FASHIONS
               </span>
               <span className="font-poppins text-[7px] font-medium uppercase tracking-[0.40em] text-gold/80">
                 Western Clothing Co.
