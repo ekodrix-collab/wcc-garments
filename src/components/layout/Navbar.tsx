@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, ChevronDown, Building2, ShieldCheck, Factory, Briefcase, Home, Package, ArrowRight, Award, Clock, Mail, MessageCircle, Globe } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, Building2, ShieldCheck, Factory, Briefcase, Home, Package, ArrowRight, Award, Clock, Mail, MessageCircle, Globe, Flame, Sparkles, Layers } from 'lucide-react'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { NAV_LINKS } from '@/lib/constants'
 
@@ -166,62 +166,99 @@ export function Navbar() {
             >
               <div className="mx-auto max-w-[1440px] px-6 py-10 lg:px-12">
                 <div className="grid gap-10 lg:grid-cols-12">
-                  <div className="lg:col-span-8 space-y-6">
-                    <div className="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-3">
-                      <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em] text-black/50 dark:text-white/50">
-                        Explore by Industrial Division
+                  {/* Column 1: Core B2B Divisions */}
+                  <div className="lg:col-span-4 space-y-6">
+                    <div className="border-b border-black/10 dark:border-white/10 pb-3 flex items-center gap-2">
+                      <Layers className="h-4 w-4 text-gold shrink-0" />
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
+                        Global B2B Divisions
                       </span>
-                      <span className="font-body text-[10px] text-gold font-bold uppercase tracking-[0.1em]">10,000+ SKUs Available</span>
                     </div>
-
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 font-sans text-xs">
+                    <div className="space-y-4 font-sans text-xs">
                       {[
-                        { href: '/products?division=garments', icon: <Factory className="h-4 w-4" />, label: 'Garments Division', desc: 'Premium corporate shirts, twill trousers, and bespoke formalwear manufactured for global export.', color: 'text-gold' },
-                        { href: '/products?division=uniforms', icon: <ShieldCheck className="h-4 w-4" />, label: 'Uniforms & Safety', desc: 'Professional chef uniforms, industrial safety coveralls, and healthcare scrub attire.', color: 'text-blue-400' },
-                        { href: '/products?division=hospitality', icon: <Building2 className="h-4 w-4" />, label: 'Hospitality Division', desc: '400TC Egyptian sateen bed linen sets, plush luxury bath towels, and restaurant table napery.', color: 'text-gold' },
-                        { href: '/products?division=fragrance', icon: <Briefcase className="h-4 w-4" />, label: 'Fragrance & Oud', desc: 'Pure concentrated oud oils, private label luxury perfumery, and custom corporate gift boxes.', color: 'text-purple-400' },
-                        { href: '/products?division=home', icon: <Home className="h-4 w-4" />, label: 'Home Furnishings', desc: 'Luxury jacquard throws, decorative cushions, and high-density interior drapery fabrics.', color: 'text-emerald-400' },
+                        { href: '/products?division=garments', icon: <Factory className="h-4 w-4" />, label: 'Garments Division', desc: 'Premium corporate shirts, twill trousers, and bespoke formalwear manufactured for global B2B export.', color: 'text-gold' },
                         { href: '/products?division=households', icon: <Package className="h-4 w-4" />, label: 'Households Supply', desc: 'Bulk microfiber cleaning cloths, commercial laundry detergents, and hospitality bar mops.', color: 'text-amber-400' },
                       ].map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={() => setMegaMenuOpen(false)}
-                          className="group rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-4 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3"
+                          className="group block rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-5 transition-all hover:bg-gold/10 hover:border-gold/50 flex flex-col justify-between space-y-3 shadow-sm"
                         >
                           <div className="flex items-center gap-3 font-body text-xs font-bold uppercase tracking-wider text-black dark:text-white group-hover:text-gold">
                             <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-black border border-black/10 dark:border-white/10 group-hover:border-gold ${item.color}`}>{item.icon}</div>
                             <span>{item.label}</span>
                           </div>
-                          <p className="text-black/60 dark:text-white/60 leading-relaxed text-[11px]">{item.desc}</p>
+                          <p className="text-black/60 dark:text-white/60 leading-relaxed text-[11px] font-light">{item.desc}</p>
                         </Link>
                       ))}
                     </div>
                   </div>
 
+                  {/* Column 2: Top Selling Garments */}
                   <div className="lg:col-span-4 space-y-6 lg:border-l lg:border-black/10 lg:dark:border-white/10 lg:pl-8">
-                    <div className="border-b border-black/10 dark:border-white/10 pb-3">
-                      <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em] text-gold flex items-center gap-2">
-                        <Award className="h-4 w-4 text-gold" />
-                        <span>Featured Commercial Highlights</span>
+                    <div className="border-b border-black/10 dark:border-white/10 pb-3 flex items-center gap-2">
+                      <Flame className="h-4 w-4 text-gold shrink-0" />
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
+                        Top Selling Garments
                       </span>
                     </div>
-
                     <div className="space-y-4">
                       {[
-                        { href: '/products/hotel-bed-linen-collection', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: 'MOQ: 200 Sets / 100% Combed Cotton', badge: 'Quick Ship (15-20 Days)', badgeColor: 'text-amber-400 bg-amber-400/10' },
-                        { href: '/products/egyptian-cotton-premium-shirts', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80', alt: 'Shirt', title: 'Egyptian Cotton Premium Shirts', sub: '300TC Weave / Global Wholesale', badge: 'Premium Tier Selection', badgeColor: 'text-purple-400 bg-purple-400/10' },
+                        { href: '/products/garments/egyptian-cotton-premium-shirts', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80', alt: 'Premium Shirt', title: 'Egyptian Cotton Shirts', sub: '300TC / Bespoke corporate fits', moq: 'MOQ: 500 Pcs', badge: 'High Demand', badgeColor: 'text-gold bg-gold/10' },
+                        { href: '/products/garments/executive-velvet-blazer', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&q=80', alt: 'Velvet Blazer', title: 'Executive Velvet Blazer', sub: 'Italian cotton velvet blazers', moq: 'MOQ: 50 Units', badge: 'Bespoke Cut', badgeColor: 'text-blue-400 bg-blue-400/10' },
                       ].map((item) => (
-                        <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3.5 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
-                          <div className="relative h-16 w-16 flex-shrink-0 rounded-none overflow-hidden bg-neutral-100 dark:bg-black border border-black/10 dark:border-white/10">
-                            <Image src={item.img} alt={item.alt} fill className="object-cover transition-transform group-hover:scale-110" />
+                        <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
+                          {/* Pure White Background Container for Product Image */}
+                          <div className="relative h-14 w-14 flex-shrink-0 rounded-none overflow-hidden bg-white border border-neutral-200 p-0.5 shadow-sm">
+                            <div className="relative w-full h-full bg-white">
+                              <Image src={item.img} alt={item.alt} fill className="object-contain transition-transform group-hover:scale-110" />
+                            </div>
                           </div>
                           <div>
                             <h5 className="font-body text-xs font-bold uppercase tracking-wider text-black dark:text-white group-hover:text-gold transition-colors">{item.title}</h5>
-                            <p className="text-[10px] text-black/60 dark:text-white/60 font-body mt-0.5 tracking-wide">{item.sub}</p>
-                            <span className={`inline-flex items-center gap-1 text-[9px] font-body font-bold mt-1 px-2 py-0.5 rounded uppercase tracking-wider ${item.badgeColor}`}>
-                              {item.href.includes('linen') && <Clock className="h-3 w-3" />} {item.badge}
-                            </span>
+                            <p className="text-[10px] text-black/50 dark:text-white/50 font-body mt-0.5">{item.sub}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[9px] font-mono text-gold font-semibold">{item.moq}</span>
+                              <span className={`inline-flex items-center text-[8px] font-body font-bold px-1.5 py-0.2 rounded uppercase tracking-wider ${item.badgeColor}`}>
+                                {item.badge}
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Column 3: Top Selling Households */}
+                  <div className="lg:col-span-4 space-y-6 lg:border-l lg:border-black/10 lg:dark:border-white/10 lg:pl-8">
+                    <div className="border-b border-black/10 dark:border-white/10 pb-3 flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-gold shrink-0" />
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
+                        Top Selling Households
+                      </span>
+                    </div>
+                    <div className="space-y-4">
+                      {[
+                        { href: '/products/households/microfiber-cleaning-cloths', img: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=80', alt: 'Microfiber Cloths', title: 'Microfiber Cleaning Cloths', sub: 'High-density commercial grade', moq: 'MOQ: 5,000 Pcs', badge: 'Best Seller', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
+                        { href: '/products/hospitality/hotel-bed-linen-collection', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: '400TC Combed Egyptian Cotton', moq: 'MOQ: 200 Sets', badge: 'Premium Tier', badgeColor: 'text-amber-400 bg-amber-400/10' },
+                      ].map((item) => (
+                        <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
+                          {/* Pure White Background Container for Product Image */}
+                          <div className="relative h-14 w-14 flex-shrink-0 rounded-none overflow-hidden bg-white border border-neutral-200 p-0.5 shadow-sm">
+                            <div className="relative w-full h-full bg-white">
+                              <Image src={item.img} alt={item.alt} fill className="object-contain transition-transform group-hover:scale-110" />
+                            </div>
+                          </div>
+                          <div>
+                            <h5 className="font-body text-xs font-bold uppercase tracking-wider text-black dark:text-white group-hover:text-gold transition-colors">{item.title}</h5>
+                            <p className="text-[10px] text-black/50 dark:text-white/50 font-body mt-0.5">{item.sub}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[9px] font-mono text-gold font-semibold">{item.moq}</span>
+                              <span className={`inline-flex items-center text-[8px] font-body font-bold px-1.5 py-0.2 rounded uppercase tracking-wider ${item.badgeColor}`}>
+                                {item.badge}
+                              </span>
+                            </div>
                           </div>
                         </Link>
                       ))}
