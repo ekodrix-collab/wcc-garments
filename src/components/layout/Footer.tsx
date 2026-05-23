@@ -57,7 +57,7 @@ export function Footer() {
               </div>
               <div>
                 <h3 className="font-display text-xl font-bold tracking-tight text-[var(--text)]">
-                  WCC <span className="font-light text-gold">—</span> GARMENTS
+                  WCC <span className="font-light text-gold">—</span> FASHIONS
                 </h3>
                 <p className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.35em] text-[var(--text-muted)]">
                   Western Clothing Co.
@@ -115,7 +115,6 @@ export function Footer() {
                     href={`/products?division=${div.slug}`}
                     className="group flex items-center gap-2 text-sm text-[var(--text)] transition-colors hover:text-gold"
                   >
-                    <span className="text-xs">{div.icon}</span>
                     {div.name}
                   </Link>
                 </li>
@@ -147,7 +146,7 @@ export function Footer() {
       <div className="border-t border-[var(--border)]">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-6 px-6 py-8 md:flex-row lg:px-12">
           <p className="text-xs text-[var(--text-muted)]">
-            © {new Date().getFullYear()} WCC Garments LLC. All rights reserved.
+            © {new Date().getFullYear()} WCC Fashions LLC. All rights reserved.
           </p>
           <p className="text-[10px] text-[var(--text-muted)] font-mono tracking-widest text-gold text-center">
             MANUFACTURED AT INDUSTRIAL SCALE. DELIVERED WITH PRECISION.

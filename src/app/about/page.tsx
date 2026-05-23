@@ -8,7 +8,7 @@ import { GlobalPresence } from '@/components/home/GlobalPresence'
 import { MapPin, Target, Lightbulb, Users, ShieldCheck, Factory, Globe2 } from 'lucide-react'
 
 const TIMELINE = [
-  { year: '2001', event: 'Western Clothing Company (WCC) founded in Bangalore, India.' },
+  { year: '2001', event: 'WCC Fashions founded in Bangalore, India.' },
   { year: '2005', event: 'Expanded production to key textile hubs: Ahmedabad, Delhi, and Ludhiana.' },
   { year: '2010', event: 'Strategic shift of Headquarters to Dubai, UAE for global export reach.' },
   { year: '2014', event: 'Launched dedicated Uniforms & Workwear and Hospitality textile divisions.' },
@@ -47,15 +47,15 @@ export default function AboutPage() {
               </h1>
               <div className="mt-8 space-y-4 text-sm leading-relaxed text-[var(--text-muted)] max-w-lg">
                 <p>
-                  Established in 2001 in Bangalore, India, Western Clothing Company (WCC Garments LLC) has evolved into a premier multi-division industrial textile manufacturing group. With our global headquarters strategically located in Dubai, UAE, we have spent over a quarter-century perfecting the art of bulk textile production for B2B clients worldwide.
+                  Established in 2001 in Bangalore, India, WCC Fashions (WCC Fashions LLC) has evolved into a premier multi-division industrial textile manufacturing group. With our global headquarters strategically located in Dubai, UAE, we have spent over a quarter-century perfecting the art of bulk textile production for B2B clients worldwide.
                 </p>
                 <p>
                   We are not just a supplier; we are your manufacturing partner. Operating 7 international production facilities across 3 countries, we deliver export-grade garments, professional uniforms, luxury hospitality linens, home furnishings, and specialized fragrances.
                 </p>
               </div>
             </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-surface)]">
-              <Image src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=900&q=85" alt="WCC Manufacturing Facility" fill className="object-cover opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" priority sizes="(max-width: 1024px) 100vw, 50vw" />
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-surface)] rounded-2xl border border-[var(--border)] shadow-2xl group cursor-pointer">
+              <Image src="/images/aboutpage-image.png" alt="WCC Fashions Manufacturing Facility" fill className="object-cover scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out" priority sizes="(max-width: 1024px) 100vw, 50vw" />
             </motion.div>
           </div>
         </div>

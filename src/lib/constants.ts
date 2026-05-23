@@ -1,6 +1,6 @@
 export const SITE_CONFIG = {
-  name: 'WCC Garments',
-  fullName: 'Western Clothing Company',
+  name: 'WCC Fashions',
+  fullName: 'WCC Fashions',
   tagline: 'Precision in Every Stitch',
   description:
     'UAE-based B2B manufacturing group for garments, uniforms, hospitality textiles, home furnishings, and fragrance. Bulk supply with quote-based pricing only.',
@@ -202,7 +202,7 @@ export const COUNTRIES = [
 
 export const NAV_LINKS = [
   { name: 'Products', href: '/products' },
-  { name: 'Hospitality', href: '/hospitality' },
+  { name: 'Garments', href: '/products?division=garments' },
   { name: 'New Arrivals', href: '/new-arrivals' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },

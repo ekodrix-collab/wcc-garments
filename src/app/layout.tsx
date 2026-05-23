@@ -22,8 +22,7 @@ export const metadata: Metadata = {
     'bulk clothing manufacturer',
     'home linen wholesale',
     'fragrance manufacturer UAE',
-    'WCC Garments',
-    'Western Clothing Company',
+    'WCC Fashions',
   ],
   openGraph: {
     type: 'website',
