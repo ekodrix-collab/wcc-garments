@@ -9,19 +9,33 @@ export default function NewsletterSubscribe() {
 
   const handleSubscribe = async () => {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorMsg("Please enter a valid email address.");
-      setStatus("error");
-      return;
+      setErrorMsg('Please enter a valid email address.')
+      setStatus('error')
+      return
     }
 
-    setStatus("loading");
-    setErrorMsg("");
+    setStatus('loading')
+    setErrorMsg('')
 
-    // Simulate API call
-    await new Promise((res) => setTimeout(res, 1200));
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
 
-    setStatus("success");
-    setEmail("");
+      if (data.success) {
+        setStatus('success')
+        setEmail('')
+      } else {
+        setErrorMsg(data.message || 'Something went wrong. Please try again.')
+        setStatus('error')
+      }
+    } catch {
+      setErrorMsg('Network error. Please try again.')
+      setStatus('error')
+    }
   };
 
   return (
