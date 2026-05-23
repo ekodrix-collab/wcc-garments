@@ -42,7 +42,7 @@ export function WhoWeAre() {
           >
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-[var(--border)] shadow-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1000&q=90"
+                src="/images/about wcc.png"
                 alt="WCC Industrial Garment Floor"
                 fill
                 className="object-cover contrast-110 filter"
@@ -90,12 +90,12 @@ export function WhoWeAre() {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
               <h2 className="hidden lg:block font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-[var(--text)]">
-                Wcc since <span className="text-gold">2010</span>
+                Wcc since <span className="text-gold">2001</span>
               </h2>
 
               <div className="mt-8 space-y-6 text-sm font-normal leading-relaxed text-[var(--text-muted)] sm:text-base font-body">
                 <p className="text-lg font-semibold text-[var(--text)]">
-                  Western Clothing Company (WCC Garments LLC) is a premier UAE-based industrial fashion manufacturing group.
+                  Western Clothing Company (WCC Fashions LLC) is a premier UAE-based industrial fashion manufacturing group.
                 </p>
                 <p className='text-sm lg:text-base'>
                   Operating out of our advanced Dubai manufacturing infrastructure, we deliver end-to-end commercial solutions—from precision pattern CAD and fabric sourcing to full-scale container export across 50+ nations worldwide.
