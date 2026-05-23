@@ -103,24 +103,24 @@ export function KillingOffers() {
                 >
                   <Link
                     href={`/products?division=${card.id.split('-')[0]}`}
-                    className="group relative block h-[220px] sm:h-[260px] overflow-hidden border border-white/10 rounded-2xl bg-neutral-950 transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(218,165,32,0.05)]"
+                    className="group relative block h-[220px] sm:h-[260px] overflow-hidden border border-white/10 rounded-none bg-neutral-950 transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(218,165,32,0.05)]"
                     data-cursor="view"
                   >
                     {/* Background Image with strong contrast overlay */}
-                    <div className="absolute inset-0">
+                    <div className="absolute inset-0 rounded-none">
                       <Image
                         src={card.image}
                         alt={card.name}
                         fill
-                        className="object-cover opacity-80 scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out"
+                        className="object-cover opacity-80 scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out rounded-none"
                         sizes="(max-width: 1024px) 280px, 350px"
                       />
                       {/* Deep dark gradient overlay specifically for text readability */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent rounded-none" />
                     </div>
 
                     {/* expansion badge top left */}
-                    <span className={`absolute left-4 top-4 px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest rounded-full z-10 ${card.statusStyle}`}>
+                    <span className={`absolute left-4 top-4 px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest rounded-none z-10 ${card.statusStyle}`}>
                       {card.badge}
                     </span>
 
