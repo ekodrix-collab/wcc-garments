@@ -30,9 +30,9 @@ export function HospitalitySpotlight() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <div className="relative aspect-[4/5] overflow-hidden">
+            <div className="relative aspect-[4/5] border overflow-hidden shadow-md ">
               <Image
-                src="/images/hositalCat.png"
+                src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800&q=80"
                 alt="Healthcare hospitality linens in hospital setting"
                 fill
                 className="object-cover"
@@ -44,7 +44,7 @@ export function HospitalitySpotlight() {
                   Hospitality Division
                 </span>
                 <h3 className="mt-2 font-display text-3xl font-semibold text-white">
-                  Outfitting the World&apos;s Finest Hospitality
+                  the World&apos;s Finest Hospitality
                 </h3>
               </div>
             </div>
@@ -60,8 +60,8 @@ export function HospitalitySpotlight() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
                 Hospitality Excellence
               </span>
-              <h2 className="mt-3 font-display text-display-sm font-semibold uppercase text-[var(--text)]">
-                From Hotel Linens to Staff <span className='text-gold'>Uniforms</span>
+              <h2 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text)]">
+                From hotel linens to staff <span className='text-gold'>uniforms</span>
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-[var(--text-muted)]">
                 Complete hospitality textile solutions including premium bed linen,

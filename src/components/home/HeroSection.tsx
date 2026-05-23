@@ -5,77 +5,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  size: number;
-  opacity: number;
-}
-
-interface Vec2 {
-  x: number;
-  y: number;
-}
-
-// ─── Starburst SVG Logo ───────────────────────────────────────────────────────
-function StarburstLogo(): JSX.Element {
-  return (
-    <svg
-      width="36"
-      height="36"
-      viewBox="0 0 36 36"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="animate-spin-slow"
-    >
-      {Array.from({ length: 16 }).map((_, i: number) => {
-        const angle = (i * 360) / 16;
-        const rad = (angle * Math.PI) / 180;
-        const inner = 6;
-        const outer = i % 2 === 0 ? 17 : 13;
-
-        return (
-          <line
-            key={i}
-            x1={18 + Math.cos(rad) * inner}
-            y1={18 + Math.sin(rad) * inner}
-            x2={18 + Math.cos(rad) * outer}
-            y2={18 + Math.sin(rad) * outer}
-            stroke="#d4c9a8"
-            strokeWidth={i % 2 === 0 ? 1.2 : 0.7}
-          />
-        );
-      })}
-
-      <circle cx="18" cy="18" r="3" fill="#d4c9a8" />
-    </svg>
-  );
-}
-
-// ─── Canvas Ball with Smoke Trail ─────────────────────────────────────────────
-
-// ─── Social Icon Wrapper ──────────────────────────────────────────────────────
-function SocialIcon({
-  children,
-}: {
-  children: React.ReactNode;
-}): JSX.Element {
-  return (
-    <a
-      href="#"
-      className="text-[#7a7260] hover:text-[#d4c9a8] transition-colors duration-300"
-    >
-      {children}
-    </a>
-  );
-}
-
-// ─── Campaign Data Sets ───────────────────────────────────────────────────────
 const CAMPAIGN_SETS = [
   {
     id: 1,
@@ -103,7 +32,6 @@ const CAMPAIGN_SETS = [
   }
 ];
 
-// ─── Hero Section ─────────────────────────────────────────────────────────────
 export function HeroSection(): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const [campaignIdx, setCampaignIdx] = useState<number>(0);
@@ -115,7 +43,7 @@ export function HeroSection(): JSX.Element {
   useEffect(() => {
     const timer = setInterval(() => {
       setCampaignIdx((prev) => (prev + 1) % CAMPAIGN_SETS.length);
-    }, 4500); // Rotate every 4.5 seconds
+    }, 4500); 
     return () => clearInterval(timer);
   }, []);
 
@@ -125,7 +53,7 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full h-screen md:h-[78svh] lg:h-[88svh] xl:h-[92svh] overflow-hidden noise-layer z-5",
+          "relative w-full h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center py-8 md:py-0",
           "bg-white dark:bg-black",
           mounted ? "opacity-100" : "opacity-0",
           "transition-opacity duration-500",
@@ -140,65 +68,12 @@ export function HeroSection(): JSX.Element {
           ].join(" ")}
         />
 
-        {/* Navigation */}
-        <nav
-          className={[
-            "relative z-10 flex items-center justify-between px-12 py-7",
-            mounted ? "animate-fade-down" : "opacity-0",
-          ].join(" ")}
-        >
-          <div className="animate-spin-slow">
-            <StarburstLogo />
-          </div>
-
-          <div className="flex items-center gap-5">
-            <SocialIcon>
-              <svg
-                width="14"
-                height="14"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-              </svg>
-            </SocialIcon>
-
-            <SocialIcon>
-              <svg
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                viewBox="0 0 24 24"
-              >
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-              </svg>
-            </SocialIcon>
-
-            <SocialIcon>
-              <svg
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </SocialIcon>
-          </div>
-        </nav>
-
         {/* Hero Content */}
-        <div className="relative z-[5] w-full flex flex-col items-center justify-center min-h-[calc(100svh-120px)] md:min-h-[calc(78svh-120px)] lg:min-h-[calc(88svh-120px)] xl:min-h-[calc(92svh-120px)] pt-0 hover-trigger cursor-default">
+        <div className="relative z-[5] w-full flex flex-col items-center justify-center hover-trigger cursor-default">
           <div className="relative w-full max-w-[1440px] px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 md:grid-rows-[auto_auto] gap-y-0 md:gap-8 items-center">
 
-            {/* ── Block 1: Heading (mobile order-1, desktop left col row-1) ── */}
-            <div className="relative flex flex-col order-1 md:col-start-1 md:col-span-7 md:row-start-1 md:self-end pb-0">
+            {/* ── Left Column: Heading + Description + Button (mobile order-1, desktop left col spans both rows) ── */}
+            <div className="relative flex flex-col order-1 md:col-start-1 md:col-span-7 md:row-start-1 md:row-span-2 md:self-center justify-center pb-0">
 
               {/* Mobile: all three on one line │ Desktop: stacked */}
               <div className="flex flex-row items-baseline justify-center gap-x-[0.5em] md:flex-col md:justify-start md:gap-x-0">
@@ -238,6 +113,32 @@ export function HeroSection(): JSX.Element {
                 </motion.span>
 
               </div>
+
+              {/* Body Text */}
+              <div className="flex items-start justify-center md:justify-start w-full overflow-hidden mt-10 md:mt-10">
+                <p
+                  className={[
+                    "font-barlow-body text-[9px] font-bold tracking-[0.15em]",
+                    "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[700px] text-center md:text-left",
+                    "animate-fade-up [animation-delay:1100ms]",
+                    "pt-2",
+                  ].join(" ")}
+                >
+                  An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
+                </p>
+              </div>
+
+              {/* Action Button */}
+              <div className="flex items-start justify-center md:justify-start w-full mt-10 md:mt-10 animate-fade-up [animation-delay:1200ms]">
+                <Link
+                  href="/contact"
+                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full md:w-auto px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black hover:shadow-[0_0_25px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"
+                >
+                  <span>Request a Quotation</span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </Link>
+              </div>
+
             </div>
 
             {/* ── Block 2: Image (mobile order-2, desktop right col spans both rows) ── */}
@@ -248,7 +149,7 @@ export function HeroSection(): JSX.Element {
                 initial={{ opacity: 0, x: -120, y: 0, rotate: -20 }}
                 animate={{ opacity: 0.4, x: -70, y: -30, rotate: -10 }}
                 transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl"
+                className="absolute w-[170px] h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.08)]"
               >
                 <Image
                   src={campaign.left}
@@ -305,34 +206,6 @@ export function HeroSection(): JSX.Element {
                   </span>
                 </div>
               </motion.div>
-            </div>
-
-            {/* ── Block 3: Description + Button (mobile order-3, desktop left col row-2) ── */}
-            <div className="relative flex flex-col order-3 md:col-start-1 md:col-span-7 md:row-start-2 md:self-start pt-4 md:pt-0">
-              {/* Body Text */}
-              <div className="flex items-start justify-center md:justify-start w-full overflow-hidden">
-                <p
-                  className={[
-                    "font-barlow-body text-[9px] font-bold tracking-[0.15em]",
-                    "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[700px] text-center md:text-left",
-                    "animate-fade-up [animation-delay:1100ms]",
-                    "pt-2",
-                  ].join(" ")}
-                >
-                  An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
-                </p>
-              </div>
-
-              {/* Action Button */}
-              <div className="flex items-start justify-center md:justify-start md:mb-20 w-full mt-6 animate-fade-up [animation-delay:1200ms]">
-                <Link
-                  href="/contact"
-                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full md:w-auto px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black hover:shadow-[0_0_25px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"
-                >
-                  <span>Request a Quotation</span>
-                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </Link>
-              </div>
             </div>
 
           </div>

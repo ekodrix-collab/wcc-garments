@@ -113,22 +113,15 @@ export function GlobalPresence() {
         {/* ── Section header ── */}
         <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <motion.h2
-            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text)] leading-tight uppercase"
+            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text)] leading-tight"
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            Seven Hubs , Three Nations{' '}
-            <span className="font-bold text-shine-blue block uppercase">Infinite Reach</span>
+            Seven hubs, three nations infinite{' '}
+            <span className="font-bold text-shine-blue">reach</span>
           </motion.h2>
-          {/* <motion.p
-            className="max-w-xs text-sm leading-relaxed text-[var(--text-muted)]"
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.3 }}
-          >
-            A vertically integrated industrial manufacturing group, dispatching from Dubai to 50+ nations.
-          </motion.p> */}
+        
         </div>
 
         {/* ══════════════════════════════════════════════════
@@ -535,17 +528,15 @@ export function GlobalPresence() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             {/* Left heading */}
             <div>
               <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[var(--gold)]">
                 Export Distribution
               </span>
               <h3 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight text-[var(--text)] sm:text-4xl">
-                Four Continents.{' '}
-                <span className="font-light italic text-[var(--text-muted)]">
-                  One Supply Chain.
-                </span>
+                Four Continents One Supply Chain.
+             
               </h3>
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-[var(--text-muted)]">
                 Containerised B2B wholesale cargo dispatched via Jebel Ali Port to distributors, hospitality groups, and institutional buyers in 50+ nations.
@@ -553,7 +544,7 @@ export function GlobalPresence() {
             </div>
 
             {/* Right — zone bars */}
-            <div className="space-y-5">
+            <div className="space-y-5 ">
               {ZONES.map((z, i) => (
                 <motion.div
                   key={z.name}
@@ -569,7 +560,7 @@ export function GlobalPresence() {
                       {z.pct}%
                     </span>
                   </div>
-                  <div className="h-[2px] w-full overflow-hidden rounded-full bg-[var(--border)]">
+                  <div className="h-[5px] w-full overflow-hidden rounded-full bg-[var(--border)]">
                     <motion.div
                       className="h-full rounded-full"
                       style={{ background: 'var(--gold)' }}
