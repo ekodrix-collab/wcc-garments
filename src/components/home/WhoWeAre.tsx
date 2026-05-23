@@ -12,14 +12,14 @@ export function WhoWeAre() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section className="relative overflow-hidden bg-[var(--bg)] py-20" ref={ref} data-cursor="view">
+    <section className="relative overflow-hidden bg-[var(--bg)] py-16 md:py-20" ref={ref} data-cursor="view">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         {/* Margined Section Number */}
         <div className=" flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
           <span className='text-[11px] font-semibold uppercase tracking-[0.4em] text-gold'>Corporate Identity</span>
         </div>
 
-        <div className="grid gap-16 lg:grid-cols-12 lg:items-center">
+        <div className="grid gap-10 lg:gap-16 lg:grid-cols-12 lg:items-center">
           {/* Mobile heading first, desktop hidden until right side */}
           <div className="lg:hidden">
             <motion.div
@@ -40,7 +40,7 @@ export function WhoWeAre() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-[var(--border)] shadow-2xl">
+            <div className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden rounded-2xl border border-[var(--border)] shadow-2xl">
               <Image
                 src="/images/about wcc.png"
                 alt="WCC Industrial Garment Floor"

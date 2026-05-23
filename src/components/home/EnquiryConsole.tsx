@@ -107,7 +107,7 @@ export function EnquiryConsole({
   }
 
   return (
-    <section className="relative overflow-hidden bg-[var(--bg-surface)] py-20" ref={ref} id="enquiry" data-cursor="view">
+    <section className="relative overflow-hidden bg-[var(--bg-surface)] py-16 md:py-20" ref={ref} id="enquiry" data-cursor="view">
       {/* Background architectural grid line pattern */}
       <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.03]">
         <div className="h-full w-full bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:4rem_4rem]" />
@@ -118,7 +118,7 @@ export function EnquiryConsole({
           <span> Wholesale &amp; Enterprise Portal</span>
         </div>
 
-        <div className="grid gap-16 lg:grid-cols-5">
+        <div className="grid gap-10 md:gap-16 lg:grid-cols-5">
           {/* Left — Contact Info (Sticky) */}
           <motion.div
             className="lg:col-span-2 lg:sticky lg:top-32 lg:self-start"
