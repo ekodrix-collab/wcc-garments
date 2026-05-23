@@ -12,6 +12,24 @@ interface Subscriber {
 
 type SendStatus = 'idle' | 'sending' | 'success' | 'error'
 
+const TEMPLATES = [
+  {
+    name: 'Wholesale Offer',
+    subject: 'Exclusive B2B Sourcing: Premium Egyptian Cotton Collection Offer',
+    body: `Dear Valued Partner,\n\nWe are pleased to extend an exclusive high-volume offer on our flagship 100% Egyptian Cotton Shirts.\n\nAs we optimize our production schedules this quarter, we are offering an additional 15% discount for bulk orders starting from 500 units.\n\nCustom private labeling and brand embroidery options are fully supported. Reply directly to this email or contact your executive account manager on WhatsApp to request custom samples and secure this production slot.\n\nBest regards,\nB2B Procurement Team\nWCC Fashions LLC — Dubai, UAE`
+  },
+  {
+    name: 'New Catalog',
+    subject: 'WCC Fashions: New B2B Apparel & Household Catalog 2026',
+    body: `Dear Partner,\n\nWe are thrilled to present our newly released 2026 Collection catalog, crafted with precision at our Dubai manufacturing facility.\n\nFeatured highlights:\n- Premium Executive Velvet Blazers (Italian weave)\n- Commercial Microfiber Towels (engineered for 90°C wash cycles)\n- Hospitality Combed Cotton Linens (300TC - 600TC)\n\nView the complete range directly on our online catalog: http://localhost:3000/products\n\nTo request specifications, custom fabric samples, or bulk MOQ pricing sheets, simply let us know by replying to this email.\n\nSincerely,\nSales & Operations Group\nWCC Fashions LLC`
+  },
+  {
+    name: 'Welcome Email',
+    subject: 'Welcome to the WCC Fashions Elite B2B Network',
+    body: `Hello,\n\nThank you for subscribing to the WCC Fashions B2B update feed. You are now officially connected to the UAE's premier manufacturing center.\n\nYou will be the first to receive:\n- Advanced private-label catalog releases\n- VIP priority wholesale discount announcements\n- Open production slot alerts to speed up your lead times\n\nIf you have an active sourcing project or require an immediate commercial quote, please reach out to us at: info@wccgarments.com or tap the WhatsApp Executive Line on our website.\n\nWarm regards,\nFounder & Executive Board\nWCC Fashions LLC`
+  }
+]
+
 export default function AdminNewsletterPage() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [loading, setLoading] = useState(true)
@@ -244,6 +262,25 @@ export default function AdminNewsletterPage() {
             </div>
 
             <div className="p-6 space-y-5">
+              {/* Preset Templates */}
+              <div>
+                <span className="block font-mono text-[9px] uppercase tracking-widest text-white/40 mb-2">Preset B2B Templates</span>
+                <div className="flex flex-wrap gap-2">
+                  {TEMPLATES.map(tpl => (
+                    <button
+                      key={tpl.name}
+                      onClick={() => {
+                        setSubject(tpl.subject)
+                        setBody(tpl.body)
+                      }}
+                      className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] text-white/60 hover:border-gold hover:text-gold transition uppercase tracking-wider"
+                    >
+                      ✨ {tpl.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Subject */}
               <div>
                 <label className="block font-mono text-[10px] uppercase tracking-widest text-white/40 mb-2">Subject Line</label>
