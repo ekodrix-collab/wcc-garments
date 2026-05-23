@@ -52,7 +52,7 @@ export function ManufacturingStory() {
   }
 
   return (
-    <section className="bg-[#0A0A0A] text-white py-24 px-6 lg:px-12 relative overflow-hidden">
+    <section className="bg-[#0A0A0A] text-white py-16 md:py-24 px-6 lg:px-12 relative overflow-hidden">
       {/* Subtle ambient lighting */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(218,165,32,0.03)_0%,transparent_70%)] pointer-events-none" />
 
@@ -64,7 +64,7 @@ export function ManufacturingStory() {
               MANUFACTURING EXCELLENCE
             </span>
           </div>
-          <h2 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
+          <h2 className="mt-4 font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
             The Dubai manufacturing <span className='text-gold'>pipeline</span>
           </h2>
           <p className="mt-3 text-xs uppercase tracking-widest text-white/50 font-mono">
@@ -102,7 +102,7 @@ export function ManufacturingStory() {
           return (
             <div
               key={scene.step}
-              className="group relative h-[490px] w-[300px] sm:w-[330px] flex-shrink-0 overflow-hidden border border-white/10 rounded-2xl bg-neutral-950 p-6 flex flex-col justify-between transition-all duration-500 hover:border-gold/40 hover:shadow-[0_20px_50px_rgba(218,165,32,0.15)] snap-start"
+              className="group relative h-[460px] w-[calc(100vw-48px)] sm:w-[330px] flex-shrink-0 overflow-hidden border border-white/10 rounded-2xl bg-neutral-950 p-6 flex flex-col justify-between transition-all duration-500 hover:border-gold/40 hover:shadow-[0_20px_50px_rgba(218,165,32,0.15)] snap-start"
             >
               {/* Card Image Background (Full Vibrant Color & Tack-Sharp Quality) */}
               <div className="absolute inset-0 z-0 opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1.2s] ease-out">
