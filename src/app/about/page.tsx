@@ -54,8 +54,8 @@ export default function AboutPage() {
                 </p>
               </div>
             </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-surface)] rounded-2xl border border-[var(--border)] shadow-2xl group cursor-pointer">
-              <Image src="/images/aboutpage-image.png" alt="WCC Fashions Manufacturing Facility" fill className="object-cover scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out" priority sizes="(max-width: 1024px) 100vw, 50vw" />
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-surface)] rounded-none border border-[var(--border)] shadow-2xl group cursor-pointer">
+              <Image src="/images/aboutpage-image.png" alt="WCC Fashions Manufacturing Facility" fill className="object-cover scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out rounded-none" priority sizes="(max-width: 1024px) 100vw, 50vw" />
             </motion.div>
           </div>
         </div>

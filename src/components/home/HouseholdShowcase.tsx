@@ -12,28 +12,28 @@ const HOUSEHOLD_CATEGORIES = [
     slug: 'microfiber',
     tagline: 'High-density commercial cleaning wipes',
     count: '1,000+ MOQ',
-    image: '/images/products/luxury_bath_towels.png',
+    image: '/images/hh-1.png',
   },
   {
     name: 'Bulk Liquids & Sanitizers',
     slug: 'liquids',
     tagline: 'Premium wholesale chemical formulations',
     count: '500L+ MOQ',
-    image: '/images/fragrance.png',
+    image: '/images/hh-2.png',
   },
   {
     name: 'Institutional Linens',
     slug: 'kitchen-linens',
     tagline: 'Heavy-duty commercial sheets & napery',
     count: '250+ MOQ',
-    image: '/images/products/chef_uniform.png',
+    image: '/images/hh-3.png',
   },
   {
     name: 'OEM Custom Essentials',
     slug: 'oem-essentials',
     tagline: 'Bespoke household product branding options',
     count: '10k+ MOQ',
-    image: '/images/household.png',
+    image: '/images/hh-4.png',
   }
 ]
 
