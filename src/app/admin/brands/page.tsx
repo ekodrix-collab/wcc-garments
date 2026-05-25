@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Plus, Search, Edit2, Trash2, Save, Loader2, Award, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { Plus, Search, Edit2, Trash2, Save, Loader2, Award, CheckCircle2, ShieldCheck, Upload } from 'lucide-react'
 import { brandStore } from '@/lib/brand-store'
 import { Brand } from '@/types'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -40,6 +40,17 @@ export default function AdminBrandsPage() {
   useEffect(() => {
     setBrands(brandStore.getBrands())
   }, [])
+
+  const handleFileFieldUpload = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_desktop' | 'logo_mobile') => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, [fieldName]: reader.result as string }))
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   const handleOpenEdit = (brand?: Brand) => {
     if (brand) {
@@ -295,6 +306,24 @@ export default function AdminBrandsPage() {
                         className={inputClass}
                         placeholder="Desktop Banner Image URL..."
                       />
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-[9px] text-white/30 font-mono uppercase">or select from device</span>
+                        <input
+                          id="brand-logo-desktop-file"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleFileFieldUpload(e, 'logo_desktop')}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => document.getElementById('brand-logo-desktop-file')?.click()}
+                          className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none"
+                        >
+                          <Upload className="h-2.5 w-2.5" />
+                          <span>Upload Banner</span>
+                        </button>
+                      </div>
                     </div>
                     <div>
                       <label className={labelClass}>Mobile Portrait Emblem URL *</label>
@@ -306,6 +335,24 @@ export default function AdminBrandsPage() {
                         className={inputClass}
                         placeholder="Mobile Emblem Image URL..."
                       />
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-[9px] text-white/30 font-mono uppercase">or select from device</span>
+                        <input
+                          id="brand-logo-mobile-file"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleFileFieldUpload(e, 'logo_mobile')}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => document.getElementById('brand-logo-mobile-file')?.click()}
+                          className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none"
+                        >
+                          <Upload className="h-2.5 w-2.5" />
+                          <span>Upload Emblem</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
 

@@ -201,7 +201,7 @@ export const COUNTRIES = [
 ]
 
 export const NAV_LINKS = [
-  { name: 'Products', href: '/products' },
+  // { name: 'Products', href: '/products' },
   { name: 'Garments', href: '/products/garments' },
   { name: 'New Arrivals', href: '/new-arrivals' },
   { name: 'About', href: '/about' },

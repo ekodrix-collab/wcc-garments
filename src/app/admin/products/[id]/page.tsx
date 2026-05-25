@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { ArrowLeft, Save, Loader2, Plus, Trash2, Tag, Layers, Check, CheckCircle2, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Plus, Trash2, Tag, Layers, Check, CheckCircle2, AlertCircle, Upload } from 'lucide-react'
 import Link from 'next/link'
 import { DIVISIONS } from '@/lib/constants'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -13,6 +13,8 @@ export default function EditProductPage() {
   const router = useRouter()
   const params = useParams()
   const [brands, setBrands] = useState<Brand[]>([])
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
   
   useEffect(() => {
     setBrands(brandStore.getBrands())
@@ -42,6 +44,45 @@ export default function EditProductPage() {
       })
     }
   }, [params.id])
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploadingImage(true)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result as string }))
+        setUploadingImage(false)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true)
+    } else if (e.type === "dragleave") {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      setUploadingImage(true)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result as string }))
+        setUploadingImage(false)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
   const [tagInput, setTagInput] = useState('')
@@ -321,7 +362,47 @@ export default function EditProductPage() {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl space-y-4 font-sans">
             <h3 className="font-display text-base font-bold text-white border-b border-white/10 pb-3">Digital Asset Cover</h3>
             <div className="space-y-3">
-              <input name="image" value={formData.image} onChange={handleChange} className={inputClass} placeholder="Cover Image URL..." />
+              <div>
+                <label className={labelClass}>Cover Image URL</label>
+                <input name="image" value={formData.image} onChange={handleChange} className={inputClass} placeholder="Cover Image URL..." />
+              </div>
+              
+              <div className="relative flex items-center justify-center my-2 font-mono text-[10px] text-white/30 uppercase">
+                <span className="w-full h-[1px] bg-white/10" />
+                <span className="absolute bg-[#0D0D0D] px-3">or upload from device</span>
+              </div>
+
+              {/* Drag and drop zone */}
+              <div
+                onDragEnter={handleDrag}
+                onDragOver={handleDrag}
+                onDragLeave={handleDrag}
+                onDrop={handleDrop}
+                className={`relative border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all ${
+                  dragActive
+                    ? 'border-gold bg-gold/5'
+                    : 'border-white/10 bg-black/40 hover:border-gold/40 hover:bg-black/60'
+                } cursor-pointer`}
+                onClick={() => document.getElementById('device-upload-input')?.click()}
+              >
+                <input
+                  id="device-upload-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <Upload className={`h-6 w-6 mb-2 transition-colors ${dragActive ? 'text-gold' : 'text-white/40'}`} />
+                {uploadingImage ? (
+                  <p className="text-[11px] font-mono text-gold animate-pulse">Reading device file...</p>
+                ) : (
+                  <>
+                    <p className="text-[11px] font-bold text-white/80">Click or drag photo here</p>
+                    <p className="text-[9px] font-mono text-white/40 mt-1">Supports PNG, JPG, JPEG, WEBP up to 5MB</p>
+                  </>
+                )}
+              </div>
+
               <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-white/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={formData.image} alt="Preview" className="h-full w-full object-cover" />
