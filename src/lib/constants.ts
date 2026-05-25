@@ -202,7 +202,7 @@ export const COUNTRIES = [
 
 export const NAV_LINKS = [
   { name: 'Products', href: '/products' },
-  { name: 'Garments', href: '/products?division=garments' },
+  { name: 'Garments', href: '/products/garments' },
   { name: 'New Arrivals', href: '/new-arrivals' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
