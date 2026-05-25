@@ -53,7 +53,7 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full min-h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center",
+          "relative w-full min-h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center pt-5",
           "bg-white dark:bg-black",
           mounted ? "opacity-100" : "opacity-0",
           "transition-opacity duration-500",
