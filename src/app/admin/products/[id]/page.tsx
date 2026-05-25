@@ -1,15 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Save, Loader2, Plus, Trash2, Tag, Layers, Check, CheckCircle2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { DIVISIONS } from '@/lib/constants'
 import { motion, AnimatePresence } from 'framer-motion'
+import { brandStore } from '@/lib/brand-store'
+import { Brand } from '@/types'
 
 export default function EditProductPage() {
   const router = useRouter()
   const params = useParams()
+  const [brands, setBrands] = useState<Brand[]>([])
+  
+  useEffect(() => {
+    setBrands(brandStore.getBrands())
+    
+    // Attempt to dynamically fetch and populate the real product data from our store
+    const realProducts = brandStore.getProducts()
+    const match = realProducts.find(p => p.id === params.id)
+    if (match) {
+      setFormData({
+        name: match.name,
+        slug: match.slug,
+        division_id: match.division?.name || 'Garments',
+        category_id: match.category?.name || match.category_id || 'Formal Shirts',
+        brand_slug: match.brand_slug || '',
+        short_description: match.short_description || '',
+        description: match.description || '',
+        moq: match.moq || '500 Units',
+        lead_time: match.lead_time || '15-20 Working Days',
+        featured: match.featured,
+        is_new: match.is_new,
+        is_offer: match.is_offer,
+        offer_label: match.offer_label || '',
+        published: match.published,
+        tags: match.tags,
+        specs: Object.entries(match.specifications || {}).map(([k, v]) => ({ key: k, value: String(v) })),
+        image: match.images?.[0] || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80'
+      })
+    }
+  }, [params.id])
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
   const [tagInput, setTagInput] = useState('')
@@ -18,7 +50,7 @@ export default function EditProductPage() {
 
   // Preload initial mock state based on ID
   const [formData, setFormData] = useState({
-    name: 'Executive Bespoke Oxford Cotton Shirt', slug: 'executive-bespoke-oxford-shirt', division_id: 'Garments', category_id: 'Formal Shirts',
+    name: 'Executive Bespoke Oxford Cotton Shirt', slug: 'executive-bespoke-oxford-shirt', division_id: 'Garments', category_id: 'Formal Shirts', brand_slug: 'treasure',
     short_description: 'Engineered for premium executive comfort with wrinkle-resistant double-ply oxford weave.', description: 'Complete industrial specifications include reinforced double-needle stitching, Mother of Pearl buttons, and custom collar stays designed for rigorous corporate laundering protocols.', moq: '500 Units', lead_time: '15-20 Working Days',
     featured: true, is_new: false, is_offer: true, offer_label: '10% Tier Rebate on 2,500+ Units',
     published: true, tags: ['Oxford Cotton', 'Wrinkle-Resistant', 'Executive Tier'],
@@ -68,6 +100,14 @@ export default function EditProductPage() {
     e.preventDefault()
     setSaving(true)
     await new Promise((r) => setTimeout(r, 1200))
+    
+    // Update dynamic record inside our local store
+    brandStore.saveProduct({
+      id: params.id as string,
+      ...formData,
+      brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+    })
+
     setSaving(false)
     setSuccess(true)
     setTimeout(() => {
@@ -230,6 +270,16 @@ export default function EditProductPage() {
                   {DIVISIONS.map((d) => <option key={d.slug} value={d.name}>{d.name}</option>)}
                 </select>
               </div>
+
+              {formData.division_id === 'Garments' && (
+                <div>
+                  <label className={labelClass}>Garments Brand Label *</label>
+                  <select name="brand_slug" value={formData.brand_slug} onChange={handleChange} className={inputClass} required>
+                    <option value="">-- Select Garments Brand --</option>
+                    {brands.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
+                  </select>
+                </div>
+              )}
 
               <div>
                 <label className={labelClass}>Primary Category *</label>

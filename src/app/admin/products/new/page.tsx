@@ -1,21 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save, Loader2, Plus, Trash2, Tag, Layers, Check, CheckCircle2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { DIVISIONS } from '@/lib/constants'
 import { motion, AnimatePresence } from 'framer-motion'
+import { brandStore } from '@/lib/brand-store'
+import { Brand } from '@/types'
 
 export default function NewProductPage() {
   const router = useRouter()
+  const [brands, setBrands] = useState<Brand[]>([])
+  
+  useEffect(() => {
+    setBrands(brandStore.getBrands())
+  }, [])
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
   const [tagInput, setTagInput] = useState('')
   const [specKey, setSpecKey] = useState('')
   const [specVal, setSpecVal] = useState('')
   const [formData, setFormData] = useState({
-    name: '', slug: '', division_id: 'Garments', category_id: '',
+    name: '', slug: '', division_id: 'Garments', category_id: '', brand_slug: '',
     short_description: '', description: '', moq: '500 Units', lead_time: '15-25 Working Days',
     featured: false, is_new: true, is_offer: false, offer_label: '',
     published: true, tags: ['Cotton', 'Industrial Export', 'Anti-Microbial'],
@@ -64,6 +71,13 @@ export default function NewProductPage() {
     e.preventDefault()
     setSaving(true)
     await new Promise((r) => setTimeout(r, 1200))
+    
+    // Save to our catalog store helper so it persists dynamically on the site
+    brandStore.saveProduct({
+      ...formData,
+      brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+    })
+
     setSaving(false)
     setSuccess(true)
     setTimeout(() => {
@@ -215,6 +229,16 @@ export default function NewProductPage() {
                   {DIVISIONS.map((d) => <option key={d.slug} value={d.name}>{d.name}</option>)}
                 </select>
               </div>
+
+              {formData.division_id === 'Garments' && (
+                <div>
+                  <label className={labelClass}>Garments Brand Label *</label>
+                  <select name="brand_slug" value={formData.brand_slug} onChange={handleChange} className={inputClass} required>
+                    <option value="">-- Select Garments Brand --</option>
+                    {brands.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
+                  </select>
+                </div>
+              )}
 
               <div>
                 <label className={labelClass}>Primary Category *</label>
