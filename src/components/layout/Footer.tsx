@@ -112,7 +112,7 @@ export function Footer() {
               {DIVISIONS.map((div) => (
                 <li key={div.slug}>
                   <Link
-                    href={`/products?division=${div.slug}`}
+                    href={`/products/${div.slug}`}
                     className="group flex items-center gap-2 text-sm text-[var(--text)] transition-colors hover:text-gold"
                   >
                     {div.name}
