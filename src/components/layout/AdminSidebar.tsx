@@ -4,13 +4,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, FolderOpen, Film, Inbox, Megaphone, LogOut, Menu, X, ShieldCheck, Mail } from 'lucide-react'
+import { LayoutDashboard, Package, FolderOpen, Film, Inbox, Megaphone, LogOut, Menu, X, ShieldCheck, Mail, Award } from 'lucide-react'
 import { useAdmin } from '@/context/AdminContext'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const ADMIN_LINKS = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, badge: '' },
   { name: 'Products', href: '/admin/products', icon: Package, badge: '14' },
+  { name: 'Brands', href: '/admin/brands', icon: Award, badge: '' },
   { name: 'Categories', href: '/admin/categories', icon: FolderOpen, badge: '10' },
   { name: 'Media & Assets', href: '/admin/media', icon: Film, badge: '6' },
   { name: 'Enquiries', href: '/admin/enquiries', icon: Inbox, badge: '3 New' },

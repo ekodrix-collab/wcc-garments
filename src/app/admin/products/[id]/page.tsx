@@ -1,15 +1,88 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { ArrowLeft, Save, Loader2, Plus, Trash2, Tag, Layers, Check, CheckCircle2, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Plus, Trash2, Tag, Layers, Check, CheckCircle2, AlertCircle, Upload } from 'lucide-react'
 import Link from 'next/link'
 import { DIVISIONS } from '@/lib/constants'
 import { motion, AnimatePresence } from 'framer-motion'
+import { brandStore } from '@/lib/brand-store'
+import { Brand } from '@/types'
 
 export default function EditProductPage() {
   const router = useRouter()
   const params = useParams()
+  const [brands, setBrands] = useState<Brand[]>([])
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
+  
+  useEffect(() => {
+    setBrands(brandStore.getBrands())
+    
+    // Attempt to dynamically fetch and populate the real product data from our store
+    const realProducts = brandStore.getProducts()
+    const match = realProducts.find(p => p.id === params.id)
+    if (match) {
+      setFormData({
+        name: match.name,
+        slug: match.slug,
+        division_id: match.division?.name || 'Garments',
+        category_id: match.category?.name || match.category_id || 'Formal Shirts',
+        brand_slug: match.brand_slug || '',
+        short_description: match.short_description || '',
+        description: match.description || '',
+        moq: match.moq || '500 Units',
+        lead_time: match.lead_time || '15-20 Working Days',
+        featured: match.featured,
+        is_new: match.is_new,
+        is_offer: match.is_offer,
+        offer_label: match.offer_label || '',
+        published: match.published,
+        tags: match.tags,
+        specs: Object.entries(match.specifications || {}).map(([k, v]) => ({ key: k, value: String(v) })),
+        image: match.images?.[0] || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80'
+      })
+    }
+  }, [params.id])
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploadingImage(true)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result as string }))
+        setUploadingImage(false)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true)
+    } else if (e.type === "dragleave") {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      setUploadingImage(true)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result as string }))
+        setUploadingImage(false)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
   const [tagInput, setTagInput] = useState('')
@@ -18,7 +91,7 @@ export default function EditProductPage() {
 
   // Preload initial mock state based on ID
   const [formData, setFormData] = useState({
-    name: 'Executive Bespoke Oxford Cotton Shirt', slug: 'executive-bespoke-oxford-shirt', division_id: 'Garments', category_id: 'Formal Shirts',
+    name: 'Executive Bespoke Oxford Cotton Shirt', slug: 'executive-bespoke-oxford-shirt', division_id: 'Garments', category_id: 'Formal Shirts', brand_slug: 'treasure',
     short_description: 'Engineered for premium executive comfort with wrinkle-resistant double-ply oxford weave.', description: 'Complete industrial specifications include reinforced double-needle stitching, Mother of Pearl buttons, and custom collar stays designed for rigorous corporate laundering protocols.', moq: '500 Units', lead_time: '15-20 Working Days',
     featured: true, is_new: false, is_offer: true, offer_label: '10% Tier Rebate on 2,500+ Units',
     published: true, tags: ['Oxford Cotton', 'Wrinkle-Resistant', 'Executive Tier'],
@@ -68,6 +141,14 @@ export default function EditProductPage() {
     e.preventDefault()
     setSaving(true)
     await new Promise((r) => setTimeout(r, 1200))
+    
+    // Update dynamic record inside our local store
+    brandStore.saveProduct({
+      id: params.id as string,
+      ...formData,
+      brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+    })
+
     setSaving(false)
     setSuccess(true)
     setTimeout(() => {
@@ -231,6 +312,16 @@ export default function EditProductPage() {
                 </select>
               </div>
 
+              {formData.division_id === 'Garments' && (
+                <div>
+                  <label className={labelClass}>Garments Brand Label *</label>
+                  <select name="brand_slug" value={formData.brand_slug} onChange={handleChange} className={inputClass} required>
+                    <option value="">-- Select Garments Brand --</option>
+                    {brands.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
+                  </select>
+                </div>
+              )}
+
               <div>
                 <label className={labelClass}>Primary Category *</label>
                 <input name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} placeholder="e.g. Bed Linen" required />
@@ -271,7 +362,47 @@ export default function EditProductPage() {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl space-y-4 font-sans">
             <h3 className="font-display text-base font-bold text-white border-b border-white/10 pb-3">Digital Asset Cover</h3>
             <div className="space-y-3">
-              <input name="image" value={formData.image} onChange={handleChange} className={inputClass} placeholder="Cover Image URL..." />
+              <div>
+                <label className={labelClass}>Cover Image URL</label>
+                <input name="image" value={formData.image} onChange={handleChange} className={inputClass} placeholder="Cover Image URL..." />
+              </div>
+              
+              <div className="relative flex items-center justify-center my-2 font-mono text-[10px] text-white/30 uppercase">
+                <span className="w-full h-[1px] bg-white/10" />
+                <span className="absolute bg-[#0D0D0D] px-3">or upload from device</span>
+              </div>
+
+              {/* Drag and drop zone */}
+              <div
+                onDragEnter={handleDrag}
+                onDragOver={handleDrag}
+                onDragLeave={handleDrag}
+                onDrop={handleDrop}
+                className={`relative border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all ${
+                  dragActive
+                    ? 'border-gold bg-gold/5'
+                    : 'border-white/10 bg-black/40 hover:border-gold/40 hover:bg-black/60'
+                } cursor-pointer`}
+                onClick={() => document.getElementById('device-upload-input')?.click()}
+              >
+                <input
+                  id="device-upload-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <Upload className={`h-6 w-6 mb-2 transition-colors ${dragActive ? 'text-gold' : 'text-white/40'}`} />
+                {uploadingImage ? (
+                  <p className="text-[11px] font-mono text-gold animate-pulse">Reading device file...</p>
+                ) : (
+                  <>
+                    <p className="text-[11px] font-bold text-white/80">Click or drag photo here</p>
+                    <p className="text-[9px] font-mono text-white/40 mt-1">Supports PNG, JPG, JPEG, WEBP up to 5MB</p>
+                  </>
+                )}
+              </div>
+
               <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-white/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={formData.image} alt="Preview" className="h-full w-full object-cover" />

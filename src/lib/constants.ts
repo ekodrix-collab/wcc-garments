@@ -201,7 +201,7 @@ export const COUNTRIES = [
 ]
 
 export const NAV_LINKS = [
-  { name: 'Products', href: '/products' },
+  // { name: 'Products', href: '/products' },
   { name: 'Garments', href: '/products/garments' },
   { name: 'New Arrivals', href: '/new-arrivals' },
   { name: 'About', href: '/about' },
@@ -256,6 +256,7 @@ export const MOCK_PRODUCTS: Array<{
   certifications?: string[]
   suitable_for: string[]
   tags: string[]
+  brand_slug?: string | null
 }> = [
   {
     id: '1', name: 'Egyptian Cotton Premium Shirts', slug: 'egyptian-cotton-premium-shirts',
@@ -270,6 +271,7 @@ export const MOCK_PRODUCTS: Array<{
     specifications: { material: '100% Egyptian Cotton', thread_count: '300 TC', weight: '120 GSM', sizes: 'S, M, L, XL, XXL', colors: 'White, Sky Blue, Navy, Black' },
     suitable_for: ['Corporate', 'Retail', 'Hotels'],
     tags: ['cotton', 'formal', 'premium'],
+    brand_slug: 'treasure',
   },
   {
     id: '2', name: 'Industrial Cargo Work Pants', slug: 'industrial-cargo-work-pants',
@@ -368,6 +370,7 @@ export const MOCK_PRODUCTS: Array<{
     specifications: { material: '100% Pique Cotton', weight: '220 GSM', sizes: 'S-3XL', colors: 'White, Navy, Black, Burgundy, Forest Green' },
     suitable_for: ['Corporate', 'Hotels', 'Events'],
     tags: ['polo', 'corporate', 'cotton'],
+    brand_slug: 'tom-jack',
   },
   {
     id: '9', name: 'Executive Velvet Blazer', slug: 'executive-velvet-blazer',
@@ -382,6 +385,7 @@ export const MOCK_PRODUCTS: Array<{
     specifications: { material: 'Italian Cotton Velvet', weight: '320 GSM', sizes: '36-48 Chest', colors: 'Midnight Blue, Royal Black, Emerald' },
     suitable_for: ['Boutique Hotels', 'Luxury Lounges', 'Private Clubs'],
     tags: ['blazer', 'velvet', 'vip'],
+    brand_slug: 'treasure',
   },
   {
     id: '10', name: 'Tactical Security Uniform Suite', slug: 'tactical-security-uniform-suite',
@@ -466,6 +470,46 @@ export const MOCK_PRODUCTS: Array<{
     specifications: { material: '100% Mulberry Silk', width: '8cm Classic Width', finish: 'Jacquard Weave', lining: '100% Wool Interlining' },
     suitable_for: ['Corporate Gifts', 'Airlines', 'Executive Protocol'],
     tags: ['silk', 'tie', 'corporate'],
+    brand_slug: 'tom-jack',
   },
+]
+
+export const MOCK_BRANDS = [
+  {
+    id: 'b1',
+    name: 'TREASURE',
+    slug: 'treasure',
+    tagline: 'Sleek Corporate Tailoring & Bespoke Formal Wear',
+    description: 'A distinguished name in executive and protocol apparel. Known for premium-cut 100% Egyptian cotton shirts, velvet blazers, and luxury formal trousers representing the apex of B2B corporate wear.',
+    logo_mobile: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80',
+    logo_desktop: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80',
+    featured: true,
+    display_order: 1,
+    created_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'b2',
+    name: 'VANDEGRAFF',
+    slug: 'vandegraff',
+    tagline: 'Heavy-Duty Corporate Attire & Technical Workwear',
+    description: 'Engineered for absolute performance, high-grade twill corporate trousers, heavy-duty cargo wear, and premium corporate uniforms constructed with reinforced stitching and stain-resistant treatment.',
+    logo_mobile: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80',
+    logo_desktop: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80',
+    featured: true,
+    display_order: 2,
+    created_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'b3',
+    name: 'TOM & JACK',
+    slug: 'tom-jack',
+    tagline: 'Contemporary Active Apparel & Refined Team Wear',
+    description: 'Modern, high-comfort garments designed for luxury hospitality staff, VIP events, and professional team environments. Specialists in double-mercerized cotton polo shirts and elegant corporate accessories.',
+    logo_mobile: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=600&q=80',
+    logo_desktop: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=1200&q=80',
+    featured: true,
+    display_order: 3,
+    created_at: '2026-01-01T00:00:00Z'
+  }
 ]
 
