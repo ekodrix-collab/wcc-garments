@@ -4,212 +4,194 @@ import { useRef, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
-import { ChevronLeft, ChevronRight, ArrowRight, Award } from 'lucide-react'
+import { Award, ArrowRight } from 'lucide-react'
 import { brandStore } from '@/lib/brand-store'
 import { Brand } from '@/types'
 
+// ── Crisp Premium Inline SVG Logos ──
+function VandegraffSVG() {
+  return (
+    <svg viewBox="0 0 400 160" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="400" height="160" fill="#8B1A1A" />
+      {/* Curved V Swooshes */}
+      <path d="M190 40 C175 40 178 70 200 80 C222 70 225 40 210 40 C195 40 198 75 190 40 Z" fill="white" opacity="0.9" />
+      <path d="M195 48 C185 48 188 68 200 75 C212 68 215 48 205 48 C195 48 198 72 195 48 Z" fill="#8B1A1A" />
+      <path d="M178 45 C190 75 210 75 222 45 C205 45 200 68 178 45 Z" fill="white" opacity="0.9" />
+      {/* VANDEGRAFF Text */}
+      <text x="50%" y="115" textAnchor="middle" fill="white" fontFamily="Cinzel, Georgia, serif" fontSize="23" fontWeight="bold" letterSpacing="0.25em">
+        VANDEGRAFF
+      </text>
+      {/* SHIRTS & TROUSERS */}
+      <text x="50%" y="138" textAnchor="middle" fill="#EAD8D8" fontFamily="Montserrat, Inter, sans-serif" fontSize="10" fontWeight="600" letterSpacing="0.32em">
+        SHIRTS & TROUSERS
+      </text>
+      {/* Registered sign */}
+      <text x="345" y="103" fill="white" fontFamily="sans-serif" fontSize="6">®</text>
+    </svg>
+  )
+}
+
+function TreasureSVG() {
+  return (
+    <svg viewBox="0 0 400 160" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Circular Gate Crown Emblem Left */}
+      <g transform="translate(45, 30)">
+        {/* Crown top */}
+        <path d="M10 20 L20 35 L40 15 L60 35 L70 20 L65 48 L15 48 Z" fill="#8B1A1A" />
+        <circle cx="10" cy="18" r="2.5" fill="#8B1A1A" />
+        <circle cx="40" cy="13" r="2.5" fill="#8B1A1A" />
+        <circle cx="70" cy="18" r="2.5" fill="#8B1A1A" />
+        {/* Curved Gate base */}
+        <path d="M10 54 C10 65 30 78 40 78 C50 78 70 65 70 54 C55 54 48 70 40 78 C32 70 25 54 10 54 Z" fill="black" className="dark:fill-white" />
+        <path d="M10 70 C25 80 55 80 70 70 C55 82 25 82 10 70 Z" fill="black" className="dark:fill-white" />
+        <path d="M22 62 C30 54 50 54 58 62 C50 58 30 58 22 62 Z" fill="black" className="dark:fill-white" />
+        <line x1="40" y1="48" x2="40" y2="78" stroke="black" className="dark:stroke-white" strokeWidth="2.5" />
+      </g>
+      {/* TREASURE Text */}
+      <text x="145" y="93" fill="black" className="dark:fill-white" fontFamily="Inter, sans-serif" fontSize="26" fontWeight="bold" letterSpacing="0.4em">
+        TREASURE
+      </text>
+    </svg>
+  )
+}
+
+function TomJackSVG() {
+  return (
+    <svg viewBox="0 0 400 160" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Monogram crest */}
+      <circle cx="85" cy="80" r="35" stroke="#DAA520" strokeWidth="2.5" />
+      <circle cx="85" cy="80" r="29" stroke="#DAA520" strokeWidth="1" strokeDasharray="3 3" />
+      {/* Intertwined T & J */}
+      <path d="M72 65 L98 65 M85 65 L85 92 C85 98 78 100 74 97" stroke="#DAA520" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M92 73 L92 90 C92 96 82 98 78 92" stroke="#DAA520" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" />
+      {/* TOM & JACK text */}
+      <text x="145" y="85" fill="black" className="dark:fill-white" fontFamily="Inter, sans-serif" fontSize="23" fontWeight="bold" letterSpacing="0.32em">
+        TOM &amp; JACK
+      </text>
+      <text x="145" y="105" fill="#DAA520" fontFamily="sans-serif" fontSize="9" fontWeight="600" letterSpacing="0.25em">
+        ACTIVE LUXURY APPAREL
+      </text>
+    </svg>
+  )
+}
+
 export function GarmentsBrands() {
-  const containerRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const isHeaderInView = useInView(headerRef, { once: true, margin: '-50px' })
   const [brands, setBrands] = useState<Brand[]>([])
-  const [scrollPosition, setScrollPosition] = useState(0)
 
   useEffect(() => {
-    // Load brands from catalog store (fully handles localStorage sync)
     setBrands(brandStore.getBrands())
   }, [])
 
-  const handleScroll = (direction: 'left' | 'right') => {
-    if (!containerRef.current) return
-    const scrollAmount = direction === 'left' ? -380 : 380
-    containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+  // Map segments based on B2B conventions
+  const getSegmentSlug = (slug: string) => {
+    return slug === 'tom-jack' ? 'incentives' : 'core'
   }
-
-  const updateScrollState = () => {
-    if (!containerRef.current) return
-    const { scrollLeft, scrollWidth, clientWidth } = containerRef.current
-    const maxScroll = scrollWidth - clientWidth
-    if (maxScroll <= 0) return
-    setScrollPosition(scrollLeft / maxScroll)
-  }
-
-  // Predefined beautiful B2B brand banners in case logos aren't set
-  const brandCovers = [
-    'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=800&q=80', // formal corporate
-    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80', // industrial workwear
-    'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80'  // hospitality / active
-  ]
-
-  const brandDiscounts = [
-    'CORE PORTFOLIO',
-    'INDUSTRIAL GRADE',
-    'VOLUME TIER PRICE'
-  ]
 
   return (
-    <section className="bg-[var(--bg)] border-t border-[var(--border)] py-16 md:py-24" ref={headerRef}>
+    <section className="bg-[var(--bg)] border-t border-[var(--border)] py-16 md:py-20" ref={headerRef}>
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         
-        {/* Header Controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="flex items-center gap-2">
-                <Award className="h-4 w-4 text-gold shrink-0" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-                  OUR ENTERPRISE LABELS
-                </span>
-              </div>
-            </motion.div>
-            <motion.h2
-              className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text)] uppercase"
-              initial={{ opacity: 0, y: 25 }}
-              animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              Our Garments <span className="text-gold">Brands</span>
-            </motion.h2>
-            <motion.p
-              className="mt-4 text-sm sm:text-base leading-relaxed text-[var(--text-muted)] max-w-2xl font-light"
-              initial={{ opacity: 0 }}
-              animate={isHeaderInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.9, delay: 0.2 }}
-            >
-              Explore our primary corporate clothing labels. Each brand serves a distinct B2B vertical, guaranteeing rigorous fabric composition, specialized durability, and custom branding for global wholesale procurement.
-            </motion.p>
-          </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex items-center gap-3 self-end md:self-auto">
-            <button
-              onClick={() => handleScroll('left')}
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-surface)] text-[var(--text-muted)] hover:border-gold hover:text-gold transition-all duration-300 shadow-sm"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => handleScroll('right')}
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-surface)] text-[var(--text-muted)] hover:border-gold hover:text-gold transition-all duration-300 shadow-sm"
-              aria-label="Scroll right"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
+        {/* Section Header */}
+        <div className="mb-12 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center gap-2">
+              <Award className="h-4 w-4 text-gold shrink-0" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
+                OUR ENTERPRISE LABELS
+              </span>
+            </div>
+          </motion.div>
+          
+          <motion.h2
+            className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text)] uppercase"
+            initial={{ opacity: 0, y: 25 }}
+            animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.1 }}
+          >
+            Our Garments <span className="text-gold">Brands</span>
+          </motion.h2>
+          
+          <motion.p
+            className="mt-4 text-sm sm:text-base leading-relaxed text-[var(--text-muted)] max-w-2xl font-light"
+            initial={{ opacity: 0 }}
+            animate={isHeaderInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.9, delay: 0.2 }}
+          >
+            Select a brand label to view detailed corporate portfolios, custom fabric structures, and dynamic wholesale agreements.
+          </motion.p>
         </div>
 
-        {/* Scrolling Cards Scroller Container */}
-        <div
-          ref={containerRef}
-          onScroll={updateScrollState}
-          className="flex gap-6 overflow-x-auto pb-8 scrollbar-none snap-x snap-mandatory"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          {brands.map((brand, i) => {
-            // Map segments based on default rules
-            const isOffer = brand.slug === 'tom-jack'
-            const segmentSlug = isOffer ? 'incentives' : 'core'
-            const defaultCover = brandCovers[i % brandCovers.length]
-            const discountLabel = brandDiscounts[i % brandDiscounts.length]
-
+        {/* ── Brand Logos Showcase Symmetrical Grid ── */}
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-3">
+          {brands.map((brand, idx) => {
+            const segmentSlug = getSegmentSlug(brand.slug)
+            
             return (
               <motion.div
                 key={brand.id}
-                initial={{ opacity: 0, x: 50 }}
-                animate={isHeaderInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.8, delay: 0.2 + i * 0.1 }}
-                className="w-[340px] sm:w-[380px] shrink-0 snap-start snap-always group"
+                initial={{ opacity: 0, y: 20 }}
+                animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.15 + idx * 0.08 }}
+                className="relative"
               >
-                <div className="relative overflow-hidden border border-[var(--border)] bg-[var(--bg-surface)] flex flex-col justify-between h-[450px]">
+                <Link
+                  href={`/products/garments/${segmentSlug}/${brand.slug}`}
+                  className="relative overflow-hidden aspect-[8/3] border cursor-pointer transition-all duration-500 rounded-none flex items-center justify-center p-6 bg-white/[0.02] dark:bg-white/[0.01] border-[var(--border)] hover:border-gold hover:shadow-[0_15px_40px_rgba(218,165,32,0.1)] group block"
+                >
+                  {/* High-end Crisp SVGs for default brands */}
+                  {brand.slug === 'treasure' && (
+                    <div className="w-full h-full flex items-center justify-center max-w-[220px] transition-transform duration-500 group-hover:scale-[1.03]">
+                      <TreasureSVG />
+                    </div>
+                  )}
+                  {brand.slug === 'vandegraff' && (
+                    <div className="w-full h-full flex items-center justify-center max-w-[220px] border border-white/5 shadow-md transition-transform duration-500 group-hover:scale-[1.03]">
+                      <VandegraffSVG />
+                    </div>
+                  )}
+                  {brand.slug === 'tom-jack' && (
+                    <div className="w-full h-full flex items-center justify-center max-w-[220px] transition-transform duration-500 group-hover:scale-[1.03]">
+                      <TomJackSVG />
+                    </div>
+                  )}
+
+                  {/* Fallback support for dynamically added custom admin brands */}
+                  {brand.slug !== 'treasure' && brand.slug !== 'vandegraff' && brand.slug !== 'tom-jack' && (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-center font-mono transition-transform duration-500 group-hover:scale-[1.03]">
+                      {brand.logo_mobile ? (
+                        <div className="relative w-full h-full max-w-[130px] aspect-[3/1]">
+                          <Image src={brand.logo_mobile} alt={brand.name} fill className="object-contain" />
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          <span className="font-display font-bold text-sm tracking-widest text-[var(--text)] uppercase group-hover:text-gold transition-colors">
+                            {brand.name}
+                          </span>
+                          <span className="block text-[8px] text-[var(--text-muted)] uppercase tracking-wider font-mono">
+                            {segmentSlug === 'core' ? 'Core Line' : 'Incentives'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Subtle Glowing Hover corner arrow indicator */}
+                  <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 text-gold">
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
                   
-                  {/* Background Image / Banner */}
-                  <div className="relative w-full h-[300px] overflow-hidden bg-neutral-900">
-                    <Image
-                      src={brand.logo_desktop || defaultCover}
-                      alt={brand.name}
-                      fill
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      sizes="380px"
-                    />
-                    
-                    {/* Visual Shutter Dark Mask overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-                    {/* Ribbon Tag */}
-                    <div className="absolute top-4 left-4 z-10">
-                      <span className="bg-gold text-black font-mono text-[9px] font-bold uppercase tracking-widest px-3 py-1">
-                        {discountLabel}
-                      </span>
-                    </div>
-
-                    {/* Brand Emblem Logo centered bottom */}
-                    <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between z-10 text-white">
-                      <div>
-                        <h4 className="font-display text-2xl font-bold tracking-wider text-white uppercase">
-                          {brand.name}
-                        </h4>
-                        <p className="text-[10px] font-mono tracking-widest text-gold uppercase mt-1">
-                          {segmentSlug === 'core' ? 'Core Portfolio' : 'Value Incentive'}
-                        </p>
-                      </div>
-                      
-                      {/* Logo Frame */}
-                      <div className="h-12 w-12 rounded-full overflow-hidden border border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center p-1.5 shadow-md">
-                        <Image
-                          src={brand.logo_mobile || defaultCover}
-                          alt={`${brand.name} mobile logo`}
-                          width={40}
-                          height={40}
-                          className="object-cover rounded-full"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Body Details */}
-                  <div className="p-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <p className="text-xs font-semibold text-[var(--text)] line-clamp-1">
-                        {brand.tagline}
-                      </p>
-                      <p className="mt-2 text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2 font-light">
-                        {brand.description}
-                      </p>
-                    </div>
-
-                    {/* CTA Navigation Route standard */}
-                    <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-between">
-                      <span className="font-mono text-[10px] text-[var(--text-muted)] tracking-wider">
-                        {brand.slug.toUpperCase()} SELECTION
-                      </span>
-                      <Link
-                        href={`/products/garments/${segmentSlug}/${brand.slug}`}
-                        className="flex items-center gap-1.5 font-mono text-[10px] font-bold text-gold uppercase tracking-wider group-hover:translate-x-1 transition-transform"
-                      >
-                        <span>View Portfolio</span>
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-
-                </div>
+                  {/* Dynamic Glowing Gold Top Bar Indicator on hover */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Link>
               </motion.div>
             )
           })}
-        </div>
-
-        {/* Scrolling Progress Indicator (Sliding Line) */}
-        <div className="mt-8 mx-auto w-full max-w-[200px] h-[2px] bg-[var(--border)] overflow-hidden relative">
-          <motion.div
-            className="absolute left-0 top-0 h-full bg-gold w-1/3"
-            animate={{ left: `${scrollPosition * 66.6}%` }}
-            transition={{ type: 'tween', ease: 'easeOut', duration: 0.1 }}
-          />
         </div>
 
       </div>
