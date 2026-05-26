@@ -46,6 +46,8 @@ export default function BulkOfferBanner({
     buttonText, slideImages
   });
 
+  const slideImagesString = JSON.stringify(slideImages);
+
   useEffect(() => {
     const loaded = contentStore.getSectionData("bulk-offer", {
       enabled, tagText, headingStart, headingHighlight, description,
@@ -53,7 +55,7 @@ export default function BulkOfferBanner({
       buttonText, slideImages
     });
     setData(loaded);
-  }, [enabled, tagText, headingStart, headingHighlight, description, discountPercentage, discountText, discountSubText, offerEndDate, buttonText, slideImages]);
+  }, [enabled, tagText, headingStart, headingHighlight, description, discountPercentage, discountText, discountSubText, offerEndDate, buttonText, slideImagesString]);
 
   useEffect(() => {
     const interval = setInterval(() => {
