@@ -6,18 +6,32 @@ import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 
-const GARMENT_CATEGORIES = [
-  { name: 'Formal Shirts', slug: 'formal-shirts', tagline: 'Crisp, premium tailored fits', count: '140+ Styles', image: '/images/formal-shirts.png' },
-  { name: 'Blazers & Suits', slug: 'blazers-suits', tagline: 'Executive bespoke tailoring', count: '80+ Styles', image: '/images/Blazers and suits.png' },
-  { name: 'Jeans & Denims', slug: 'jeans-denims', tagline: 'Durable premium industrial denim', count: '210+ Styles', image: '/images/jeans-denims.png' },
-  { name: 'Polo & T-Shirts', slug: 'polo-tshirts', tagline: 'High-comfort mercerized cotton', count: '320+ Styles', image: '/images/polo tshirts.png' },
-  { name: 'Trousers & Chinos', slug: 'trousers', tagline: 'Perfect fit corporate trousers', count: '110+ Styles', image: '/images/trousers.png' },
-  { name: 'Outerwear & Jackets', slug: 'jackets', tagline: 'All-weather luxury protective outerwear', count: '95+ Styles', image: '/images/jackets.png' },
-]
+import { useState, useEffect } from 'react'
+import { contentStore } from '@/lib/content-store'
+
+const DEFAULT_GARMENTS = {
+  indicator: "OUR MANUFACTURING DIVISIONS",
+  headingStart: "Garments we ",
+  headingHighlight: "manufacture",
+  description: "High-quality garments, linens, and B2B supplies crafted with precision. While garments remain our absolute core business, we have successfully expanded our industrial capacities to serve major developments in hospitality, home decor, fragrance, and household supply.",
+  categories: [
+    { name: 'Formal Shirts', slug: 'formal-shirts', tagline: 'Crisp, premium tailored fits', count: '140+ Styles', image: '/images/formal-shirts.png' },
+    { name: 'Blazers & Suits', slug: 'blazers-suits', tagline: 'Executive bespoke tailoring', count: '80+ Styles', image: '/images/Blazers and suits.png' },
+    { name: 'Jeans & Denims', slug: 'jeans-denims', tagline: 'Durable premium industrial denim', count: '210+ Styles', image: '/images/jeans-denims.png' },
+    { name: 'Polo & T-Shirts', slug: 'polo-tshirts', tagline: 'High-comfort mercerized cotton', count: '320+ Styles', image: '/images/polo tshirts.png' },
+    { name: 'Trousers & Chinos', slug: 'trousers', tagline: 'Perfect fit corporate trousers', count: '110+ Styles', image: '/images/trousers.png' },
+    { name: 'Outerwear & Jackets', slug: 'jackets', tagline: 'All-weather luxury protective outerwear', count: '95+ Styles', image: '/images/jackets.png' },
+  ]
+}
 
 export function DivisionCutouts() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const [data, setData] = useState(DEFAULT_GARMENTS)
+
+  useEffect(() => {
+    setData(contentStore.getSectionData('garments-showcase', DEFAULT_GARMENTS))
+  }, [])
 
   return (
     <section className="bg-[var(--bg)] py-16 md:py-24" ref={ref}>
@@ -31,7 +45,7 @@ export function DivisionCutouts() {
           >
             <div className="flex items-center gap-3">
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-                OUR MANUFACTURING DIVISIONS
+                {data.indicator}
               </span>
             </div>
           </motion.div>
@@ -41,7 +55,7 @@ export function DivisionCutouts() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            Garments we <span className='text-gold'>manufacture</span>
+            {data.headingStart}<span className='text-gold'>{data.headingHighlight}</span>
           </motion.h2>
           <motion.p
             className="mt-4 text-sm sm:text-base leading-relaxed text-gray-500 max-w-3xl"
@@ -49,13 +63,13 @@ export function DivisionCutouts() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            High-quality garments, linens, and B2B supplies crafted with precision. While garments remain our absolute core business, we have successfully expanded our industrial capacities to serve major developments in hospitality, home decor, fragrance, and household supply.
+            {data.description}
           </motion.p>
         </div>
 
         {/* Division Grid - 3x2 Symmetrical */}
         <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {GARMENT_CATEGORIES.map((category, index) => (
+          {data.categories.map((category: any, index: number) => (
             <motion.div
               key={category.slug}
               initial={{ opacity: 0, y: 60 }}
