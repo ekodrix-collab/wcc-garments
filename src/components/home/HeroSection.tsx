@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useEffect, useState, JSX } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+
+const BLUR_PLACEHOLDER =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
 const CAMPAIGN_SETS = [
   {
@@ -32,20 +35,33 @@ const CAMPAIGN_SETS = [
   }
 ];
 
-export function HeroSection(): JSX.Element {
-  const [mounted, setMounted] = useState<boolean>(false);
-  const [campaignIdx, setCampaignIdx] = useState<number>(0);
+const ALL_IMAGE_PATHS = Array.from(
+  new Set(CAMPAIGN_SETS.flatMap((c) => [c.center, c.left, c.right]))
+);
 
-  useEffect((): void => {
-    setMounted(true);
+export function HeroSection(): JSX.Element {
+  const [campaignIdx, setCampaignIdx] = useState<number>(0);
+  const [allLoaded, setAllLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    let count = 0;
+    ALL_IMAGE_PATHS.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = img.onerror = () => {
+        count += 1;
+        if (count >= ALL_IMAGE_PATHS.length) setAllLoaded(true);
+      };
+    });
   }, []);
 
   useEffect(() => {
+    if (!allLoaded) return;
     const timer = setInterval(() => {
       setCampaignIdx((prev) => (prev + 1) % CAMPAIGN_SETS.length);
     }, 4500);
     return () => clearInterval(timer);
-  }, []);
+  }, [allLoaded]);
 
   const campaign = CAMPAIGN_SETS[campaignIdx];
 
@@ -53,10 +69,8 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full min-h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center pt-5",
-          "bg-white dark:bg-black",
-          mounted ? "opacity-100" : "opacity-0",
-          "transition-opacity duration-500",
+          "relative w-full min-h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center pt-10",
+          "bg-white dark:bg-black animate-fade-in",
         ].join(" ")}
       >
         {/* Ambient Glow */}
@@ -74,11 +88,8 @@ export function HeroSection(): JSX.Element {
 
             {/* ── TEXT BLOCK ── */}
             <div className="flex flex-col items-center md:items-start md:col-start-1 md:col-span-7 md:row-start-1 md:row-span-2 md:self-center justify-center text-center md:text-left">
-
-              {/* Brand words — stacked properly on both mobile & desktop */}
               <div className="flex flex-col items-center md:items-start gap-0">
 
-                {/* WESTERN */}
                 <motion.span
                   initial={{ opacity: 0, scale: 1.8, y: 40 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -92,7 +103,6 @@ export function HeroSection(): JSX.Element {
                   WESTERN
                 </motion.span>
 
-                {/* CLOTHING */}
                 <motion.span
                   initial={{ opacity: 0, scale: 0.35, y: 80 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -102,7 +112,6 @@ export function HeroSection(): JSX.Element {
                   CLOTHING
                 </motion.span>
 
-                {/* COMPANY */}
                 <motion.span
                   initial={{ opacity: 0, scale: 0.35, y: 80 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -113,7 +122,6 @@ export function HeroSection(): JSX.Element {
                 </motion.span>
               </div>
 
-              {/* Body Text */}
               <p
                 className={[
                   "mt-6 font-barlow-body text-[10px] sm:text-[11px] font-bold tracking-[0.15em]",
@@ -124,7 +132,6 @@ export function HeroSection(): JSX.Element {
                 An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
               </p>
 
-              {/* CTA Button */}
               <div className="mt-8 w-full flex justify-center md:justify-start animate-fade-up [animation-delay:1200ms]">
                 <Link
                   href="/contact"
@@ -137,72 +144,106 @@ export function HeroSection(): JSX.Element {
             </div>
 
             {/* ── IMAGE CAROUSEL BLOCK ── */}
-            <div className="relative flex items-center justify-center md:col-start-8 md:col-span-5 md:row-start-1 md:row-span-2 w-full h-[280px] sm:h-[340px] md:h-[460px] select-none z-[40]">
-              {/* Left Card (Background) */}
-              <motion.div
-                key={`${campaign.id}-left`}
-                initial={{ opacity: 0, x: -120, y: 0, rotate: -20 }}
-                animate={{ opacity: 0.4, x: -65, y: -25, rotate: -10 }}
-                transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-                className="absolute w-[140px] h-[190px] sm:w-[170px] sm:h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.08)]"
-              >
-                <Image
-                  src={campaign.left}
-                  alt="Campaign background"
-                  fill
-                  sizes="(max-width: 640px) 140px, (max-width: 1024px) 200px, 240px"
-                  className="object-cover grayscale"
-                />
-              </motion.div>
+            <div className="relative flex items-center justify-center md:col-start-8 md:col-span-5 md:row-start-1 md:row-span-2 w-full h-[320px] sm:h-[400px] md:h-[540px] select-none z-[40]">
 
-              {/* Right Card (Background) */}
-              <motion.div
-                key={`${campaign.id}-right`}
-                initial={{ opacity: 0, x: 120, y: 40, rotate: 20 }}
-                animate={{ opacity: 0.3, x: 65, y: 15, rotate: 8 }}
-                transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 1.0 }}
-                className="absolute w-[140px] h-[190px] sm:w-[170px] sm:h-[230px] md:w-[220px] md:h-[300px] overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl"
-              >
-                <Image
-                  src={campaign.right}
-                  alt="Campaign background detail"
-                  fill
-                  sizes="(max-width: 640px) 140px, (max-width: 1024px) 200px, 240px"
-                  className="object-cover grayscale"
-                />
-              </motion.div>
+              {/* Hidden preload */}
+              <div className="absolute w-0 h-0 overflow-hidden pointer-events-none opacity-0" aria-hidden="true">
+                {ALL_IMAGE_PATHS.map((src) => (
+                  <Image key={src} src={src} alt="" fill priority sizes="1px" className="object-cover" />
+                ))}
+              </div>
 
-              {/* Center Card (Foreground) */}
-              <motion.div
-                key={`${campaign.id}-center`}
-                initial={{ opacity: 0, scale: 0.8, y: 80, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, y: -10, rotate: -2 }}
-                transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 1.4 }}
-                className="absolute w-[155px] h-[210px] sm:w-[180px] sm:h-[245px] md:w-[230px] md:h-[320px] overflow-hidden border border-black/20 dark:border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-10 group cursor-pointer"
-              >
-                <Image
-                  src={campaign.center}
-                  alt={campaign.title}
-                  fill
-                  sizes="(max-width: 640px) 160px, (max-width: 1024px) 210px, 250px"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  priority
-                />
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
+              {/* Left Card */}
+              <AnimatePresence>
+                <motion.div
+                  key={`left-${campaign.id}`}
+                  initial={{ opacity: 0, x: -120, y: 0, rotate: -20 }}
+                  animate={{ opacity: 0.4, x: -65, y: -25, rotate: -10 }}
+                  exit={{ opacity: 0, x: -40, rotate: -5, transition: { duration: 0.4, ease: "easeIn" } }}
+                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+                  className="absolute w-[160px] h-[220px] sm:w-[200px] sm:h-[270px] md:w-[260px] md:h-[360px] overflow-hidden"
+                  style={{
+                    border: "1px boreder-black",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                  }}
+                >
+                  <Image
+                    src={campaign.left}
+                    alt="Campaign background"
+                    fill
+                    priority
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDER}
+                    sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 260px"
+                    className="object-cover"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
-                {/* Content inside the main card */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 flex flex-col items-start">
-                  <span className="font-mono text-[8px] font-bold tracking-[0.2em] text-[#3b82f6] uppercase mb-1">
-                    {campaign.tag}
-                  </span>
-                  <span className="font-display text-sm md:text-xl font-medium text-white leading-tight">
-                    {campaign.title}
-                  </span>
-                </div>
-              </motion.div>
+              {/* Right Card */}
+              <AnimatePresence>
+                <motion.div
+                  key={`right-${campaign.id}`}
+                  initial={{ opacity: 0, x: 120, y: 40, rotate: 20 }}
+                  animate={{ opacity: 0.3, x: 65, y: 15, rotate: 8 }}
+                  exit={{ opacity: 0, x: 40, rotate: 5, transition: { duration: 0.4, ease: "easeIn" } }}
+                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 1.0 }}
+                  className="absolute w-[160px] h-[220px] sm:w-[200px] sm:h-[270px] md:w-[260px] md:h-[360px] overflow-hidden"
+                  style={{
+                    border: "1px boreder-black",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                  }}
+                >
+                  <Image
+                    src={campaign.right}
+                    alt="Campaign background detail"
+                    fill
+                    priority
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDER}
+                    sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 260px"
+                    className="object-cover"
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Center Card */}
+              <AnimatePresence>
+                <motion.div
+                  key={`center-${campaign.id}`}
+                  initial={{ opacity: 0, scale: 0.8, y: 80, rotate: 0 }}
+                  animate={{ opacity: 1, scale: 1, y: -10, rotate: -2 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 20, transition: { duration: 0.4, ease: "easeIn" } }}
+                  transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 1.4 }}
+                  className="absolute w-[180px] h-[245px] sm:w-[220px] sm:h-[300px] md:w-[280px] md:h-[390px] overflow-hidden z-10 group cursor-pointer"
+                  style={{
+                    border: "1px boreder-black",
+                    boxShadow: "0 0 0 1px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <Image
+                    src={campaign.center}
+                    alt={campaign.title}
+                    fill
+                    priority
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDER}
+                    sizes="(max-width: 640px) 180px, (max-width: 1024px) 220px, 280px"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 flex flex-col items-start">
+                    <span className="font-mono text-[8px] font-bold tracking-[0.2em] text-[#3b82f6] uppercase mb-1">
+                      {campaign.tag}
+                    </span>
+                    <span className="font-display text-sm md:text-xl font-medium text-white leading-tight">
+                      {campaign.title}
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
             </div>
-
           </div>
         </div>
       </section>

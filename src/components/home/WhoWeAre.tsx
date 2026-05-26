@@ -128,21 +128,21 @@ export function WhoWeAre() {
             >
               <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
                 <CounterStat end={25} suffix="+" label="Years Expertise" />
-                <p className="mt-2.5 font-sans text-xs font-light text-neutral-500 leading-relaxed tracking-wide">
+                <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
                   Unrivaled manufacturing history and procurement experience since our Dubai inception.
                 </p>
               </div>
 
               <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
                 <CounterStat end={50} suffix="+" label="Export Nations" />
-                <p className="mt-2.5 font-sans text-xs font-light text-neutral-500 leading-relaxed tracking-wide">
+                <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
                   Active global distribution networks spanning GCC, Africa, Europe, and the Americas.
                 </p>
               </div>
 
               <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
                 <CounterStat end={10} suffix="K+" label="Monthly Capacity" />
-                <p className="mt-2.5 font-sans text-xs font-light text-neutral-500 leading-relaxed tracking-wide">
+                <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
                   Industrial-scale output supporting massive tenders and commercial supply chains.
                 </p>
               </div>
