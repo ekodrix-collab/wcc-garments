@@ -243,7 +243,7 @@ export function GarmentsBrands() {
 
               {/* Action Button */}
               <Link
-                href={`/products/garments/${getSegmentSlug('treasure')}/treasure`}
+                href="/products/garments?brand=treasure"
                 className="w-full flex items-center justify-between border border-gold/40 hover:border-gold bg-gold/10 hover:bg-gold text-white hover:text-black py-3 px-4 font-mono text-[10px] uppercase font-bold tracking-widest transition-all duration-300 group/btn shadow-lg"
               >
                 <span>Explore Treasure</span>
@@ -331,7 +331,7 @@ export function GarmentsBrands() {
 
               {/* Action Button */}
               <Link
-                href={`/products/garments/${getSegmentSlug('vandegraff')}/vandegraff`}
+                href="/products/garments?brand=vandegraff"
                 className="w-full flex items-center justify-between border border-white/20 hover:border-red-500 bg-white/5 hover:bg-red-600 text-white hover:text-white py-3 px-4 font-mono text-[10px] uppercase font-bold tracking-widest transition-all duration-300 group/btn shadow-lg"
               >
                 <span>Explore Vandegraff</span>
@@ -419,7 +419,7 @@ export function GarmentsBrands() {
 
               {/* Action Button */}
               <Link
-                href={`/products/garments/${getSegmentSlug('tom-jack')}/tom-jack`}
+                href="/products/garments?brand=tom-jack"
                 className="w-full flex items-center justify-between border border-gold/40 hover:border-gold bg-gold/10 hover:bg-gold text-white hover:text-black py-3 px-4 font-mono text-[10px] uppercase font-bold tracking-widest transition-all duration-300 group/btn shadow-lg"
               >
                 <span>Explore Tom &amp; Jack</span>

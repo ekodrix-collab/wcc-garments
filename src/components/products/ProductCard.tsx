@@ -19,6 +19,7 @@ interface ProductCardProps {
     is_offer: boolean
     offer_label: string | null
     short_description?: string | null
+    brand_slug?: string | null
   }
   index?: number
   coverColor?: string
@@ -125,9 +126,16 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0', divisi
 
       {/* Editorial Typographic Info */}
       <div className="mt-4 px-1">
-        <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-gold/90">
-          {product.division?.name || 'WCC DIVISION'}
-        </span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="block text-[9px] font-medium uppercase tracking-[0.18em] text-gold/90">
+            {product.division?.name || 'WCC DIVISION'}
+          </span>
+          {product.brand_slug && (
+            <span className="px-2 py-0.5 text-[8px] font-mono font-bold tracking-[0.15em] uppercase border border-gold/30 bg-gold/5 text-gold">
+              {product.brand_slug === 'tom-jack' ? 'TOM & JACK' : product.brand_slug.toUpperCase()}
+            </span>
+          )}
+        </div>
 
         <h3 className="mt-2 text-base font-semibold leading-snug text-[var(--text)] transition-colors duration-300 md:text-lg">
           {product.name}

@@ -81,7 +81,7 @@ export function DivisionCutouts() {
               }}
             >
               <Link
-                href={`/products?category=${category.slug}`}
+                href={`/products/garments?category=${category.slug}`}
                 className="group relative block overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-none transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
                 data-cursor="view"
               >
