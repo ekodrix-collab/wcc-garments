@@ -1,779 +1,444 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { Plus, FolderOpen, Edit2, Trash2, Layers, X, HelpCircle, Upload, Image as ImageIcon, Link as LinkIcon } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { DIVISIONS } from '@/lib/constants'
 
-interface CategoryItem {
+// ── Types ──────────────────────────────────────────────────────────────────────
+type ItemStatus = 'active' | 'coming-soon' | 'hidden'
+type SectionKey = 'all' | 'garments' | 'households' | 'divisions'
+
+interface SubCatItem {
   id: string
   name: string
   slug: string
-  division: 'Garments' | 'Households' | 'Divisions'
-  count: number
-  status: 'Active' | 'Locked'
-  description: string
-  image: string
+  status: ItemStatus
+  displayOrder: number
+}
+interface CatItem {
+  id: string
+  divisionSlug: string
+  divisionName: string
+  name: string
+  slug: string
+  status: ItemStatus
+  displayOrder: number
+  subCategories: SubCatItem[]
 }
 
-// Exact match of frontend home page sections: 6 Garments, 4 Households, and 4 Expansion Divisions
-const INITIAL_CATEGORIES: CategoryItem[] = [
-  // SECTION 1: Garments Grid (6 Core Cards)
-  { id: 'GAR-01', name: 'Formal Shirts', slug: 'formal-shirts', division: 'Garments', count: 12, status: 'Active', description: 'Premium corporate executive dress shirts and bespoke shirting.', image: '/images/formal-shirts.png' },
-  { id: 'GAR-02', name: 'Blazers & Suits', slug: 'blazers-suits', division: 'Garments', count: 8, status: 'Active', description: 'Architectural-cut executive blazers, corporate suits, and waistcoats.', image: '/images/Blazers and suits.png' },
-  { id: 'GAR-03', name: 'Trousers', slug: 'trousers', division: 'Garments', count: 10, status: 'Active', description: 'Premium flat-front trousers, formal slacks, and casual chinos.', image: '/images/trousers.png' },
-  { id: 'GAR-04', name: 'Jackets', slug: 'jackets', division: 'Garments', count: 6, status: 'Active', description: 'All-weather institutional outerwear, windbreakers, and high-fashion coats.', image: '/images/jackets.png' },
-  { id: 'GAR-05', name: 'Polo T-Shirts', slug: 'polo-tshirts', division: 'Garments', count: 15, status: 'Active', description: 'Premium heavyweight piqué cotton corporate polo shirts.', image: '/images/polo tshirts.png' },
-  { id: 'GAR-06', name: 'Jeans & Denim', slug: 'jeans-denim', division: 'Garments', count: 9, status: 'Active', description: 'Heavy-duty industrial denim and premium wholesale casual jeans.', image: '/images/jeans-denims.png' },
+const STATUS_STYLES: Record<ItemStatus, string> = {
+  active:         'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  'coming-soon':  'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  hidden:         'bg-neutral-700/30 text-neutral-400 border-neutral-600/30',
+}
+const STATUS_LABELS: Record<ItemStatus, string> = {
+  active: 'Active', 'coming-soon': 'Coming Soon', hidden: 'Hidden',
+}
 
-  // SECTION 2: Household Grid (4 Core Cards)
-  { id: 'HH-01', name: 'Industrial Microfiber', slug: 'microfiber', division: 'Households', count: 14, status: 'Active', description: 'High-density commercial cleaning wipes and specialized microfiber towels.', image: '/images/hh-1.png' },
-  { id: 'HH-02', name: 'Bulk Liquids & Sanitizers', slug: 'liquids', division: 'Households', count: 6, status: 'Active', description: 'Premium wholesale chemical formulations, disinfectants, and industrial soap.', image: '/images/hh-2.png' },
-  { id: 'HH-03', name: 'Institutional Linens', slug: 'kitchen-linens', division: 'Households', count: 18, status: 'Active', description: 'Heavy-duty commercial kitchen sheets, premium catering napery, and cloths.', image: '/images/hh-3.png' },
-  { id: 'HH-04', name: 'OEM Custom Essentials', slug: 'oem-essentials', division: 'Households', count: 5, status: 'Active', description: 'Bespoke household product custom branding and wholesale export packages.', image: '/images/hh-4.png' },
+// ── Seed from DIVISIONS constant ───────────────────────────────────────────────
+function seedCategories(): CatItem[] {
+  const result: CatItem[] = []
+  for (const div of DIVISIONS) {
+    for (const cat of (div.categories ?? [])) {
+      result.push({
+        id: cat.id,
+        divisionSlug: div.slug,
+        divisionName: div.name,
+        name: cat.name,
+        slug: cat.slug,
+        status: cat.status as ItemStatus,
+        displayOrder: cat.displayOrder,
+        subCategories: (cat.subCategories ?? []).map((s) => ({
+          id: s.id, name: s.name, slug: s.slug,
+          status: s.status as ItemStatus, displayOrder: s.displayOrder,
+        })),
+      })
+    }
+  }
+  return result
+}
 
-  // SECTION 3: Strategic Expansion Divisions (4 Divisions)
-  { id: 'EXP-01', name: 'Uniforms & Workwear', slug: 'uniforms', division: 'Divisions', count: 24, status: 'Active', description: 'Flame-retardant safety wear, clinical scrubs, and corporate workwear.', image: '/images/uniform-workwear.png' },
-  { id: 'EXP-02', name: 'Hospitality Linen', slug: 'hospitality', division: 'Divisions', count: 19, status: 'Active', description: 'Luxury hotel bedsheets, plush bath towels, spa robes, and restaurant linens.', image: '/images/hospitality.png' },
-  { id: 'EXP-03', name: 'Arabian Fragrance', slug: 'fragrance', division: 'Divisions', count: 11, status: 'Active', description: 'Precious niche perfumes, pure oud attars, and luxury custom bottling.', image: '/images/fragrance.png' },
-  { id: 'EXP-04', name: 'Home Furnishing', slug: 'home-furnishing', division: 'Divisions', count: 8, status: 'Active', description: 'Curated home textiles, upholstery fabrics, table runners, and drapery.', image: '/images/home furnishing.png' }
-]
+// ── Section mapping ────────────────────────────────────────────────────────────
+const SECTION_SLUGS: Record<Exclude<SectionKey, 'all'>, string[]> = {
+  garments:   ['garments'],
+  households: ['households'],
+  divisions:  ['uniforms', 'hospitality', 'fragrance', 'home'],
+}
+
+// ── Empty form state ───────────────────────────────────────────────────────────
+const EMPTY_CAT = { divisionSlug: 'garments', name: '', slug: '', status: 'active' as ItemStatus }
+const EMPTY_SUB = { name: '', slug: '', status: 'active' as ItemStatus }
 
 export default function AdminCategoriesPage() {
-  const [categories, setCategories] = useState<CategoryItem[]>(INITIAL_CATEGORIES)
-  const [selectedSection, setSelectedSection] = useState<'all' | 'garments' | 'household' | 'divisions'>('all')
-  
-  // Modals state
-  const [newModalOpen, setNewModalOpen] = useState(false)
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [editingCategory, setEditingCategory] = useState<CategoryItem | null>(null)
-  
-  // Image input method: 'upload' or 'link'
-  const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'link'>('upload')
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [categories, setCategories] = useState<CatItem[]>(seedCategories)
+  const [section, setSection] = useState<SectionKey>('all')
+  const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
-  const [formState, setFormState] = useState({
-    name: '',
-    slug: '',
-    division: 'Garments' as 'Garments' | 'Households' | 'Divisions',
-    description: '',
-    status: 'Active' as 'Active' | 'Locked',
-    image: ''
-  })
+  // Category modal
+  const [catModal, setCatModal] = useState<'add' | 'edit' | null>(null)
+  const [editingCat, setEditingCat] = useState<CatItem | null>(null)
+  const [catForm, setCatForm] = useState(EMPTY_CAT)
 
-  // Open modal for new item
-  const openNewModal = (section?: 'Garments' | 'Households' | 'Divisions') => {
-    setFormState({
-      name: '',
-      slug: '',
-      division: section || 'Garments',
-      description: '',
-      status: 'Active',
-      image: ''
-    })
-    setImageInputMethod('upload')
-    setNewModalOpen(true)
-  }
+  // Sub-category modal
+  const [subModal, setSubModal] = useState<'add' | 'edit' | null>(null)
+  const [subParentId, setSubParentId] = useState<string | null>(null)
+  const [editingSubId, setEditingSubId] = useState<string | null>(null)
+  const [subForm, setSubForm] = useState(EMPTY_SUB)
 
-  // Open modal to edit existing item
-  const openEditModal = (cat: CategoryItem) => {
-    setEditingCategory(cat)
-    setFormState({
-      name: cat.name,
-      slug: cat.slug,
-      division: cat.division,
-      description: cat.description,
-      status: cat.status,
-      image: cat.image
-    })
-    setImageInputMethod(cat.image.startsWith('data:') || !cat.image.startsWith('/') ? 'upload' : 'link')
-    setEditModalOpen(true)
-  }
+  // ── Filtered view ────────────────────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    if (section === 'all') return categories
+    const slugs = SECTION_SLUGS[section]
+    return categories.filter((c) => slugs.includes(c.divisionSlug))
+  }, [categories, section])
 
-  // Image Upload File Handler
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormState(prev => ({
-          ...prev,
-          image: reader.result as string
-        }))
+  const grouped = useMemo(() => {
+    const map = new Map<string, { divisionName: string; items: CatItem[] }>()
+    for (const cat of filtered) {
+      if (!map.has(cat.divisionSlug)) map.set(cat.divisionSlug, { divisionName: cat.divisionName, items: [] })
+      map.get(cat.divisionSlug)!.items.push(cat)
+    }
+    return map
+  }, [filtered])
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+  const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const toggleExpand = (id: string) => setExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
+  const divOptions = DIVISIONS.map((d) => ({ slug: d.slug, name: d.name }))
+
+  // ── Category CRUD ────────────────────────────────────────────────────────────
+  const openAddCat = () => { setCatForm(EMPTY_CAT); setEditingCat(null); setCatModal('add') }
+  const openEditCat = (c: CatItem) => { setEditingCat(c); setCatForm({ divisionSlug: c.divisionSlug, name: c.name, slug: c.slug, status: c.status }); setCatModal('edit') }
+
+  const saveCat = () => {
+    if (!catForm.name || !catForm.slug) return
+    if (catModal === 'add') {
+      const newCat: CatItem = {
+        id: `CAT-${Date.now()}`, divisionSlug: catForm.divisionSlug,
+        divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug,
+        name: catForm.name, slug: catForm.slug, status: catForm.status,
+        displayOrder: categories.filter((c) => c.divisionSlug === catForm.divisionSlug).length + 1,
+        subCategories: [],
       }
-      reader.readAsDataURL(file)
+      setCategories((p) => [...p, newCat])
+    } else if (catModal === 'edit' && editingCat) {
+      setCategories((p) => p.map((c) => c.id === editingCat.id ? { ...c, ...catForm, divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug } : c))
     }
+    setCatModal(null)
   }
 
-  // Create category handler
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formState.name || !formState.slug) return
-    
-    const prefix = formState.division === 'Garments' ? 'GAR' : formState.division === 'Households' ? 'HH' : 'EXP'
-    const defaultImg = formState.division === 'Garments' ? '/images/formal-shirts.png' : formState.division === 'Households' ? '/images/hh-1.png' : '/images/hospitality.png'
-    
-    const created: CategoryItem = {
-      id: `${prefix}-${String(categories.length + 1).padStart(2, '0')}`,
-      name: formState.name,
-      slug: formState.slug.toLowerCase().replace(/\s+/g, '-'),
-      division: formState.division,
-      count: 0,
-      status: formState.status,
-      description: formState.description || 'Taxonomy classification node.',
-      image: formState.image || defaultImg
-    }
-    
-    setCategories([...categories, created])
-    setNewModalOpen(false)
+  const deleteCat = (id: string) => {
+    if (!confirm('Remove this category? Sub-categories will also be removed.')) return
+    setCategories((p) => p.filter((c) => c.id !== id))
   }
 
-  // Update category handler
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!editingCategory || !formState.name || !formState.slug) return
-
-    setCategories(prev =>
-      prev.map(cat =>
-        cat.id === editingCategory.id
-          ? {
-              ...cat,
-              name: formState.name,
-              slug: formState.slug.toLowerCase().replace(/\s+/g, '-'),
-              division: formState.division,
-              description: formState.description,
-              status: formState.status,
-              image: formState.image
-            }
-          : cat
-      )
-    )
-    setEditModalOpen(false)
-    setEditingCategory(null)
+  const toggleCatStatus = (id: string) => {
+    setCategories((p) => p.map((c) => {
+      if (c.id !== id) return c
+      const next: ItemStatus = c.status === 'active' ? 'coming-soon' : c.status === 'coming-soon' ? 'hidden' : 'active'
+      return { ...c, status: next }
+    }))
   }
 
-  // Delete handler
-  const handleDelete = (id: string) => {
-    if (confirm('Decommission this card from website flow? This action will remove it from the homepage grid.')) {
-      setCategories(prev => prev.filter(cat => cat.id !== id))
-    }
+  // ── Sub-category CRUD ─────────────────────────────────────────────────────────
+  const openAddSub = (parentId: string) => { setSubParentId(parentId); setEditingSubId(null); setSubForm(EMPTY_SUB); setSubModal('add') }
+  const openEditSub = (parentId: string, sub: SubCatItem) => { setSubParentId(parentId); setEditingSubId(sub.id); setSubForm({ name: sub.name, slug: sub.slug, status: sub.status }); setSubModal('edit') }
+
+  const saveSub = () => {
+    if (!subForm.name || !subForm.slug || !subParentId) return
+    setCategories((p) => p.map((c) => {
+      if (c.id !== subParentId) return c
+      if (subModal === 'add') {
+        const newSub: SubCatItem = { id: `SUB-${Date.now()}`, name: subForm.name, slug: subForm.slug, status: subForm.status, displayOrder: c.subCategories.length + 1 }
+        return { ...c, subCategories: [...c.subCategories, newSub] }
+      } else if (subModal === 'edit' && editingSubId) {
+        return { ...c, subCategories: c.subCategories.map((s) => s.id === editingSubId ? { ...s, ...subForm } : s) }
+      }
+      return c
+    }))
+    setSubModal(null)
   }
 
-  // Filter sections
-  const garmentsCards = categories.filter(c => c.division === 'Garments')
-  const householdCards = categories.filter(c => c.division === 'Households')
-  const divisionsCards = categories.filter(c => c.division === 'Divisions')
+  const deleteSub = (parentId: string, subId: string) => {
+    if (!confirm('Remove this sub-category?')) return
+    setCategories((p) => p.map((c) => c.id === parentId ? { ...c, subCategories: c.subCategories.filter((s) => s.id !== subId) } : c))
+  }
+
+  const toggleSubStatus = (parentId: string, subId: string) => {
+    setCategories((p) => p.map((c) => {
+      if (c.id !== parentId) return c
+      return { ...c, subCategories: c.subCategories.map((s) => {
+        if (s.id !== subId) return s
+        const next: ItemStatus = s.status === 'active' ? 'coming-soon' : s.status === 'coming-soon' ? 'hidden' : 'active'
+        return { ...s, status: next }
+      })}
+    }))
+  }
+
+  // ── Stats ─────────────────────────────────────────────────────────────────────
+  const totalCats = categories.length
+  const totalSubs = categories.reduce((a, c) => a + c.subCategories.length, 0)
+  const activeCats = categories.filter((c) => c.status === 'active').length
+  const comingSoon = categories.filter((c) => c.status === 'coming-soon').length
+
+  // ── Form field helpers ────────────────────────────────────────────────────────
+  const inputCls = 'w-full rounded-none border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/20 focus:border-gold focus:outline-none'
+  const selectCls = 'w-full rounded-none border border-white/10 bg-black px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-none'
+  const labelCls = 'mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-white/40'
 
   return (
-    <div className="space-y-10 max-w-[1600px] mx-auto text-white">
-      {/* Title Bar */}
+    <div className="space-y-8 max-w-[1600px] mx-auto text-white">
+
+      {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="font-display text-3xl font-bold tracking-tight text-white uppercase">Homepage Layout Manager</h1>
-            <span className="bg-gold/10 border border-gold/30 px-3 py-0.5 font-mono text-xs font-bold text-gold rounded-none">
-              Live Control
-            </span>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-white uppercase">Category & Sub-Category Manager</h1>
+            <span className="bg-gold/10 border border-gold/30 px-3 py-0.5 font-mono text-xs font-bold text-gold">Live Control</span>
           </div>
-          <p className="mt-1 font-mono text-xs text-white/50">
-            Click edit on any card below to instantly update its title, tagline, slug links, and image on the live website.
-          </p>
+          <p className="mt-1 font-mono text-xs text-white/40">Manage all division categories and sub-categories. Changes reflect across the site and API instantly.</p>
         </div>
-      </div>
-
-      {/* Helpful Quick Guide */}
-      <div className="bg-white/5 border border-white/10 p-5 rounded-none flex items-start gap-4">
-        <HelpCircle className="h-6 w-6 text-gold shrink-0 mt-0.5" />
-        <div className="font-mono text-xs text-white/70 space-y-1 leading-relaxed">
-          <p className="font-bold text-white uppercase tracking-wider">How to manage website contents:</p>
-          <p>• <strong className="text-gold">Garments Showcase (6 cards)</strong> controls the grid items displayed under the Garments headline.</p>
-          <p>• <strong className="text-gold">Household Showcase (4 cards)</strong> controls the 2x2 grid cards under the Household headline.</p>
-          <p>• <strong className="text-gold">Strategic Expansion (4 cards)</strong> controls the division blocks on the landing page.</p>
-        </div>
-      </div>
-
-      {/* Section Selector Tab Buttons */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-4 font-mono text-xs">
-        <button
-          onClick={() => setSelectedSection('all')}
-          className={`px-4 py-2 uppercase font-bold transition-all rounded-none border ${
-            selectedSection === 'all' ? 'bg-gold border-gold text-black shadow-lg' : 'border-white/10 text-white/60 hover:text-white'
-          }`}
-        >
-          Show All Sections ({categories.length} Cards)
-        </button>
-        <button
-          onClick={() => setSelectedSection('garments')}
-          className={`px-4 py-2 uppercase font-bold transition-all rounded-none border ${
-            selectedSection === 'garments' ? 'bg-gold border-gold text-black shadow-lg' : 'border-white/10 text-white/60 hover:text-white'
-          }`}
-        >
-          👗 Garments Showcase (6 Cards)
-        </button>
-        <button
-          onClick={() => setSelectedSection('household')}
-          className={`px-4 py-2 uppercase font-bold transition-all rounded-none border ${
-            selectedSection === 'household' ? 'bg-gold border-gold text-black shadow-lg' : 'border-white/10 text-white/60 hover:text-white'
-          }`}
-        >
-          🏠 Household Showcase (4 Cards)
-        </button>
-        <button
-          onClick={() => setSelectedSection('divisions')}
-          className={`px-4 py-2 uppercase font-bold transition-all rounded-none border ${
-            selectedSection === 'divisions' ? 'bg-gold border-gold text-black shadow-lg' : 'border-white/10 text-white/60 hover:text-white'
-          }`}
-        >
-          🚀 Strategic Expansion (4 Cards)
+        <button onClick={openAddCat} className="flex items-center gap-2 bg-gold px-5 py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all shrink-0">
+          <Plus className="h-3.5 w-3.5" /> Add Category
         </button>
       </div>
 
-      {/* SECTION 1: GARMENTS GRID */}
-      {(selectedSection === 'all' || selectedSection === 'garments') && (
-        <div className="space-y-6 pt-4">
-          <div className="flex items-center justify-between border-l-4 border-gold pl-4">
-            <div>
-              <h2 className="font-display text-xl font-bold uppercase tracking-wider text-white">
-                👗 Section 1: Garments Division Showcase Grid (6 Cards)
-              </h2>
-              <p className="font-mono text-xs text-white/50 mt-0.5">
-                Displays the 6 category blocks under the &quot;Garments Division&quot; grid on the homepage
-              </p>
-            </div>
-            <button
-              onClick={() => openNewModal('Garments')}
-              className="flex items-center gap-1.5 bg-white/5 border border-white/15 px-3 py-1.5 font-mono text-[10px] font-bold text-white hover:bg-gold hover:text-black transition-all rounded-none"
-            >
-              <Plus className="h-3 w-3" /> Add Garment Card
-            </button>
+      {/* ── Stats Strip ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { label: 'Total Categories', value: totalCats },
+          { label: 'Sub-Categories', value: totalSubs },
+          { label: 'Active', value: activeCats },
+          { label: 'Coming Soon', value: comingSoon },
+        ].map((s) => (
+          <div key={s.label} className="border border-white/10 bg-white/5 px-4 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-white/30">{s.label}</p>
+            <p className="mt-1 font-display text-2xl font-bold text-white">{s.value}</p>
           </div>
+        ))}
+      </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 font-mono">
-            {garmentsCards.map((cat, idx) => (
-              <div
-                key={cat.id}
-                className="group relative flex flex-col justify-between rounded-none border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:border-gold/50 hover:bg-white/10"
-              >
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-white/40 font-bold uppercase">CARD POSITION {idx + 1}</span>
-                    <span className="text-[9px] bg-gold/15 border border-gold/30 px-2 py-0.2 font-bold text-gold rounded-none">
-                      {cat.id}
-                    </span>
-                  </div>
-                  
-                  <div className="flex gap-4">
-                    <div className="h-16 w-16 relative bg-black shrink-0 overflow-hidden border border-white/10 rounded-none">
-                      <img src={cat.image} alt={cat.name} className="object-cover w-full h-full animate-fade-in" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-base font-bold text-white group-hover:text-gold transition-colors">{cat.name}</h3>
-                      <p className="text-[10px] text-white/40 font-mono mt-0.5">Slug: <span className="text-white">/products?category={cat.slug}</span></p>
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-white/60 leading-relaxed min-h-[2.5rem]">
-                    {cat.description}
-                  </p>
-                </div>
-
-                <div className="border-t border-white/10 pt-4 mt-5 flex items-center justify-between">
-                  <span className="text-[10px] text-white/40">Moq Value: <strong className="text-white">500+ Units</strong></span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => openEditModal(cat)}
-                      className="flex gap-1.5 items-center bg-gold/10 border border-gold/20 px-2.5 py-1.5 text-[10px] font-bold text-gold hover:bg-gold hover:text-black transition-colors rounded-none"
-                    >
-                      <Edit2 className="h-3 w-3" /> Edit Card
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cat.id)}
-                      className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-black transition-colors rounded-none"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* ── Guide ── */}
+      <div className="bg-white/5 border border-white/10 p-4 flex items-start gap-3">
+        <HelpCircle className="h-5 w-5 text-gold shrink-0 mt-0.5" />
+        <div className="font-mono text-xs text-white/60 space-y-1">
+          <p className="font-bold text-white uppercase tracking-wider text-[10px]">How it works</p>
+          <p>• Click <strong className="text-gold">chevron ›</strong> on any category to expand sub-categories.</p>
+          <p>• Click <strong className="text-gold">status badge</strong> to cycle: Active → Coming Soon → Hidden.</p>
+          <p>• Click <strong className="text-gold">+ Sub</strong> inside any category to add a new sub-category.</p>
+          <p>• <strong className="text-gold">Adding future items:</strong> just click "Add Category" or "+ Sub" — set status to Coming Soon until ready.</p>
         </div>
-      )}
+      </div>
 
-      {/* SECTION 2: HOUSEHOLD GRID */}
-      {(selectedSection === 'all' || selectedSection === 'household') && (
-        <div className="space-y-6 pt-10">
-          <div className="flex items-center justify-between border-l-4 border-gold pl-4">
-            <div>
-              <h2 className="font-display text-xl font-bold uppercase tracking-wider text-white">
-                🏠 Section 2: Household Showcase Grid (4 Cards)
-              </h2>
-              <p className="font-mono text-xs text-white/50 mt-0.5">
-                Displays the 2x2 architectural category cards under the &quot;Household Items Showcase&quot; section on the homepage
-              </p>
-            </div>
-            <button
-              onClick={() => openNewModal('Households')}
-              className="flex items-center gap-1.5 bg-white/5 border border-white/15 px-3 py-1.5 font-mono text-[10px] font-bold text-white hover:bg-gold hover:text-black transition-all rounded-none"
-            >
-              <Plus className="h-3 w-3" /> Add Household Card
-            </button>
-          </div>
+      {/* ── Section Tabs ── */}
+      <div className="flex flex-wrap gap-2 border-b border-white/10 pb-4">
+        {([
+          { key: 'all', label: `All (${totalCats})` },
+          { key: 'garments', label: '👗 Garments' },
+          { key: 'households', label: '🏠 Households' },
+          { key: 'divisions', label: '🚀 Other Divisions' },
+        ] as { key: SectionKey; label: string }[]).map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setSection(tab.key)}
+            className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${section === tab.key ? 'bg-gold border-gold text-black' : 'border-white/10 text-white/50 hover:text-white'}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          <div className="grid gap-6 md:grid-cols-2 font-mono">
-            {householdCards.map((cat, idx) => (
-              <div
-                key={cat.id}
-                className="group relative flex flex-col justify-between rounded-none border border-white/10 bg-white/5 p-6 shadow-xl transition-all duration-300 hover:border-gold/50 hover:bg-white/10"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-white/40 font-bold uppercase">CARD POSITION {idx + 1} (2x2 Grid)</span>
-                    <span className="text-[9px] bg-gold/15 border border-gold/30 px-2 py-0.2 font-bold text-gold rounded-none">
-                      {cat.id}
-                    </span>
-                  </div>
-
-                  <div className="flex gap-5">
-                    <div className="h-20 w-32 relative bg-black shrink-0 overflow-hidden border border-white/10 rounded-none animate-fade-in">
-                      <img src={cat.image} alt={cat.name} className="object-cover w-full h-full" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-white group-hover:text-gold transition-colors">{cat.name}</h3>
-                      <p className="text-[10px] text-white/40 font-mono mt-0.5">Slug: <span className="text-white">/products?category={cat.slug}</span></p>
-                      <p className="text-[10px] text-gold/80 font-mono mt-1 font-semibold">Tagline: &quot;{cat.description.slice(0, 45)}...&quot;</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-white/10 pt-4 mt-6 flex items-center justify-between">
-                  <span className="text-[10px] text-white/40 block">Assigned Section: <strong className="text-white">{cat.division}</strong></span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => openEditModal(cat)}
-                      className="flex gap-1.5 items-center bg-gold/10 border border-gold/20 px-3 py-1.5 text-[10px] font-bold text-gold hover:bg-gold hover:text-black transition-colors rounded-none"
-                    >
-                      <Edit2 className="h-3 w-3" /> Edit Card Info
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cat.id)}
-                      className="flex h-8 w-8 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-black transition-colors rounded-none"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
+      {/* ── Category Groups ── */}
+      <div className="space-y-8">
+        {Array.from(grouped.entries()).map(([divSlug, { divisionName, items }]) => (
+          <div key={divSlug}>
+            {/* Division header */}
+            <div className="flex items-center justify-between border-l-4 border-gold pl-4 mb-4">
+              <div>
+                <h2 className="font-display text-lg font-bold uppercase text-white">{divisionName}</h2>
+                <p className="font-mono text-[10px] text-white/30">{items.length} categories · {items.reduce((a, c) => a + c.subCategories.length, 0)} sub-categories</p>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* SECTION 3: STRATEGIC EXPANSION */}
-      {(selectedSection === 'all' || selectedSection === 'divisions') && (
-        <div className="space-y-6 pt-10">
-          <div className="flex items-center justify-between border-l-4 border-gold pl-4">
-            <div>
-              <h2 className="font-display text-xl font-bold uppercase tracking-wider text-white">
-                🚀 Section 3: Strategic Expansion Divisions Grid (4 Cards)
-              </h2>
-              <p className="font-mono text-xs text-white/50 mt-0.5">
-                Displays the 4 division blocks (Uniforms, Hospitality, Fragrance, Home Furnishings) featured on the landing page
-              </p>
-            </div>
-            <button
-              onClick={() => openNewModal('Divisions')}
-              className="flex items-center gap-1.5 bg-white/5 border border-white/15 px-3 py-1.5 font-mono text-[10px] font-bold text-white hover:bg-gold hover:text-black transition-all rounded-none"
-            >
-              <Plus className="h-3 w-3" /> Add Expansion Division
-            </button>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 font-mono">
-            {divisionsCards.map((cat, idx) => (
-              <div
-                key={cat.id}
-                className="group relative flex flex-col justify-between rounded-none border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:border-gold/50 hover:bg-white/10"
+              <button
+                onClick={() => { setCatForm({ ...EMPTY_CAT, divisionSlug: divSlug }); setEditingCat(null); setCatModal('add') }}
+                className="flex items-center gap-1.5 border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-[10px] font-bold text-white hover:bg-gold hover:text-black transition-all"
               >
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-white/40 font-bold uppercase font-mono">DIVISION CARD {idx + 1}</span>
-                    <span className="text-[9px] bg-blue-500/15 border border-blue-500/30 px-2 py-0.2 font-bold text-blue-400 rounded-none">
-                      {cat.id}
-                    </span>
-                  </div>
+                <Plus className="h-3 w-3" /> Add to {divisionName}
+              </button>
+            </div>
 
-                  <div className="h-28 relative bg-black overflow-hidden border border-white/10 rounded-none animate-fade-in">
-                    <img src={cat.image} alt={cat.name} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-
-                  <div>
-                    <h3 className="font-display text-base font-bold text-white group-hover:text-gold transition-colors">{cat.name}</h3>
-                    <p className="text-[10px] text-white/40 mt-0.5">Link: <span className="text-white">/products?division={cat.slug}</span></p>
-                  </div>
-
-                  <p className="text-[11px] text-white/60 leading-relaxed min-h-[3rem] font-sans">
-                    {cat.description}
-                  </p>
-                </div>
-
-                <div className="border-t border-white/10 pt-4 mt-5 flex items-center justify-between">
-                  <span className="text-[10px] text-white/40">Stats: <strong className="text-white">{cat.count} Active</strong></span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => openEditModal(cat)}
-                      className="flex h-7 w-7 items-center justify-center border border-gold/30 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors rounded-none"
-                    >
-                      <Edit2 className="h-3.5 w-3.5" />
+            {/* Category cards */}
+            <div className="space-y-3">
+              {items.sort((a, b) => a.displayOrder - b.displayOrder).map((cat) => (
+                <div key={cat.id} className="border border-white/10 bg-white/[0.03] hover:border-white/20 transition-all">
+                  {/* Category row */}
+                  <div className="flex items-center gap-3 px-4 py-3">
+                    <button onClick={() => toggleExpand(cat.id)} className="text-white/40 hover:text-white transition-colors shrink-0">
+                      {expanded.has(cat.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     </button>
-                    <button
-                      onClick={() => handleDelete(cat.id)}
-                      className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-black transition-colors rounded-none"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-mono text-[9px] text-white/30">{cat.id}</span>
+                        <span className="font-body text-sm font-semibold text-white">{cat.name}</span>
+                        <span className="font-mono text-[10px] text-white/30">/products/{cat.divisionSlug}/{cat.slug}</span>
+                      </div>
+                      <p className="font-mono text-[9px] text-white/20 mt-0.5">{cat.subCategories.length} sub-categories</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* Status toggle badge */}
+                      <button
+                        onClick={() => toggleCatStatus(cat.id)}
+                        title="Click to cycle status"
+                        className={`px-2.5 py-0.5 font-mono text-[8px] font-bold uppercase border transition-all cursor-pointer hover:opacity-80 ${STATUS_STYLES[cat.status]}`}
+                      >
+                        {STATUS_LABELS[cat.status]}
+                      </button>
+                      <button onClick={() => openAddSub(cat.id)} className="flex items-center gap-1 border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[9px] font-bold text-white hover:bg-gold hover:text-black transition-all">
+                        <Plus className="h-3 w-3" /> Sub
+                      </button>
+                      <button onClick={() => openEditCat(cat)} className="flex h-7 w-7 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
+                        <Edit2 className="h-3 w-3" />
+                      </button>
+                      <button onClick={() => deleteCat(cat.id)} className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Sub-categories expanded */}
+                  <AnimatePresence>
+                    {expanded.has(cat.id) && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden border-t border-white/[0.06]"
+                      >
+                        <div className="px-4 py-3 space-y-2 bg-white/[0.02]">
+                          <p className="font-mono text-[9px] uppercase tracking-widest text-white/20 mb-2">Sub-Categories</p>
+                          {cat.subCategories.length === 0 && (
+                            <p className="font-mono text-[10px] text-white/20 italic">No sub-categories yet. Click "+ Sub" to add one.</p>
+                          )}
+                          {cat.subCategories.sort((a, b) => a.displayOrder - b.displayOrder).map((sub) => (
+                            <div key={sub.id} className="flex items-center gap-3 pl-4 border-l border-white/10">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-mono text-[8px] text-white/20">{sub.id}</span>
+                                  <span className="font-body text-xs text-white/80">{sub.name}</span>
+                                  <span className="font-mono text-[9px] text-white/20">/.../{sub.slug}</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                  onClick={() => toggleSubStatus(cat.id, sub.id)}
+                                  className={`px-2 py-0.5 font-mono text-[8px] font-bold uppercase border cursor-pointer hover:opacity-80 transition-all ${STATUS_STYLES[sub.status]}`}
+                                >
+                                  {STATUS_LABELS[sub.status]}
+                                </button>
+                                <button onClick={() => openEditSub(cat.id, sub)} className="flex h-6 w-6 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
+                                  <Edit2 className="h-3 w-3" />
+                                </button>
+                                <button onClick={() => deleteSub(cat.id, sub.id)} className="flex h-6 w-6 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
-      {/* CREATE NODE MODAL */}
+      {/* ── Category Modal ── */}
       <AnimatePresence>
-        {newModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-mono">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg rounded-none border border-white/10 bg-[#0D0D0D] p-8 shadow-2xl space-y-6"
-            >
+        {catModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md border border-white/10 bg-[#0D0D0D] p-7 shadow-2xl space-y-5">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center border border-gold bg-gold/10 text-gold rounded-none">
-                    <Plus className="h-4 w-4" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-white uppercase">Add Grid Card</h3>
+                <h3 className="font-display text-lg font-bold uppercase text-white">
+                  {catModal === 'add' ? 'Add Category' : 'Edit Category'}
+                </h3>
+                <button onClick={() => setCatModal(null)} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelCls}>Division</label>
+                  <select value={catForm.divisionSlug} onChange={(e) => setCatForm({ ...catForm, divisionSlug: e.target.value })} className={selectCls}>
+                    {divOptions.map((d) => <option key={d.slug} value={d.slug}>{d.name}</option>)}
+                  </select>
                 </div>
-                <button onClick={() => setNewModalOpen(false)} className="text-white/40 hover:text-white p-1 rounded-none">
-                  <X className="h-5 w-5" />
+                <div>
+                  <label className={labelCls}>Category Name *</label>
+                  <input value={catForm.name} onChange={(e) => setCatForm({ ...catForm, name: e.target.value, slug: toSlug(e.target.value) })} placeholder="e.g. Kitchen" className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>URL Slug *</label>
+                  <input value={catForm.slug} onChange={(e) => setCatForm({ ...catForm, slug: toSlug(e.target.value) })} placeholder="kitchen" className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Status</label>
+                  <select value={catForm.status} onChange={(e) => setCatForm({ ...catForm, status: e.target.value as ItemStatus })} className={selectCls}>
+                    <option value="active">Active</option>
+                    <option value="coming-soon">Coming Soon</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setCatModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
+                <button onClick={saveCat} className="flex-1 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                  {catModal === 'add' ? 'Create' : 'Save Changes'}
                 </button>
               </div>
-
-              <form onSubmit={handleCreate} className="space-y-4 text-xs">
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Card Title / Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formState.name}
-                    onChange={e => setFormState({ ...formState, name: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') })}
-                    placeholder="e.g. Formal Shirts / Oud Fragrances"
-                    className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">URL Link Slug *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formState.slug}
-                    onChange={e => setFormState({ ...formState, slug: e.target.value })}
-                    placeholder="formal-shirts"
-                    className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Section Assignment *</label>
-                    <select
-                      value={formState.division}
-                      onChange={e => setFormState({ ...formState, division: e.target.value as 'Garments' | 'Households' | 'Divisions' })}
-                      className="w-full rounded-none border border-white/10 bg-black px-4 py-3 text-white focus:border-gold focus:outline-none"
-                    >
-                      <option value="Garments">Section 1: Garments Grid (6 cards)</option>
-                      <option value="Households">Section 2: Household Grid (4 cards)</option>
-                      <option value="Divisions">Section 3: Strategic Expansion (4 cards)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Status Node *</label>
-                    <select
-                      value={formState.status}
-                      onChange={e => setFormState({ ...formState, status: e.target.value as 'Active' | 'Locked' })}
-                      className="w-full rounded-none border border-white/10 bg-black px-4 py-3 text-white focus:border-gold focus:outline-none"
-                    >
-                      <option value="Active">Active &amp; Visible</option>
-                      <option value="Locked">Hidden / Locked</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* PREMIUM DYNAMIC IMAGE UPLOADER PORT */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-medium uppercase tracking-wider text-white/40">Card Image / Banner *</label>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setImageInputMethod('upload')}
-                        className={`flex items-center gap-1 px-2 py-0.5 rounded-none font-mono text-[9px] border transition-all ${
-                          imageInputMethod === 'upload' ? 'bg-gold border-gold text-black font-bold' : 'border-white/10 text-white/50'
-                        }`}
-                      >
-                        <Upload className="h-2.5 w-2.5" /> Upload File
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setImageInputMethod('link')}
-                        className={`flex items-center gap-1 px-2 py-0.5 rounded-none font-mono text-[9px] border transition-all ${
-                          imageInputMethod === 'link' ? 'bg-gold border-gold text-black font-bold' : 'border-white/10 text-white/50'
-                        }`}
-                      >
-                        <LinkIcon className="h-2.5 w-2.5" /> URL Link
-                      </button>
-                    </div>
-                  </div>
-
-                  {imageInputMethod === 'upload' ? (
-                    <div
-                      onClick={() => fileInputRef.current?.click()}
-                      className="border border-dashed border-white/20 hover:border-gold hover:bg-white/5 transition-all p-6 text-center cursor-pointer rounded-none relative group"
-                    >
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                      {formState.image ? (
-                        <div className="flex items-center justify-center gap-3">
-                          <img src={formState.image} alt="Preview" className="h-10 w-10 object-cover border border-white/10 rounded-none shrink-0" />
-                          <div className="text-left font-mono">
-                            <p className="text-[10px] text-white font-bold uppercase">Image Attached Successfully</p>
-                            <p className="text-[9px] text-gold/80">Click to change or replace file</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="space-y-1.5">
-                          <Upload className="h-5 w-5 text-white/40 mx-auto group-hover:text-gold transition-colors" />
-                          <p className="text-[10px] text-white/60">Drag &amp; drop or click to upload card image</p>
-                          <p className="text-[8px] text-white/30 uppercase tracking-widest font-mono">PNG, JPG, WEBP (Ideal: 4:3 or 16:9)</p>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <input
-                      type="text"
-                      value={formState.image}
-                      onChange={e => setFormState({ ...formState, image: e.target.value })}
-                      placeholder="e.g. /images/formal-shirts.png"
-                      className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Card Subtitle / Description text</label>
-                  <textarea
-                    rows={3}
-                    value={formState.description}
-                    onChange={e => setFormState({ ...formState, description: e.target.value })}
-                    placeholder="Short summary tagline displayed on the card..."
-                    className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setNewModalOpen(false)}
-                    className="flex-1 rounded-none border border-white/10 bg-white/5 py-3 font-semibold text-white/70 hover:bg-white/10 transition-all"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 rounded-none bg-gold py-3 font-bold text-black hover:bg-gold-light transition-all shadow-lg shadow-gold/20"
-                  >
-                    Deploy Node
-                  </button>
-                </div>
-              </form>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* EDIT NODE MODAL */}
+      {/* ── Sub-Category Modal ── */}
       <AnimatePresence>
-        {editModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-mono">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg rounded-none border border-white/10 bg-[#0D0D0D] p-8 shadow-2xl space-y-6"
-            >
+        {subModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md border border-white/10 bg-[#0D0D0D] p-7 shadow-2xl space-y-5">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center border border-gold bg-gold/10 text-gold rounded-none">
-                    <Edit2 className="h-4 w-4" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-white uppercase">Modify Card Info</h3>
+                <h3 className="font-display text-lg font-bold uppercase text-white">
+                  {subModal === 'add' ? 'Add Sub-Category' : 'Edit Sub-Category'}
+                </h3>
+                <button onClick={() => setSubModal(null)} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelCls}>Sub-Category Name *</label>
+                  <input value={subForm.name} onChange={(e) => setSubForm({ ...subForm, name: e.target.value, slug: toSlug(e.target.value) })} placeholder="e.g. Cutlery" className={inputCls} />
                 </div>
-                <button onClick={() => setEditModalOpen(false)} className="text-white/40 hover:text-white p-1 rounded-none">
-                  <X className="h-5 w-5" />
+                <div>
+                  <label className={labelCls}>URL Slug *</label>
+                  <input value={subForm.slug} onChange={(e) => setSubForm({ ...subForm, slug: toSlug(e.target.value) })} placeholder="cutlery" className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Status</label>
+                  <select value={subForm.status} onChange={(e) => setSubForm({ ...subForm, status: e.target.value as ItemStatus })} className={selectCls}>
+                    <option value="active">Active</option>
+                    <option value="coming-soon">Coming Soon</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setSubModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
+                <button onClick={saveSub} className="flex-1 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                  {subModal === 'add' ? 'Create' : 'Save Changes'}
                 </button>
               </div>
-
-              <form onSubmit={handleUpdate} className="space-y-4 text-xs">
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Card Title / Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formState.name}
-                    onChange={e => setFormState({ ...formState, name: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') })}
-                    placeholder="e.g. Formal Shirts"
-                    className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">URL Link Slug *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formState.slug}
-                    onChange={e => setFormState({ ...formState, slug: e.target.value })}
-                    placeholder="formal-shirts"
-                    className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Section Assignment *</label>
-                    <select
-                      value={formState.division}
-                      onChange={e => setFormState({ ...formState, division: e.target.value as 'Garments' | 'Households' | 'Divisions' })}
-                      className="w-full rounded-none border border-white/10 bg-black px-4 py-3 text-white focus:border-gold focus:outline-none"
-                    >
-                      <option value="Garments">Section 1: Garments Grid (6 cards)</option>
-                      <option value="Households">Section 2: Household Grid (4 cards)</option>
-                      <option value="Divisions">Section 3: Strategic Expansion (4 cards)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Status Node *</label>
-                    <select
-                      value={formState.status}
-                      onChange={e => setFormState({ ...formState, status: e.target.value as 'Active' | 'Locked' })}
-                      className="w-full rounded-none border border-white/10 bg-black px-4 py-3 text-white focus:border-gold focus:outline-none"
-                    >
-                      <option value="Active">Active &amp; Visible</option>
-                      <option value="Locked">Hidden / Locked</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* PREMIUM DYNAMIC IMAGE UPLOADER PORT */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-medium uppercase tracking-wider text-white/40">Card Image / Banner *</label>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setImageInputMethod('upload')}
-                        className={`flex items-center gap-1 px-2 py-0.5 rounded-none font-mono text-[9px] border transition-all ${
-                          imageInputMethod === 'upload' ? 'bg-gold border-gold text-black font-bold' : 'border-white/10 text-white/50'
-                        }`}
-                      >
-                        <Upload className="h-2.5 w-2.5" /> Upload File
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setImageInputMethod('link')}
-                        className={`flex items-center gap-1 px-2 py-0.5 rounded-none font-mono text-[9px] border transition-all ${
-                          imageInputMethod === 'link' ? 'bg-gold border-gold text-black font-bold' : 'border-white/10 text-white/50'
-                        }`}
-                      >
-                        <LinkIcon className="h-2.5 w-2.5" /> URL Link
-                      </button>
-                    </div>
-                  </div>
-
-                  {imageInputMethod === 'upload' ? (
-                    <div
-                      onClick={() => fileInputRef.current?.click()}
-                      className="border border-dashed border-white/20 hover:border-gold hover:bg-white/5 transition-all p-6 text-center cursor-pointer rounded-none relative group"
-                    >
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                      {formState.image ? (
-                        <div className="flex items-center justify-center gap-3">
-                          <img src={formState.image} alt="Preview" className="h-10 w-10 object-cover border border-white/10 rounded-none shrink-0" />
-                          <div className="text-left font-mono">
-                            <p className="text-[10px] text-white font-bold uppercase">Image Attached Successfully</p>
-                            <p className="text-[9px] text-gold/80">Click to change or replace file</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="space-y-1.5">
-                          <Upload className="h-5 w-5 text-white/40 mx-auto group-hover:text-gold transition-colors" />
-                          <p className="text-[10px] text-white/60">Drag &amp; drop or click to upload card image</p>
-                          <p className="text-[8px] text-white/30 uppercase tracking-widest font-mono">PNG, JPG, WEBP (Ideal: 4:3 or 16:9)</p>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <input
-                      type="text"
-                      value={formState.image}
-                      onChange={e => setFormState({ ...formState, image: e.target.value })}
-                      placeholder="e.g. /images/formal-shirts.png"
-                      className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Card Subtitle / Description text</label>
-                  <textarea
-                    rows={3}
-                    value={formState.description}
-                    onChange={e => setFormState({ ...formState, description: e.target.value })}
-                    placeholder="Short summary tagline displayed on the card..."
-                    className="w-full rounded-none border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setEditModalOpen(false)}
-                    className="flex-1 rounded-none border border-white/10 bg-white/5 py-3 font-semibold text-white/70 hover:bg-white/10 transition-all"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 rounded-none bg-gold py-3 font-bold text-black hover:bg-gold-light transition-all shadow-lg shadow-gold/20"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </form>
             </motion.div>
           </div>
         )}
