@@ -51,18 +51,18 @@ export function WhoWeAre() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-none" />
 
-              {/* Internal Image Overlay Copy */}
-              <div className="absolute top-8 left-8 z-10 max-w-[85%] rounded-none border border-white/10 bg-black/60 p-6 backdrop-blur-md text-white">
-                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-gold">
+              {/* Internal Image Overlay Copy — bottom-left on mobile, top-left on desktop */}
+              <div className="absolute bottom-4 left-4 top-auto right-auto sm:bottom-auto sm:right-auto sm:top-4 sm:left-4 z-10 max-w-[50%] rounded-none border border-white/10 bg-black/60 px-2 pb-2 backdrop-blur-md text-white">
+                <span className="font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-gold leading-none">
                   Dubai Operations Hub
                 </span>
-                <h3 className="mt-1.5 font-display text-lg sm:text-xl font-semibold tracking-wide text-white uppercase">
+                <h3 className=" font-display text-xs sm:text-sm font-semibold tracking-wide text-white uppercase leading-snug">
                   Industrial Precision at Scale
                 </h3>
               </div>
             </div>
 
-            {/* Overlapping Floating Glass Badge (No border radius - rounded-none) */}
+            {/* Overlapping Floating Glass Badge */}
             <motion.div
               className="absolute -bottom-6 -right-6 hidden sm:flex items-center gap-4 rounded-none border border-white/10 bg-[#0A0A0A]/95 p-6 shadow-2xl backdrop-blur-xl lg:-right-10"
               initial={{ opacity: 0, y: 30 }}
