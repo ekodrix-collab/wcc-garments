@@ -56,6 +56,7 @@ export interface Product {
   updated_at: string
   division?: Division
   category?: Category
+  brand_slug?: string | null
 }
 
 export interface Media {
@@ -145,4 +146,17 @@ export interface ApiResponse<T> {
   total?: number
   limit?: number
   offset?: number
+}
+
+export interface Brand {
+  id: string
+  name: string
+  slug: string
+  tagline: string
+  description: string
+  logo_mobile: string   // Image for mobile
+  logo_desktop: string  // Image for desktop
+  featured: boolean
+  display_order: number
+  created_at: string
 }
