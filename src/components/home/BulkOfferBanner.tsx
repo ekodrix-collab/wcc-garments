@@ -18,6 +18,8 @@ interface BulkOfferBannerProps {
   slideImages?: string[];
 }
 
+import { contentStore } from "@/lib/content-store";
+
 export default function BulkOfferBanner({
   enabled = true,
   tagText = "Bulk Garments Order",
@@ -36,16 +38,34 @@ export default function BulkOfferBanner({
   ],
 }: BulkOfferBannerProps) {
   const [current, setCurrent] = useState(0);
+  
+  // Safe SSR/Hydration state initialization
+  const [data, setData] = useState({
+    enabled, tagText, headingStart, headingHighlight, description,
+    discountPercentage, discountText, discountSubText, offerEndDate,
+    buttonText, slideImages
+  });
+
+  const slideImagesString = JSON.stringify(slideImages);
+
+  useEffect(() => {
+    const loaded = contentStore.getSectionData("bulk-offer", {
+      enabled, tagText, headingStart, headingHighlight, description,
+      discountPercentage, discountText, discountSubText, offerEndDate,
+      buttonText, slideImages
+    });
+    setData(loaded);
+  }, [enabled, tagText, headingStart, headingHighlight, description, discountPercentage, discountText, discountSubText, offerEndDate, buttonText, slideImagesString]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slideImages.length);
+      setCurrent((prev) => (prev + 1) % data.slideImages.length);
     }, 3500);
 
     return () => clearInterval(interval);
-  }, [slideImages.length]);
+  }, [data.slideImages.length]);
 
-  if (!enabled) return null;
+  if (!data.enabled) return null;
 
   return (
     <section className="relative overflow-hidden bg-black py-5">
@@ -61,18 +81,18 @@ export default function BulkOfferBanner({
                 <Tag className="text-white" size={16} />
 
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white">
-                  {tagText}
+                  {data.tagText}
                 </span>
               </div>
 
               {/* Heading */}
               <div className="space-y-4">
                 <h2 className="text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
-                 {headingStart} <span className="text-blue-600">{headingHighlight}</span>
+                 {data.headingStart} <span className="text-blue-600">{data.headingHighlight}</span>
                 </h2>
 
                 <p className="max-w-xl text-sm leading-relaxed text-gray-400">
-                  {description}
+                  {data.description}
                 </p>
               </div>
 
@@ -81,16 +101,16 @@ export default function BulkOfferBanner({
 
                 <div className="flex items-center gap-4">
                   <div className="flex h-16 w-16 items-center justify-center rounded-md bg-gradient-to-br from-blue-500 to-purple-600 text-2xl font-bold text-white shadow-lg">
-                    {discountPercentage}%
+                    {data.discountPercentage}%
                   </div>
 
                   <div>
                     <h4 className="text-lg font-semibold text-white">
-                      {discountText}
+                      {data.discountText}
                     </h4>
 
                     <p className="text-sm text-gray-400">
-                      {discountSubText}
+                      {data.discountSubText}
                     </p>
                   </div>
                 </div>
@@ -106,7 +126,7 @@ export default function BulkOfferBanner({
                     </p>
 
                     <p className="text-sm font-medium text-white">
-                      {offerEndDate}
+                      {data.offerEndDate}
                     </p>
                   </div>
                 </div>
@@ -115,7 +135,7 @@ export default function BulkOfferBanner({
               {/* Button */}
               <div className="hidden lg:block w-full">
                 <button className="group flex w-full sm:w-auto justify-center items-center gap-3 bg-white px-7 py-3 text-sm font-semibold text-black transition-all duration-300 hover:scale-105 hover:bg-blue-500 hover:text-white">
-                  {buttonText}
+                  {data.buttonText}
 
                   <ArrowRight
                     size={18}
@@ -141,7 +161,7 @@ export default function BulkOfferBanner({
                     transform: `translateX(-${current * 100}%)`,
                   }}
                 >
-                  {slideImages.map((img, index) => (
+                  {data.slideImages.map((img, index) => (
                     <div
                       key={index}
                       className="relative h-full min-w-full overflow-hidden"
@@ -161,7 +181,7 @@ export default function BulkOfferBanner({
             {/* Mobile Button - Bottom */}
             <div className="w-full lg:hidden">
               <button className="group flex w-full sm:w-auto justify-center items-center gap-3 bg-white px-7 py-3 text-sm font-semibold text-black transition-all duration-300 hover:scale-105 hover:bg-blue-500 hover:text-white">
-                {buttonText}
+                {data.buttonText}
 
                 <ArrowRight
                   size={18}

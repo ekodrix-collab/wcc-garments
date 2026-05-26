@@ -6,40 +6,30 @@ import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 
-const HOUSEHOLD_CATEGORIES = [
-  {
-    name: 'Industrial Microfiber',
-    slug: 'microfiber',
-    tagline: 'High-density commercial cleaning wipes',
-    count: '1,000+ MOQ',
-    image: '/images/hh-1.png',
-  },
-  {
-    name: 'Bulk Liquids & Sanitizers',
-    slug: 'liquids',
-    tagline: 'Premium wholesale chemical formulations',
-    count: '500L+ MOQ',
-    image: '/images/hh-2.png',
-  },
-  {
-    name: 'Institutional Linens',
-    slug: 'kitchen-linens',
-    tagline: 'Heavy-duty commercial sheets & napery',
-    count: '250+ MOQ',
-    image: '/images/hh-3.png',
-  },
-  {
-    name: 'OEM Custom Essentials',
-    slug: 'oem-essentials',
-    tagline: 'Bespoke household product branding options',
-    count: '10k+ MOQ',
-    image: '/images/hh-4.png',
-  }
-]
+import { useState, useEffect } from 'react'
+import { contentStore } from '@/lib/content-store'
+
+const DEFAULT_HOUSEHOLDS = {
+  indicator: "HIGH-DEMAND HOUSEHOLD MANUFACTURING",
+  headingStart: "Household items we ",
+  headingHighlight: "manufacture",
+  description: "Professional bulk household supplies, commercial microfibers, and custom OEM institutional items. Engineered to meet strict industrial sanitization and commercial durability standards for global export.",
+  categories: [
+    { name: 'Industrial Microfiber', slug: 'microfiber', tagline: 'High-density commercial cleaning wipes', count: '1,000+ MOQ', image: '/images/hh-1.png' },
+    { name: 'Bulk Liquids & Sanitizers', slug: 'liquids', tagline: 'Premium wholesale chemical formulations', count: '500L+ MOQ', image: '/images/hh-2.png' },
+    { name: 'Institutional Linens', slug: 'kitchen-linens', tagline: 'Heavy-duty commercial sheets & napery', count: '250+ MOQ', image: '/images/hh-3.png' },
+    { name: 'OEM Custom Essentials', slug: 'oem-essentials', tagline: 'Bespoke household product branding options', count: '10k+ MOQ', image: '/images/hh-4.png' }
+  ]
+}
 
 export function HouseholdShowcase() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const [data, setData] = useState(DEFAULT_HOUSEHOLDS)
+
+  useEffect(() => {
+    setData(contentStore.getSectionData('households-showcase', DEFAULT_HOUSEHOLDS))
+  }, [])
 
   return (
     <section className="bg-[var(--bg)] py-16 md:py-24 border-t border-[var(--border)]" ref={ref}>
@@ -54,7 +44,7 @@ export function HouseholdShowcase() {
           >
             <div className="flex items-center gap-3">
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-                HIGH-DEMAND HOUSEHOLD MANUFACTURING
+                {data.indicator}
               </span>
             </div>
           </motion.div>
@@ -64,7 +54,7 @@ export function HouseholdShowcase() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            Household items we <span className="text-gold">manufacture</span>
+            {data.headingStart}<span className="text-gold">{data.headingHighlight}</span>
           </motion.h2>
           <motion.p
             className="mt-4 text-sm sm:text-base leading-relaxed text-gray-500 max-w-3xl"
@@ -72,13 +62,13 @@ export function HouseholdShowcase() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            Professional bulk household supplies, commercial microfibers, and custom OEM institutional items. Engineered to meet strict industrial sanitization and commercial durability standards for global export.
+            {data.description}
           </motion.p>
         </div>
 
         {/* 2x2 Architectural Grid (2 top, 2 bottom) with rounded-none (no border radius) */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-          {HOUSEHOLD_CATEGORIES.map((category, index) => (
+          {data.categories.map((category: any, index: number) => (
             <motion.div
               key={category.slug}
               initial={{ opacity: 0, y: 60 }}

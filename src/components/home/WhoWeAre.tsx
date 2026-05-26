@@ -7,16 +7,43 @@ import { CounterStat } from '@/components/ui/CounterStat'
 import { ShieldCheck, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 
+import { useState, useEffect } from 'react'
+import { contentStore } from '@/lib/content-store'
+
+const DEFAULT_WHO_WE_ARE = {
+  heritageLabel: "Corporate Heritage",
+  heading: "WCC FASHIONS",
+  subHeading: "Established 2001",
+  paragraphs: [
+    "Western Clothing Company (WCC Fashions LLC) is a premier UAE-based industrial fashion manufacturing group.",
+    "Operating out of our advanced Dubai manufacturing infrastructure, we deliver end-to-end commercial solutions—from precision pattern CAD and fabric sourcing to full-scale container export across 50+ nations worldwide.",
+    "Our multi-division capabilities bridge high-end fashion garments, heavy-duty industrial workwear, luxury hotel linens, and authentic Arabian fragrances under strict ISO quality benchmarks."
+  ],
+  mainImage: "/images/about wcc.png",
+  floatingBadgeTitle: "Certified Standards",
+  floatingBadgeDesc: "ISO 9001:2015 / OEM Export Grade",
+  stats: [
+    { value: 25, suffix: "+", label: "Years Expertise", desc: "Unrivaled manufacturing history and procurement experience since our Dubai inception." },
+    { value: 50, suffix: "+", label: "Export Nations", desc: "Active global distribution networks spanning GCC, Africa, Europe, and the Americas." },
+    { value: 10, suffix: "K+", label: "Monthly Capacity", desc: "Industrial-scale output supporting massive tenders and commercial supply chains." }
+  ]
+}
+
 export function WhoWeAre() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const [data, setData] = useState(DEFAULT_WHO_WE_ARE)
+
+  useEffect(() => {
+    setData(contentStore.getSectionData('who-we-are', DEFAULT_WHO_WE_ARE))
+  }, [])
 
   return (
     <section className="relative overflow-hidden bg-[var(--bg)] py-20 md:py-28 border-t border-[var(--border)]" ref={ref} data-cursor="view">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         {/* Section Header Indicator */}
         <div className="flex items-center gap-3 mb-6">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.45em] text-gold">Corporate Heritage</span>
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.45em] text-gold">{data.heritageLabel}</span>
         </div>
 
         <div className="grid gap-12 lg:gap-20 lg:grid-cols-12 lg:items-start">
@@ -27,10 +54,14 @@ export function WhoWeAre() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
-              <h2 className="font-display text-4xl sm:text-5xl font-semibold leading-tight tracking-tight text-[var(--text)]">
-                WCC <span className="text-gold font-light">FASHIONS</span>
+              <h2 className="font-display text-4xl sm:text-5xl font-semibold leading-tight tracking-tight text-[var(--text)] uppercase">
+                {data.heading.split(' ').map((word: string, i: number, arr: string[]) => (
+                  <span key={i} className={i === arr.length - 1 ? "text-gold font-light" : ""}>
+                    {word}{i < arr.length - 1 ? ' ' : ''}
+                  </span>
+                ))}
               </h2>
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--text-muted)] block mt-2">Established 2001</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--text-muted)] block mt-2">{data.subHeading}</span>
             </motion.div>
           </div>
 
@@ -43,7 +74,7 @@ export function WhoWeAre() {
           >
             <div className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden rounded-none border border-[var(--border)] shadow-2xl">
               <Image
-                src="/images/about wcc.png"
+                src={data.mainImage}
                 alt="WCC Industrial Garment Floor"
                 fill
                 className="object-cover contrast-110 filter rounded-none"
@@ -74,10 +105,10 @@ export function WhoWeAre() {
               </div>
               <div>
                 <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-gold block font-bold">
-                  Certified Standards
+                  {data.floatingBadgeTitle}
                 </span>
-                <p className="font-sans text-xs font-semibold text-white tracking-wide mt-1">
-                  ISO 9001:2015 / OEM Export Grade
+                <p className="font-sans text-xs font-semibold text-white tracking-wide mt-1 animate-pulse">
+                  {data.floatingBadgeDesc}
                 </p>
               </div>
             </motion.div>
@@ -91,20 +122,24 @@ export function WhoWeAre() {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
               <h2 className="hidden lg:block font-display text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-[var(--text)] uppercase">
-                WCC <span className="text-gold font-light">FASHIONS</span>
+                {data.heading.split(' ').map((word: string, i: number, arr: string[]) => (
+                  <span key={i} className={i === arr.length - 1 ? "text-gold font-light" : ""}>
+                    {word}{i < arr.length - 1 ? ' ' : ''}
+                  </span>
+                ))}
               </h2>
-              <span className="hidden lg:block font-mono text-[9px] uppercase tracking-[0.35em] text-[var(--text-muted)] mt-2">Established 2001</span>
+              <span className="hidden lg:block font-mono text-[9px] uppercase tracking-[0.35em] text-[var(--text-muted)] mt-2">{data.subHeading}</span>
 
               {/* Enhanced Typography for Editorial Copy */}
               <div className="mt-8 space-y-6 text-[15px] font-light leading-relaxed text-neutral-600 dark:text-neutral-300 font-sans tracking-wide">
                 <p className="text-lg font-medium text-[var(--text)] leading-snug">
-                  Western Clothing Company (WCC Fashions LLC) is a premier UAE-based industrial fashion manufacturing group.
+                  {data.paragraphs[0]}
                 </p>
                 <p className="text-sm sm:text-base">
-                  Operating out of our advanced Dubai manufacturing infrastructure, we deliver end-to-end commercial solutions—from precision pattern CAD and fabric sourcing to full-scale container export across 50+ nations worldwide.
+                  {data.paragraphs[1]}
                 </p>
                 <p className="text-sm sm:text-base">
-                  Our multi-division capabilities bridge high-end fashion garments, heavy-duty industrial workwear, luxury hotel linens, and authentic Arabian fragrances under strict ISO quality benchmarks.
+                  {data.paragraphs[2]}
                 </p>
               </div>
 
@@ -126,26 +161,14 @@ export function WhoWeAre() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
-                <CounterStat end={25} suffix="+" label="Years Expertise" />
-                <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
-                  Unrivaled manufacturing history and procurement experience since our Dubai inception.
-                </p>
-              </div>
-
-              <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
-                <CounterStat end={50} suffix="+" label="Export Nations" />
-                <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
-                  Active global distribution networks spanning GCC, Africa, Europe, and the Americas.
-                </p>
-              </div>
-
-              <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
-                <CounterStat end={10} suffix="K+" label="Monthly Capacity" />
-                <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
-                  Industrial-scale output supporting massive tenders and commercial supply chains.
-                </p>
-              </div>
+              {data.stats.map((s, idx) => (
+                <div key={idx} className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
+                  <CounterStat end={s.value} suffix={s.suffix} label={s.label} />
+                  <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
+                    {s.desc}
+                  </p>
+                </div>
+              ))}
             </motion.div>
           </div>
         </div>
