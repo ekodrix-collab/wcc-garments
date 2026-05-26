@@ -1,17 +1,34 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, MessageCircle } from 'lucide-react'
-import { MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
+import { SITE_CONFIG } from '@/lib/constants'
 import { ProductCard } from '@/components/products/ProductCard'
+import { brandStore } from '@/lib/brand-store'
+import { contentStore } from '@/lib/content-store'
 
 const CATEGORIES = ['All', 'Garments', 'Uniforms', 'Hospitality', 'Home', 'Fragrance', 'Households']
 
 export function NewArrivals() {
   const [activeTab, setActiveTab] = useState('All')
   const gridRef = useRef<HTMLDivElement>(null)
+  const [products, setProducts] = useState<any[]>([])
+  const [config, setConfig] = useState<any>({ whatsapp: '+971 XX XXX XXXX' })
+
+  useEffect(() => {
+    setConfig(contentStore.getSiteConfig())
+  }, [])
+
+  useEffect(() => {
+    const allProducts = brandStore.getProducts()
+    const filtered = allProducts.filter((p) => {
+      if (activeTab === 'All') return p.is_new || p.featured
+      return p.division && p.division.slug.toLowerCase() === activeTab.toLowerCase()
+    }).slice(0, 8)
+    setProducts(filtered)
+  }, [activeTab])
 
   const handleTabChange = (cat: string) => {
     setActiveTab(cat)
@@ -25,12 +42,7 @@ export function NewArrivals() {
     }, 50)
   }
 
-  const products = MOCK_PRODUCTS.filter((p) => {
-    if (activeTab === 'All') return p.is_new || p.featured
-    return p.division_slug.toLowerCase() === activeTab.toLowerCase()
-  }).slice(0, 8) // Limit to 8 for a perfectly aligned 4-column grid (2 rows of 4)
-
-  const whatsappBase = SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')
+  const whatsappBase = config.whatsapp ? config.whatsapp.replace(/[^0-9]/g, '') : ''
 
   return (
     <section className="bg-[var(--bg)] py-20" data-cursor="view">
@@ -105,9 +117,9 @@ export function NewArrivals() {
                 // Adapt MOCK_PRODUCTS fields to match ProductCard expects
                 const formattedProduct = {
                   ...product,
-                  division: { name: product.division, slug: product.division_slug },
-                  category: { name: product.category }
-                }
+                  division: { name: product.division?.name || '', slug: product.division?.slug || '' },
+                  category: { name: product.category?.name || '' }
+                };
 
                 return (
                   <ProductCard

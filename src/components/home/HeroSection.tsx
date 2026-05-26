@@ -39,31 +39,48 @@ const ALL_IMAGE_PATHS = Array.from(
   new Set(CAMPAIGN_SETS.flatMap((c) => [c.center, c.left, c.right]))
 );
 
+import { contentStore } from "@/lib/content-store";
+
 export function HeroSection(): JSX.Element {
+  const [campaignSets, setCampaignSets] = useState(CAMPAIGN_SETS);
   const [campaignIdx, setCampaignIdx] = useState<number>(0);
   const [allLoaded, setAllLoaded] = useState<boolean>(false);
 
   useEffect(() => {
+    const loaded = contentStore.getSectionData("hero", { campaigns: CAMPAIGN_SETS });
+    if (loaded && loaded.campaigns) {
+      setCampaignSets(loaded.campaigns);
+    }
+  }, []);
+
+  useEffect(() => {
     let count = 0;
-    ALL_IMAGE_PATHS.forEach((src) => {
+    const allPaths = Array.from(
+      new Set(campaignSets.flatMap((c) => [c.center, c.left, c.right]))
+    );
+    if (allPaths.length === 0) {
+      setAllLoaded(true);
+      return;
+    }
+    allPaths.forEach((src) => {
       const img = new window.Image();
       img.src = src;
       img.onload = img.onerror = () => {
         count += 1;
-        if (count >= ALL_IMAGE_PATHS.length) setAllLoaded(true);
+        if (count >= allPaths.length) setAllLoaded(true);
       };
     });
-  }, []);
+  }, [campaignSets]);
 
   useEffect(() => {
     if (!allLoaded) return;
     const timer = setInterval(() => {
-      setCampaignIdx((prev) => (prev + 1) % CAMPAIGN_SETS.length);
+      setCampaignIdx((prev) => (prev + 1) % campaignSets.length);
     }, 4500);
     return () => clearInterval(timer);
-  }, [allLoaded]);
+  }, [allLoaded, campaignSets.length]);
 
-  const campaign = CAMPAIGN_SETS[campaignIdx];
+  const campaign = campaignSets[campaignIdx] || CAMPAIGN_SETS[0];
 
   return (
     <>
