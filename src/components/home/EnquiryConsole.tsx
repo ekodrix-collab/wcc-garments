@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Phone, Mail, MessageCircle, ArrowRight, Check } from 'lucide-react'
 import { EnquirySchema, type EnquiryFormData } from '@/lib/validations'
 import { BUSINESS_TYPES, PRODUCT_INTERESTS, COUNTRIES, SITE_CONFIG } from '@/lib/constants'
+import { contentStore } from '@/lib/content-store'
 import { SplitSubmitButton } from '@/components/ui/SplitSubmitButton'
 import { TypewriterEffect } from '@/components/ui/typewriter-effect'
 
@@ -40,6 +41,11 @@ export function EnquiryConsole({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [config, setConfig] = useState(SITE_CONFIG)
+
+  useEffect(() => {
+    setConfig(contentStore.getSiteConfig())
+  }, [])
 
   const words = [
     { text: 'Secure' },
@@ -135,31 +141,31 @@ export function EnquiryConsole({
 
             <div className="mt-10 space-y-5">
               <a
-                href={`tel:${SITE_CONFIG.phone}`}
+                href={`tel:${config.phone}`}
                 className="flex items-center gap-4 text-sm text-[var(--text)] transition-colors hover:text-gold relative z-20"
               >
                 <div className="flex h-10 w-10 items-center justify-center border border-[var(--border)]">
                   <Phone className="h-4 w-4 text-gold" />
                 </div>
                 <div>
-                  <p className="font-medium">{SITE_CONFIG.phone}</p>
+                  <p className="font-medium">{config.phone}</p>
                   <p className="text-[11px] text-[var(--text-muted)]">UAE Direct Line</p>
                 </div>
               </a>
               <a
-                href={`mailto:${SITE_CONFIG.email}`}
+                href={`mailto:${config.email}`}
                 className="flex items-center gap-4 text-sm text-[var(--text)] transition-colors hover:text-gold relative z-20"
               >
                 <div className="flex h-10 w-10 items-center justify-center border border-[var(--border)]">
                   <Mail className="h-4 w-4 text-gold" />
                 </div>
                 <div>
-                  <p className="font-medium">{SITE_CONFIG.email}</p>
+                  <p className="font-medium">{config.email}</p>
                   <p className="text-[11px] text-[var(--text-muted)]">Sales &amp; Enquiries</p>
                 </div>
               </a>
               <a
-                href={`https://wa.me/${SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')}`}
+                href={`https://wa.me/${config.whatsapp.replace(/[^0-9]/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 text-sm text-[var(--text)] transition-colors hover:text-gold relative z-20"

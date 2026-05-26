@@ -28,12 +28,27 @@ const DIVISION_IMAGES: Record<string, string> = {
   households:  MOCK_IMAGES.households,
 }
 
+import { useState, useEffect } from 'react'
+import { contentStore } from '@/lib/content-store'
+
+const DEFAULT_EXPANSION = {
+  indicator: "OUR DIVERSIFIED FUTURE",
+  headingStart: "Our Strategic",
+  headingHighlight: "Expansion",
+  description: "While premium garments remain our core business, we have successfully expanded our industrial capacities to serve major developments in uniforms, luxury hospitality textiles, home decor, fragrance, and household supply."
+}
+
 // Show the 4 expansion divisions (everyone except garments & households which have their own sections)
 const EXPANSION_SLUGS = ['uniforms', 'hospitality', 'fragrance', 'home']
 
 export function KillingOffers() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const [data, setData] = useState(DEFAULT_EXPANSION)
+
+  useEffect(() => {
+    setData(contentStore.getSectionData('strategic-expansion', DEFAULT_EXPANSION))
+  }, [])
 
   const expansionDivisions = DIVISIONS.filter((d) => EXPANSION_SLUGS.includes(d.slug))
 
@@ -59,16 +74,16 @@ export function KillingOffers() {
               transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
             >
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-                OUR DIVERSIFIED FUTURE
+                {data.indicator}
               </span>
               <h2 className="mt-4 font-display text-4xl sm:text-5xl font-bold text-white uppercase leading-tight">
-                Our Strategic
+                {data.headingStart}
               </h2>
               <h2 className="font-display text-4xl sm:text-5xl font-bold uppercase text-gold leading-tight">
-                Expansion
+                {data.headingHighlight}
               </h2>
               <p className="mt-6 max-w-sm text-sm leading-relaxed text-neutral-400">
-                While premium garments remain our core business, we have successfully expanded our industrial capacities to serve major developments in uniforms, luxury hospitality textiles, home decor, fragrance, and household supply.
+                {data.description}
               </p>
               <Link
                 href="/contact"
