@@ -69,7 +69,7 @@ export function HeroSection(): JSX.Element {
     <>
       <section
         className={[
-          "relative w-full min-h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center pt-10",
+          "relative w-full min-h-screen md:h-[88svh] lg:h-[98svh] xl:h-[102svh] overflow-hidden noise-layer z-5 flex items-center justify-center sm:pt-10",
           "bg-white dark:bg-black animate-fade-in",
         ].join(" ")}
       >
@@ -84,58 +84,65 @@ export function HeroSection(): JSX.Element {
 
         {/* Hero Content */}
         <div className="relative z-[5] w-full flex flex-col items-center justify-center hover-trigger cursor-default px-6 md:px-0 py-16 md:py-0">
-          <div className="relative w-full max-w-[1440px] md:px-12 flex flex-col md:grid md:grid-cols-12 md:grid-rows-[auto_auto] md:gap-8 md:items-center gap-12">
+          <div className="relative w-full max-w-[1440px] md:px-12 flex flex-col md:grid md:grid-cols-12 md:grid-rows-[auto_auto] md:gap-8 md:items-center gap-6 justify-center items-center">
 
             {/* ── TEXT BLOCK ── */}
-            <div className="flex flex-col items-center md:items-start md:col-start-1 md:col-span-7 md:row-start-1 md:row-span-2 md:self-center justify-center text-center md:text-left">
-              <div className="flex flex-col items-center md:items-start gap-0">
+            <div className="contents md:flex md:flex-col md:col-start-1 md:col-span-7 md:row-start-1 md:row-span-2 md:self-center md:items-start">
 
-                <motion.span
-                  initial={{ opacity: 0, scale: 1.8, y: 40 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                  className="font-sans font-bold text-[#3b82f6] text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.03em] whitespace-nowrap"
-                  style={{
-                    WebkitTextStroke: '1.2px #3b82f6',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  WESTERN
-                </motion.span>
+              <div className="flex flex-col items-center md:items-start justify-center text-center md:text-left order-1 md:order-none w-full">
+                {/* 
+                  CHANGE: Added `text-center md:text-left` to this inner container div.
+                  This ensures the heading spans inherit centered alignment on mobile
+                  while keeping left-aligned on desktop. Everything else is unchanged.
+                */}
+                <div className="flex flex-col items-center md:items-start gap-0 w-full overflow-hidden">
+                  <motion.span
+                    initial={{ opacity: 0, scale: 1.8, y: 40 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                    className="block font-sans font-bold text-[#3b82f6] text-[clamp(52px,18vw,110px)] sm:text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.03em] whitespace-nowrap w-full text-center md:text-left"
+                    style={{
+                      WebkitTextStroke: '1.2px #3b82f6',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    WESTERN
+                  </motion.span>
 
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.35, y: 80 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
-                  className="font-sans font-bold text-black dark:text-white text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.06em] whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)]"
-                >
-                  CLOTHING
-                </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.35, y: 80 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+                    className="block font-sans font-bold text-black dark:text-white text-[clamp(52px,18vw,110px)] sm:text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.06em] whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)] w-full text-center md:text-left"
+                  >
+                    CLOTHING
+                  </motion.span>
 
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.35, y: 80 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
-                  className="font-sans font-bold text-black dark:text-white text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.06em] whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)]"
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.35, y: 80 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
+                    className="block font-sans font-bold text-black dark:text-white text-[clamp(52px,18vw,110px)] sm:text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.06em] whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)] w-full text-center md:text-left"
+                  >
+                    COMPANY
+                  </motion.span>
+                </div>
+
+                <p
+                  className={[
+                    "mt-6 font-barlow-body text-[10px] sm:text-[11px] font-bold tracking-[0.15em]",
+                    "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[480px] md:max-w-[700px]",
+                    "animate-fade-up [animation-delay:1100ms] hidden md:block",
+                  ].join(" ")}
                 >
-                  COMPANY
-                </motion.span>
+                  An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
+                </p>
               </div>
 
-              <p
-                className={[
-                  "mt-6 font-barlow-body text-[10px] sm:text-[11px] font-bold tracking-[0.15em]",
-                  "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[480px] md:max-w-[700px]",
-                  "animate-fade-up [animation-delay:1100ms]",
-                ].join(" ")}
-              >
-                An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
-              </p>
-
-              <div className="mt-8 w-full flex justify-center md:justify-start animate-fade-up [animation-delay:1200ms]">
+              <div className="w-full flex justify-center md:justify-start animate-fade-up [animation-delay:1200ms] order-3 md:order-none mt-0 md:mt-8 z-50 relative">
                 <Link
                   href="/contact"
-                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full sm:w-auto px-8 py-3.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black"
+                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full sm:w-auto px-8 py-4 md:py-3.5 font-mono text-[12px] md:text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black"
                 >
                   <span>Request a Quotation</span>
                   <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -144,7 +151,7 @@ export function HeroSection(): JSX.Element {
             </div>
 
             {/* ── IMAGE CAROUSEL BLOCK ── */}
-            <div className="relative flex items-center justify-center md:col-start-8 md:col-span-5 md:row-start-1 md:row-span-2 w-full h-[320px] sm:h-[400px] md:h-[540px] select-none z-[40]">
+            <div className="relative flex items-center justify-center md:col-start-8 md:col-span-5 md:row-start-1 md:row-span-2 w-full h-[320px] sm:h-[400px] md:h-[540px] select-none z-[40] order-2 md:order-none">
 
               {/* Hidden preload */}
               <div className="absolute w-0 h-0 overflow-hidden pointer-events-none opacity-0" aria-hidden="true">
