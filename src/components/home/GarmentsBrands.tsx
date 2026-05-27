@@ -70,7 +70,7 @@ const BRAND_SHOWCASE = [
     description: 'Egyptian cotton, refined finishing, and executive-grade construction for institutions that need polished uniform programs.',
     highlights: ['Banking Sector', 'Luxury Hotels'],
     stats: ['500 PCS MOQ', '320+ Styles'],
-    href: '/products/garments/treasure',
+    href: '/products/garments?brand=treasure',
     image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=900&q=80',
     borderClass: 'hover:border-gold/30',
     iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
@@ -86,7 +86,7 @@ const BRAND_SHOWCASE = [
     description: 'Competitive large-scale production with dependable fabrics and commercial styling for value-driven retail programs.',
     highlights: ['Retail Chains', 'Mass Market'],
     stats: ['1,500 PCS MOQ', '280+ Styles'],
-    href: '/products/garments/vandegraff',
+    href: '/products/garments?brand=vandegraff',
     image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80',
     borderClass: 'hover:border-red-500/30',
     iconHoverClass: 'group-hover:border-red-500 group-hover:bg-red-500 group-hover:text-white',
@@ -102,7 +102,7 @@ const BRAND_SHOWCASE = [
     description: 'Hybrid business-casual collections balancing comfort, movement, and sharp styling for modern teams and premium programs.',
     highlights: ['Tech Startups', 'Creative Agencies'],
     stats: ['750 PCS MOQ', '180+ Styles'],
-    href: '/products/garments/tom-jack',
+    href: '/products/garments?brand=tom-jack',
     image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=900&q=80',
     borderClass: 'hover:border-gold/30',
     iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
@@ -281,7 +281,7 @@ export function GarmentsBrands() {
               {customBrands.map((brand) => (
                 <Link
                   key={brand.id}
-                  href={`/products/garments/${brand.slug}`}
+                  href={`/products/garments?brand=${brand.slug}`}
                   className="border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:border-gold hover:text-gold"
                 >
                   {brand.name}

@@ -296,7 +296,7 @@ export default function GarmentsHubClient() {
       </header>
 
       {/* ── INTERACTIVE MANUFACTURING HOUSES SHOWCASE (BRAND BROWSE) ── */}
-      {urlCategory === 'all' && (
+      {urlCategory === 'all' && urlBrand === 'all' && (
         <section className="mx-auto max-w-[1560px] px-6 lg:px-12 py-16 border-b border-white/5 bg-gradient-to-b from-[#090909] to-[#080808]">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 border border-gold/30 bg-gold/5 mb-4">
@@ -486,7 +486,7 @@ export default function GarmentsHubClient() {
 
       {/* ── CONTENT AREA ────────────────────────────────────────────── */}
       <AnimatePresence mode="wait">
-        {urlCategory === 'all' ? (
+        {(urlCategory === 'all' || urlBrand !== 'all') ? (
           /* ── ALL CATEGORIES VIEW: Premium Cinematic Grid ── */
           <motion.div
             key="all"
@@ -495,7 +495,7 @@ export default function GarmentsHubClient() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
           >
-            {/* Spotlight Brand Profile (Only when a specific brand is selected but no category) */}
+            {/* Spotlight Brand Profile */}
             {activeBrand && (
               <section className="mx-auto max-w-[1560px] px-6 lg:px-12 pt-12">
                 <div className="relative border border-gold/30 bg-[#0c0c0c] overflow-hidden p-6 sm:p-10 flex flex-col md:flex-row gap-8 items-center justify-between">
@@ -526,21 +526,54 @@ export default function GarmentsHubClient() {
                         <span className="text-xs font-mono font-bold text-gold">{activeBrand.perfectFor.slice(0, 2).join(', ')}</span>
                       </div>
                     </div>
+
+                    {/* Category Filter Pills within this Brand */}
+                    <div className="border-t border-white/10 pt-5 mt-4">
+                      <span className="block text-[9px] font-mono uppercase text-white/40 tracking-widest mb-3">
+                        Filter Category within {activeBrand.name}
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => updateFilters('all', null)}
+                          className={`px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${
+                            urlCategory === 'all'
+                              ? 'border-gold bg-gold/15 text-gold'
+                              : 'border-white/10 bg-white/5 text-white/60 hover:border-white/30 hover:text-white'
+                          }`}
+                        >
+                          All Collections
+                        </button>
+                        {CATEGORIES.map((cat) => {
+                          const isActive = urlCategory === cat.slug
+                          const isDisabled = cat.status === 'coming-soon'
+                          return (
+                            <button
+                              key={cat.slug}
+                              onClick={() => !isDisabled && updateFilters(cat.slug, null)}
+                              disabled={isDisabled}
+                              className={`px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${
+                                isActive
+                                  ? 'border-gold bg-gold/15 text-gold'
+                                  : isDisabled
+                                  ? 'border-white/5 bg-transparent text-white/20 cursor-not-allowed'
+                                  : 'border-white/10 bg-white/5 text-white/60 hover:border-white/30 hover:text-white'
+                              }`}
+                            >
+                              {cat.name}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="relative z-10 shrink-0 flex flex-col gap-3 w-full md:w-auto">
-                    <Link
-                      href={`/products/garments/${activeBrand.slug}`}
-                      className="bg-gold hover:bg-gold/90 text-white py-3 px-6 font-mono text-[10px] font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-2xl"
-                    >
-                      <span>B2B RFQ Cart Portal</span>
-                      <ArrowUpRight className="h-4 w-4" />
-                    </Link>
                     <button
                       onClick={() => updateFilters(null, 'all')}
-                      className="border border-white/10 hover:border-white/30 text-white/60 hover:text-white py-3 px-6 font-mono text-[10px] font-bold uppercase tracking-widest text-center transition-all"
+                      className="bg-gold hover:bg-gold/90 text-black py-3 px-6 font-mono text-[10px] font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-2xl"
                     >
-                      Clear Brand Filter
+                      <span>Show All Brands</span>
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
@@ -672,7 +705,7 @@ export default function GarmentsHubClient() {
             {/* All Products Grid */}
             <ProductsGrid
               products={filteredProducts}
-              heading={activeBrand ? `${activeBrand.name} Collection` : "All Garment Products"}
+              heading={activeBrand ? (urlCategory !== 'all' && activeCategory ? `${activeBrand.name} - ${activeCategory.name}` : `${activeBrand.name} Collection`) : "All Garment Products"}
               subheading={activeBrand ? `SHOWCASING ${activeBrand.name.toUpperCase()}` : "FULL CATALOG"}
               emptyMsg="No products listed yet matching this combination. Contact our Dubai export office."
             />
@@ -762,15 +795,6 @@ export default function GarmentsHubClient() {
               >
                 ← Back to All Categories
               </button>
-
-              {activeBrand && (
-                <Link
-                  href={`/products/garments/${activeBrand.slug}`}
-                  className="bg-gold text-white px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-gold/90 transition-all shadow-lg"
-                >
-                  Explore Dedicated B2B RFQ Portal →
-                </Link>
-              )}
             </div>
           </motion.div>
         )}
