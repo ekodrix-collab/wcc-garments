@@ -3,131 +3,80 @@
 import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
-import { ArrowUpRight, Layers } from 'lucide-react'
+import { ArrowUpRight, Layers, Shirt, Globe, Sparkles, Handshake } from 'lucide-react'
 import { brandStore } from '@/lib/brand-store'
 import { Brand } from '@/types'
+import treasurelogo from "../../../public/images/tresurelogo.png"
+import vandegrafflogo from "../../../public/images/vadegrafflogo.png"
+import tomjacklogo from "../../../public/images/tomjacklogo.png"
+import treasureimg from "../../../public/images/treaureimg.png"
+import vandegraffimg from "../../../public/images/vendegraddimg.png"
+import tomjackimg from "../../../public/images/tomkackimg.png"
 
-export function VandegraffSVG() {
-  return (
-    <svg viewBox="0 0 400 160" className="h-full w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="400" height="160" fill="#8B1A1A" />
-      <path d="M190 40 C175 40 178 70 200 80 C222 70 225 40 210 40 C195 40 198 75 190 40 Z" fill="white" opacity="0.9" />
-      <path d="M195 48 C185 48 188 68 200 75 C212 68 215 48 205 48 C195 48 198 72 195 48 Z" fill="#8B1A1A" />
-      <path d="M178 45 C190 75 210 75 222 45 C205 45 200 68 178 45 Z" fill="white" opacity="0.9" />
-      <text x="50%" y="115" textAnchor="middle" fill="white" fontFamily="Cinzel, Georgia, serif" fontSize="23" fontWeight="bold" letterSpacing="0.25em">
-        VANDEGRAFF
-      </text>
-      <text x="50%" y="138" textAnchor="middle" fill="#EAD8D8" fontFamily="Montserrat, Inter, sans-serif" fontSize="10" fontWeight="600" letterSpacing="0.32em">
-        SHIRTS &amp; TROUSERS
-      </text>
-      <text x="345" y="103" fill="white" fontFamily="sans-serif" fontSize="6">R</text>
-    </svg>
-  )
-}
+import Image from 'next/image'
 
-export function TreasureSVG() {
-  return (
-    <svg viewBox="0 0 400 160" className="h-full w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(45, 30)">
-        <path d="M10 20 L20 35 L40 15 L60 35 L70 20 L65 48 L15 48 Z" fill="#8B1A1A" />
-        <circle cx="10" cy="18" r="2.5" fill="#8B1A1A" />
-        <circle cx="40" cy="13" r="2.5" fill="#8B1A1A" />
-        <circle cx="70" cy="18" r="2.5" fill="#8B1A1A" />
-        <path d="M10 54 C10 65 30 78 40 78 C50 78 70 65 70 54 C55 54 48 70 40 78 C32 70 25 54 10 54 Z" fill="black" className="dark:fill-white" />
-        <path d="M10 70 C25 80 55 80 70 70 C55 82 25 82 10 70 Z" fill="black" className="dark:fill-white" />
-        <path d="M22 62 C30 54 50 54 58 62 C50 58 30 58 22 62 Z" fill="black" className="dark:fill-white" />
-        <line x1="40" y1="48" x2="40" y2="78" stroke="black" className="dark:stroke-white" strokeWidth="2.5" />
-      </g>
-      <text x="145" y="93" fill="black" className="dark:fill-white" fontFamily="Inter, sans-serif" fontSize="26" fontWeight="bold" letterSpacing="0.4em">
-        TREASURE
-      </text>
-    </svg>
-  )
-}
-
-export function TomJackSVG() {
-  return (
-    <svg viewBox="0 0 400 160" className="h-full w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="85" cy="80" r="35" stroke="#DAA520" strokeWidth="2.5" />
-      <circle cx="85" cy="80" r="29" stroke="#DAA520" strokeWidth="1" strokeDasharray="3 3" />
-      <path d="M72 65 L98 65 M85 65 L85 92 C85 98 78 100 74 97" stroke="#DAA520" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M92 73 L92 90 C92 96 82 98 78 92" stroke="#DAA520" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" />
-      <text x="145" y="85" fill="black" className="dark:fill-white" fontFamily="Inter, sans-serif" fontSize="23" fontWeight="bold" letterSpacing="0.32em">
-        TOM &amp; JACK
-      </text>
-      <text x="145" y="105" fill="#DAA520" fontFamily="sans-serif" fontSize="9" fontWeight="600" letterSpacing="0.25em">
-        ACTIVE LUXURY APPAREL
-      </text>
-    </svg>
-  )
-}
-
-const BRAND_SHOWCASE = [
+const BRAND_PANELS = [
   {
     id: 'treasure',
-    title: 'Premium Corporate Excellence',
-    segment: 'Premium Line',
-    description: 'Egyptian cotton, refined finishing, and executive-grade construction for institutions that need polished uniform programs.',
-    highlights: ['Banking Sector', 'Luxury Hotels'],
-    stats: ['500 PCS MOQ', '320+ Styles'],
+    bg: 'bg-[#1a1a1a]',
+    accentColor: '#c9a84c',
+    logo: treasurelogo,
+    tagline: 'Crafted for Timeless Elegance',
+    description: 'Sophisticated formalwear and refined essentials designed for the modern gentleman.',
+    specializing: 'Formal Shirts, Premium Collections & Tailored Essentials',
     href: '/products/garments?brand=treasure',
-    image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=900&q=80',
-    borderClass: 'hover:border-gold/30',
-    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
-    lineClass: 'bg-gold',
-    highlightClass: 'text-gold',
-    chipClass: 'border-gold/20 bg-gold/5 text-gold',
-    logo: TreasureSVG,
+    segment: 'Premium Line',
+    image: treasureimg,
   },
   {
     id: 'vandegraff',
-    title: 'Smart Everyday Essentials',
-    segment: 'Value Line',
-    description: 'Competitive large-scale production with dependable fabrics and commercial styling for value-driven retail programs.',
-    highlights: ['Retail Chains', 'Mass Market'],
-    stats: ['1,500 PCS MOQ', '280+ Styles'],
+    bg: 'bg-[#7a1515]',
+    accentColor: '#f0c4c4',
+    logo: vandegrafflogo,
+    tagline: 'Designed for Every Impression',
+    description: 'Contemporary shirts and trousers blending comfort, style and uncompromised quality.',
+    specializing: 'Shirts, Trousers, Smart Casuals & Everyday Classics',
     href: '/products/garments?brand=vandegraff',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80',
-    borderClass: 'hover:border-red-500/30',
-    iconHoverClass: 'group-hover:border-red-500 group-hover:bg-red-500 group-hover:text-white',
-    lineClass: 'bg-red-500',
-    highlightClass: 'text-[var(--text)]',
-    chipClass: 'border-[var(--border)] bg-[var(--bg)] text-[var(--text-muted)]',
-    logo: VandegraffSVG,
+    segment: 'Value Line',
+    image: vandegraffimg,
   },
   {
     id: 'tom-jack',
-    title: 'Contemporary Premium Casual',
-    segment: 'Active Premium',
-    description: 'Hybrid business-casual collections balancing comfort, movement, and sharp styling for modern teams and premium programs.',
-    highlights: ['Tech Startups', 'Creative Agencies'],
-    stats: ['750 PCS MOQ', '180+ Styles'],
+    bg: 'bg-[#1a2535]',
+    accentColor: '#c9a84c',
+    logo: tomjacklogo,
+    tagline: 'Effortless Style Everyday',
+    description: 'Modern casualwear made for those who live life on their own terms.',
+    specializing: 'Polo Tees, Casualwear, Basics & Lifestyle Collections',
     href: '/products/garments?brand=tom-jack',
-    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=900&q=80',
-    borderClass: 'hover:border-gold/30',
-    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
-    lineClass: 'bg-gold',
-    highlightClass: 'text-gold',
-    chipClass: 'border-gold/20 bg-gold/5 text-gold',
-    logo: TomJackSVG,
-  },
-  {
-    id: 'wcc-global',
-    title: 'Extended Group Catalog',
-    segment: 'Group Catalog',
-    description: 'Outerwear, technical layering, and complementary premium collections designed to round out larger sourcing briefs.',
-    highlights: ['Technical Layering', 'Fast-Track Logistics'],
-    stats: ['1,000 PCS MOQ', '410+ Styles'],
-    href: '/products/garments',
-    image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=900&q=80',
-    borderClass: 'hover:border-gold/30',
-    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
-    lineClass: 'bg-gold',
-    highlightClass: 'text-gold',
-    chipClass: 'border-gold/20 bg-gold/5 text-gold',
-    logo: null,
+    segment: 'Active Premium',
+    image: tomjackimg,
   },
 ] as const
+
+const VALUE_PROPS = [
+  {
+    icon: Shirt,
+    title: 'PREMIUM QUALITY',
+    desc: 'Finest fabrics and international manufacturing standards.',
+  },
+  {
+    icon: Globe,
+    title: 'GLOBAL PRESENCE',
+    desc: 'Trusted by partners across the world.',
+  },
+  {
+    icon: Sparkles,
+    title: 'INNOVATIVE DESIGN',
+    desc: 'Blending craftsmanship with contemporary trends.',
+  },
+  {
+    icon: Handshake,
+    title: 'SUSTAINABLE PARTNERSHIPS',
+    desc: 'Building long-term relationships based on trust and reliability.',
+  },
+]
+
 
 export function GarmentsBrands() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -143,169 +92,179 @@ export function GarmentsBrands() {
   )
 
   return (
-    <section className="bg-[var(--bg)] border-t border-[var(--border)] py-16 md:py-24" ref={containerRef}>
-      <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        <div className="mb-16 max-w-4xl">
+    <section className="bg-[var(--bg)] border-t border-[var(--border)]" ref={containerRef}>
+
+      {/* ── TOP HERO SECTION ── */}
+      <div className="relative overflow-hidden bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] py-10 md:py-15">
+        <div className="relative mx-auto max-w-[1440px] px-6 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            className="flex items-center gap-3 mb-3"
           >
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-                WCC FASHIONS DIRECTORY
-              </span>
-            </div>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gold">
+              OUR BRANDS
+            </span>
           </motion.div>
+
           <motion.h2
-            className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text)]"
+            className="font-display text-[20px] sm:text-5xl font-bold text-[#1a1a1a] dark:text-white leading-[1.05] max-w-2xl text text-nowrap"
             initial={{ opacity: 0, y: 30 }}
             animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            Our manufacturing <span className="text-gold">brands</span>
+            Three Brands<br />
+            One Commitment to <span className="text-gold">Excellence</span> 
           </motion.h2>
+
           <motion.p
-            className="mt-4 max-w-3xl text-sm sm:text-base leading-relaxed text-gray-500"
+            className="mt-6 max-w-md text-sm leading-relaxed text-[#5a5a5a] dark:text-[var(--text-muted)]"
             initial={{ opacity: 0 }}
             animate={isContainerInView ? { opacity: 1 } : {}}
-            transition={{ duration: 1, delay: 0.2 }}
+            transition={{ duration: 1, delay: 0.25 }}
           >
-            Two distinct philosophies and one shared commitment to quality, with brand identities structured for
-            premium executive wear, value retail supply, and contemporary uniform programs.
+            WCC brings together three unique brands, each with a distinct identity
+            and shared dedication to quality, craftsmanship and style.
           </motion.p>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-          {BRAND_SHOWCASE.map((brand, index) => {
-            const Logo = brand.logo
-
-            return (
-              <motion.div
-                key={brand.id}
-                initial={{ opacity: 0, y: 60 }}
-                animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.15 + index * 0.08,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
+      {/* ── THREE BRAND PANELS ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3">
+        {BRAND_PANELS.map((brand, index) => {
+          return (
+            <motion.div
+              key={brand.id}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+              transition={{
+                duration: 0.8,
+                delay: 0.2 + index * 0.1,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+              className="relative"
+            >
+              <Link
+                href={brand.href}
+                className={`group relative flex flex-col overflow-hidden ${brand.bg} transition-all duration-500`}
+                data-cursor="view"
               >
-                <Link
-                  href={brand.href}
-                  className={`group relative block overflow-hidden rounded-none border border-[var(--border)] bg-[var(--bg-surface)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] ${brand.borderClass}`}
-                  data-cursor="view"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-none">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-                      style={{ backgroundImage: `url('${brand.image}')` }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
+                {/* Background photo with overlay */}
+                <div className="absolute inset-0">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 ease-out "
+                    style={{ backgroundImage: `url('${brand.image.src}')` }}
+                  />
+                  <div className="absolute inset-0 " />
+                </div>
 
-                    <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5">
-                      <span className={`inline-block border px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${brand.chipClass}`}>
-                        {brand.segment}
+                {/* Image overlay content */}
+                <div className="relative z-10 flex flex-col p-8" style={{ minHeight: '380px' }}>
+                  {/* Logo area — top */}
+                  <div className="mb-auto flex ">
+                   <Image 
+                      src={brand.logo}
+                      alt={`${brand.segment} Logo`}
+                      className="h-8 w-auto object-contain"
+                    />
+                  </div>
+
+                  {/* Middle: tagline + divider + description */}
+                  <div className="mt-8">
+                    <h3
+                      className="text-white font-bold leading-tight"
+                    >
+                      {brand.tagline}
+                    </h3>
+                    <div className="mt-4 h-px w-8" style={{ backgroundColor: brand.accentColor }} />
+                    <p className="mt-4 text-white text-sm leading-relaxed">
+                      {brand.description}
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* White bottom strip: specializing + discover */}
+                <div className="relative z-10 bg-white dark:bg-[var(--bg-surface)] px-8 py-5 border dark:border-[var(--border)]">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <span className="block text-[8px] uppercase tracking-[0.3em] font-semibold mb-2 text-gold">
+                        SPECIALIZING IN
+                      </span>
+                      <span className="text-[11px] text-[#3a3a3a] dark:text-[var(--text)] leading-snug">
+                        {brand.specializing}
                       </span>
                     </div>
-
-                    <div className="absolute bottom-5 left-5 right-5">
-                      <div className="max-w-[220px] border border-white/10 bg-black/70 p-3 backdrop-blur-md">
-                        {Logo ? (
-                          <div className="h-14">
-                            <Logo />
-                          </div>
-                        ) : (
-                          <div className="flex h-14 items-center gap-2 font-mono text-[11px] font-extrabold uppercase tracking-[0.2em] text-white">
-                            <Layers className="h-4 w-4 shrink-0 text-gold" />
-                            <span>WCC GLOBAL</span>
-                          </div>
-                        )}
-                      </div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
+                      <ArrowUpRight className="h-4 w-4 text-[var(--text-muted)] transition-colors group-hover:text-white" />
                     </div>
                   </div>
-
-                  <div className="bg-[var(--bg-surface)] p-5">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="font-display text-lg font-bold text-[var(--text)] transition-colors duration-300 group-hover:text-gold">
-                          {brand.title}
-                        </h3>
-                        <p className="mt-1 text-xs leading-relaxed text-[var(--text-muted)]">
-                          {brand.description}
-                        </p>
-                      </div>
-                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-muted)] transition-all duration-300 ${brand.iconHoverClass}`}>
-                        <ArrowUpRight className="h-4 w-4" />
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {brand.stats.map((stat) => (
-                        <span
-                          key={stat}
-                          className="inline-block border border-gold/10 bg-gold/5 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-gold"
-                        >
-                          {stat}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-                      {brand.highlights.map((highlight) => (
-                        <span key={highlight} className={`text-[11px] font-medium ${brand.highlightClass}`}>
-                          {highlight}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className={`mt-4 h-[2px] w-0 transition-all duration-500 group-hover:w-full ${brand.lineClass}`} />
-                  </div>
-                </Link>
-              </motion.div>
-            )
-          })}
-        </div>
-
-        {customBrands.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={isContainerInView ? { opacity: 1 } : {}}
-            transition={{ duration: 1, delay: 0.45 }}
-            className="mt-16 border-t border-[var(--border)] pt-8"
-          >
-            <span className="mb-4 block font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)]">
-              Dynamically synchronized portfolios
-            </span>
-            <div className="flex flex-wrap gap-4">
-              {customBrands.map((brand) => (
-                <Link
-                  key={brand.id}
-                  href={`/products/garments?brand=${brand.slug}`}
-                  className="border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:border-gold hover:text-gold"
-                >
-                  {brand.name}
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.55 }}
-          className="mt-16"
-        >
-          <Link
-            href="/products/garments"
-            className="group inline-flex items-center gap-3 border border-[var(--border)] bg-[var(--bg-surface)] px-6 py-4 font-mono text-[11px] font-bold uppercase tracking-widest text-[var(--text)] transition-all duration-300 hover:border-gold hover:bg-gold hover:text-white"
-          >
-            <span>View Complete Garments Catalog</span>
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-          </Link>
-        </motion.div>
+                  {/* Gold accent line */}
+                  <div className="mt-4 h-[2px] w-0 bg-gold transition-all duration-500 group-hover:w-full" />
+                </div>
+              </Link>
+            </motion.div>
+          )
+        })}
       </div>
+
+      {/* ── VALUE PROPOSITIONS BAR ── */}
+      {/* <div className="bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] dark:border-[var(--border)]">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[#e0ddd9] p-5 dark:divide-[var(--border)] divide-y sm:divide-y-0">
+            {VALUE_PROPS.map((prop, index) => {
+              const Icon = prop.icon
+              return (
+                <motion.div
+                  key={prop.title}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.5 + index * 0.07 }}
+                  className="flex items-start gap-4 px-8 py-8"
+                >
+                  <div className="shrink-0 mt-0.5">
+                    <Icon className="h-8 w-8 text-[#888] dark:text-[var(--text-muted)]" strokeWidth={1.2} />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-bold uppercase tracking-[0.22em] text-[#1a1a1a] dark:text-white mb-1">
+                      {prop.title}
+                    </span>
+                    <span className="text-xs text-[#777] dark:text-[var(--text-muted)] leading-snug">
+                      {prop.desc}
+                    </span>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </div> */}
+
+      {/* ── CUSTOM BRANDS (dynamic) ── */}
+      {customBrands.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isContainerInView ? { opacity: 1 } : {}}
+          transition={{ duration: 1, delay: 0.45 }}
+          className="bg-[var(--bg)] border-t border-[var(--border)] px-6 lg:px-12 py-8 mx-auto max-w-[1440px]"
+        >
+          <span className="mb-4 block font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)]">
+            Dynamically synchronized portfolios
+          </span>
+          <div className="flex flex-wrap gap-4">
+            {customBrands.map((brand) => (
+              <Link
+                key={brand.id}
+                href={`/products/garments?brand=${brand.slug}`}
+                className="border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:border-gold hover:text-gold"
+              >
+                {brand.name}
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+      )}
     </section>
   )
 }
