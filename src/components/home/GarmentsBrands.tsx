@@ -70,10 +70,10 @@ const BRAND_SHOWCASE = [
     description: 'Egyptian cotton, refined finishing, and executive-grade construction for institutions that need polished uniform programs.',
     highlights: ['Banking Sector', 'Luxury Hotels'],
     stats: ['500 PCS MOQ', '320+ Styles'],
-    href: '/products/garments/treasury',
+    href: '/products/garments/treasure',
     image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=900&q=80',
     borderClass: 'hover:border-gold/30',
-    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-black',
+    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
     lineClass: 'bg-gold',
     highlightClass: 'text-gold',
     chipClass: 'border-gold/20 bg-gold/5 text-gold',
@@ -86,7 +86,7 @@ const BRAND_SHOWCASE = [
     description: 'Competitive large-scale production with dependable fabrics and commercial styling for value-driven retail programs.',
     highlights: ['Retail Chains', 'Mass Market'],
     stats: ['1,500 PCS MOQ', '280+ Styles'],
-    href: '/products/garments?brand=vandegraff',
+    href: '/products/garments/vandegraff',
     image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80',
     borderClass: 'hover:border-red-500/30',
     iconHoverClass: 'group-hover:border-red-500 group-hover:bg-red-500 group-hover:text-white',
@@ -102,10 +102,10 @@ const BRAND_SHOWCASE = [
     description: 'Hybrid business-casual collections balancing comfort, movement, and sharp styling for modern teams and premium programs.',
     highlights: ['Tech Startups', 'Creative Agencies'],
     stats: ['750 PCS MOQ', '180+ Styles'],
-    href: '/products/garments?brand=tom-jack',
+    href: '/products/garments/tom-jack',
     image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=900&q=80',
     borderClass: 'hover:border-gold/30',
-    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-black',
+    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
     lineClass: 'bg-gold',
     highlightClass: 'text-gold',
     chipClass: 'border-gold/20 bg-gold/5 text-gold',
@@ -121,7 +121,7 @@ const BRAND_SHOWCASE = [
     href: '/products/garments',
     image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=900&q=80',
     borderClass: 'hover:border-gold/30',
-    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-black',
+    iconHoverClass: 'group-hover:border-gold group-hover:bg-gold group-hover:text-white',
     lineClass: 'bg-gold',
     highlightClass: 'text-gold',
     chipClass: 'border-gold/20 bg-gold/5 text-gold',
@@ -278,19 +278,15 @@ export function GarmentsBrands() {
               Dynamically synchronized portfolios
             </span>
             <div className="flex flex-wrap gap-4">
-              {customBrands.map((brand) => {
-                const isCustomIncentives = brand.slug.includes('incentives') || brand.slug === 'tom-jack'
-
-                return (
-                  <Link
-                    key={brand.id}
-                    href={`/products/garments/${isCustomIncentives ? 'incentives' : 'core'}/${brand.slug}`}
-                    className="border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:border-gold hover:text-gold"
-                  >
-                    {brand.name}
-                  </Link>
-                )
-              })}
+              {customBrands.map((brand) => (
+                <Link
+                  key={brand.id}
+                  href={`/products/garments/${brand.slug}`}
+                  className="border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:border-gold hover:text-gold"
+                >
+                  {brand.name}
+                </Link>
+              ))}
             </div>
           </motion.div>
         )}
@@ -303,7 +299,7 @@ export function GarmentsBrands() {
         >
           <Link
             href="/products/garments"
-            className="group inline-flex items-center gap-3 border border-[var(--border)] bg-[var(--bg-surface)] px-6 py-4 font-mono text-[11px] font-bold uppercase tracking-widest text-[var(--text)] transition-all duration-300 hover:border-gold hover:bg-gold hover:text-black"
+            className="group inline-flex items-center gap-3 border border-[var(--border)] bg-[var(--bg-surface)] px-6 py-4 font-mono text-[11px] font-bold uppercase tracking-widest text-[var(--text)] transition-all duration-300 hover:border-gold hover:bg-gold hover:text-white"
           >
             <span>View Complete Garments Catalog</span>
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />

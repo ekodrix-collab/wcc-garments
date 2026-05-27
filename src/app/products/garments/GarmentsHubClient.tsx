@@ -530,8 +530,8 @@ export default function GarmentsHubClient() {
 
                   <div className="relative z-10 shrink-0 flex flex-col gap-3 w-full md:w-auto">
                     <Link
-                      href={`/products/garments/${activeBrand.segment}/${activeBrand.slug}`}
-                      className="bg-gold hover:bg-gold/90 text-black py-3 px-6 font-mono text-[10px] font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-2xl"
+                      href={`/products/garments/${activeBrand.slug}`}
+                      className="bg-gold hover:bg-gold/90 text-white py-3 px-6 font-mono text-[10px] font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-2xl"
                     >
                       <span>B2B RFQ Cart Portal</span>
                       <ArrowUpRight className="h-4 w-4" />
@@ -765,8 +765,8 @@ export default function GarmentsHubClient() {
 
               {activeBrand && (
                 <Link
-                  href={`/products/garments/${activeBrand.segment}/${activeBrand.slug}`}
-                  className="bg-gold text-black px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-gold/90 transition-all shadow-lg"
+                  href={`/products/garments/${activeBrand.slug}`}
+                  className="bg-gold text-white px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-gold/90 transition-all shadow-lg"
                 >
                   Explore Dedicated B2B RFQ Portal →
                 </Link>
