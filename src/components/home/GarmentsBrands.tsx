@@ -1,99 +1,93 @@
-'use client'
+"use client";
 
-import { useRef, useEffect, useState } from 'react'
-import Link from 'next/link'
-import { motion, useInView } from 'framer-motion'
-import { ArrowUpRight, Layers, Shirt, Globe, Sparkles, Handshake } from 'lucide-react'
-import { brandStore } from '@/lib/brand-store'
-import { Brand } from '@/types'
-import treasurelogo from "../../../public/images/tresurelogo.png"
-import vandegrafflogo from "../../../public/images/vadegrafflogo.png"
-import tomjacklogo from "../../../public/images/tomjacklogo.png"
-import treasureimg from "../../../public/images/treaureimg.png"
-import vandegraffimg from "../../../public/images/vendegraddimg.png"
-import tomjackimg from "../../../public/images/tomkackimg.png"
+import { useRef, useEffect, useState } from "react";
+import Link from "next/link";
+import { motion, useInView } from "framer-motion";
+import { brandStore } from "@/lib/brand-store";
+import { Brand } from "@/types";
+import treasurelogo from "../../../public/images/tresurelogo.png";
+import vandegrafflogo from "../../../public/images/vadegrafflogo.png";
+import tomjacklogo from "../../../public/images/tomjacklogo.png";
+import treasureimg from "../../../public/images/treaureimg.png";
+import vandegraffimg from "../../../public/images/vendegraddimg.png";
+import tomjackimg from "../../../public/images/tomkackimg.png";
+import shirtlogo from "../../../public/images/shirt.png";
 
-import Image from 'next/image'
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
 
 const BRAND_PANELS = [
   {
-    id: 'treasure',
-    bg: 'bg-[#1a1a1a]',
-    accentColor: '#c9a84c',
+    id: "treasure",
+    bg: "bg-[#1a1a1a]",
+    accentColor: "#c9a84c",
     logo: treasurelogo,
-    tagline: 'Crafted for Timeless Elegance',
-    description: 'Sophisticated formalwear and refined essentials designed for the modern gentleman.',
-    specializing: 'Formal Shirts, Premium Collections & Tailored Essentials',
-    href: '/products/garments?brand=treasure',
-    segment: 'Premium Line',
+    tagline: "Premium",
+    description:
+      "Sophisticated formalwear and refined essentials designed for the modern gentleman.",
+    specializing: "Formal Shirts, Premium Collections & Tailored Essentials",
+    href: "/products/garments?brand=treasure",
+    segment: "Premium Line",
     image: treasureimg,
+    icon: shirtlogo,
+    iconBg: "bg-[#1a1a1a]",
   },
   {
-    id: 'vandegraff',
-    bg: 'bg-[#7a1515]',
-    accentColor: '#f0c4c4',
+    id: "vandegraff",
+    bg: "bg-[#7a1515]",
+    accentColor: "#f0c4c4",
     logo: vandegrafflogo,
-    tagline: 'Designed for Every Impression',
-    description: 'Contemporary shirts and trousers blending comfort, style and uncompromised quality.',
-    specializing: 'Shirts, Trousers, Smart Casuals & Everyday Classics',
-    href: '/products/garments?brand=vandegraff',
-    segment: 'Value Line',
+    tagline: "Smart Casual",
+    description:
+      "Contemporary shirts and trousers blending comfort, style and uncompromised quality.",
+    specializing: "Shirts, Trousers, Smart Casuals & Everyday Classics",
+    href: "/products/garments?brand=vandegraff",
+    segment: "Value Line",
     image: vandegraffimg,
+    icon: shirtlogo,
+    iconBg: "bg-[#7a1515]",
   },
   {
-    id: 'tom-jack',
-    bg: 'bg-[#1a2535]',
-    accentColor: '#c9a84c',
+    id: "tom-jack",
+    bg: "bg-[#1a2535]",
+    accentColor: "#c9a84c",
     logo: tomjacklogo,
-    tagline: 'Effortless Style Everyday',
-    description: 'Modern casualwear made for those who live life on their own terms.',
-    specializing: 'Polo Tees, Casualwear, Basics & Lifestyle Collections',
-    href: '/products/garments?brand=tom-jack',
-    segment: 'Active Premium',
+    tagline: "Casual Wear",
+    description:
+      "Modern casualwear made for those who live life on their own terms.",
+    specializing: "Polo Tees, Casualwear, Basics & Lifestyle Collections",
+    href: "/products/garments?brand=tom-jack",
+    segment: "Active Premium",
     image: tomjackimg,
+    icon: shirtlogo,
+    iconBg: "bg-[#1a2535]",
   },
-] as const
-
-const VALUE_PROPS = [
-  {
-    icon: Shirt,
-    title: 'PREMIUM QUALITY',
-    desc: 'Finest fabrics and international manufacturing standards.',
-  },
-  {
-    icon: Globe,
-    title: 'GLOBAL PRESENCE',
-    desc: 'Trusted by partners across the world.',
-  },
-  {
-    icon: Sparkles,
-    title: 'INNOVATIVE DESIGN',
-    desc: 'Blending craftsmanship with contemporary trends.',
-  },
-  {
-    icon: Handshake,
-    title: 'SUSTAINABLE PARTNERSHIPS',
-    desc: 'Building long-term relationships based on trust and reliability.',
-  },
-]
-
+] as const;
 
 export function GarmentsBrands() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const isContainerInView = useInView(containerRef, { once: true, margin: '-100px' })
-  const [brands, setBrands] = useState<Brand[]>([])
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isContainerInView = useInView(containerRef, {
+    once: true,
+    margin: "-100px",
+  });
+  const [brands, setBrands] = useState<Brand[]>([]);
 
   useEffect(() => {
-    setBrands(brandStore.getBrands())
-  }, [])
+    setBrands(brandStore.getBrands());
+  }, []);
 
   const customBrands = brands.filter(
-    (brand) => brand.slug !== 'treasure' && brand.slug !== 'vandegraff' && brand.slug !== 'tom-jack'
-  )
+    (brand) =>
+      brand.slug !== "treasure" &&
+      brand.slug !== "vandegraff" &&
+      brand.slug !== "tom-jack",
+  );
 
   return (
-    <section className="bg-[var(--bg)] border-t border-[var(--border)]" ref={containerRef}>
-
+    <section
+      className="bg-[var(--bg)] border-t border-[var(--border)]"
+      ref={containerRef}
+    >
       {/* ── TOP HERO SECTION ── */}
       <div className="relative overflow-hidden bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] py-10 md:py-15">
         <div className="relative mx-auto max-w-[1440px] px-6 lg:px-12">
@@ -159,10 +153,13 @@ export function GarmentsBrands() {
                 </div>
 
                 {/* Image overlay content */}
-                <div className="relative z-10 flex flex-col p-8" style={{ minHeight: '380px' }}>
+                <div
+                  className="relative z-10 flex flex-col p-8"
+                  style={{ minHeight: "380px" }}
+                >
                   {/* Logo area — top */}
                   <div className="mb-auto flex ">
-                   <Image 
+                    <Image
                       src={brand.logo}
                       alt={`${brand.segment} Logo`}
                       className="h-8 w-auto object-contain"
@@ -171,22 +168,28 @@ export function GarmentsBrands() {
 
                   {/* Middle: tagline + divider + description */}
                   <div className="mt-8">
-                    <h3
-                      className="text-white font-bold leading-tight"
-                    >
+                    <h3 className="text-[#f8aa00] font-bold leading-tight uppercase">
                       {brand.tagline}
                     </h3>
-                    <div className="mt-4 h-px w-8" style={{ backgroundColor: brand.accentColor }} />
+                    {/* <div className="mt-4 h-px w-8" style={{ backgroundColor: brand.accentColor }} /> */}
                     <p className="mt-4 text-white text-sm leading-relaxed">
                       {brand.description}
                     </p>
                   </div>
-
                 </div>
 
                 {/* White bottom strip: specializing + discover */}
-                <div className="relative z-10 bg-white dark:bg-[var(--bg-surface)] px-8 py-5 border dark:border-[var(--border)]">
-                  <div className="flex items-center justify-between gap-4">
+                <div className="relative h-[120px] z-10 bg-white dark:bg-[var(--bg-surface)] px-5 py-5 border dark:border-[var(--border)]">
+                  <div className="flex h-full items-center justify-between gap-4">
+                    <div
+                      className={` ${brand.iconBg} p-2  border border-black rounded-full`}
+                    >
+                      <Image
+                        src={brand.icon}
+                        alt="Shirt Logo"
+                        className="h-10 w-auto object-contain"
+                      />
+                    </div>
                     <div>
                       <span className="block text-[8px] uppercase tracking-[0.3em] font-semibold mb-2 text-gold">
                         SPECIALIZING IN
@@ -204,7 +207,7 @@ export function GarmentsBrands() {
                 </div>
               </Link>
             </motion.div>
-          )
+          );
         })}
       </div>
 
@@ -277,5 +280,5 @@ export function GarmentsBrands() {
         </motion.div>
       )}
     </section>
-  )
+  );
 }
