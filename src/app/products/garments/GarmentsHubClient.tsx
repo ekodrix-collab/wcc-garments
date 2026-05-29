@@ -391,6 +391,7 @@ export default function GarmentsHubClient() {
         </section>
       )}
 
+
       {/* ── ACTIVE FILTERS BAR (Only visible if filters exist) ── */}
       <AnimatePresence>
         {(urlCategory !== 'all' || urlBrand !== 'all') && (
@@ -479,6 +480,20 @@ export default function GarmentsHubClient() {
                 </button>
               )
             })}
+
+            {/* Eye-catching View All Button */}
+            <div className="ml-2 pl-4 border-l border-white/10 shrink-0 flex items-center">
+              <Link
+                href="/products/garments/all"
+                className="group relative inline-flex items-center gap-2 overflow-hidden bg-white px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-black transition-all hover:bg-blue-600 hover:text-white shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(37,99,235,0.4)]"
+              >
+                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
+                  <div className="w-8 bg-white/30" />
+                </div>
+                <Layers className="h-3.5 w-3.5" />
+                <span>All Products</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -697,6 +712,7 @@ export default function GarmentsHubClient() {
                       </motion.div>
                     )
                   })}
+
                 </div>
               </section>
             )}
