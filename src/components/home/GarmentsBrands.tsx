@@ -14,7 +14,7 @@ import tomjackimg from "../../../public/images/tomkackimg.png";
 import shirtlogo from "../../../public/images/shirt.png";
 
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 const BRAND_PANELS = [
   {
@@ -85,46 +85,78 @@ export function GarmentsBrands() {
 
   return (
     <section
-      className="bg-[var(--bg)] border-t border-[var(--border)]"
+      className="bg-[var(--bg)] px-5 md:px-0"
       ref={containerRef}
     >
       {/* ── TOP HERO SECTION ── */}
       <div className="relative overflow-hidden bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] py-10 md:py-15">
         <div className="relative mx-auto max-w-[1440px] px-6 lg:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-            className="flex items-center gap-3 mb-3"
-          >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-              OUR BRANDS
-            </span>
-          </motion.div>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+                className="flex items-center gap-3 mb-3"
+              >
+                <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
+                  OUR BRANDS
+                </span>
+              </motion.div>
 
-          <motion.h2
-            className="mt-4 font-display text-4xl sm:text-5xl font-semibold text-[#1a1a1a] dark:text-white leading-tight"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
-          >
-            Our Manufacturing <span className="text-gold">Brands</span>
-          </motion.h2>
+              <motion.h2
+                className="mt-4 font-display text-4xl sm:text-5xl font-semibold text-[#1a1a1a] dark:text-white leading-tight"
+                initial={{ opacity: 0, y: 30 }}
+                animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.1,
+                  ease: [0.76, 0, 0.24, 1],
+                }}
+              >
+                Our Manufacturing <span className="text-gold">Brands</span>
+              </motion.h2>
 
-          <motion.p
-            className="mt-6 max-w-md text-sm leading-relaxed text-[#5a5a5a] dark:text-[var(--text-muted)]"
-            initial={{ opacity: 0 }}
-            animate={isContainerInView ? { opacity: 1 } : {}}
-            transition={{ duration: 1, delay: 0.25 }}
-          >
-            WCC operates specialized brands, each with a distinct identity
-            and shared dedication to quality, craftsmanship and style.
-          </motion.p>
+              <motion.p
+                className="mt-6 max-w-md text-sm leading-relaxed text-[#5a5a5a] dark:text-[var(--text-muted)]"
+                initial={{ opacity: 0 }}
+                animate={isContainerInView ? { opacity: 1 } : {}}
+                transition={{ duration: 1, delay: 0.25 }}
+              >
+                WCC operates specialized brands, each with a distinct identity
+                and shared dedication to quality, craftsmanship and style.
+              </motion.p>
+            </div>
+
+            {/* View All CTA — top-right, desktop only */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+              transition={{
+                duration: 0.6,
+                delay: 0.5,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+              className="hidden sm:flex shrink-0 items-start pt-2"
+            >
+              <Link
+                href="/products/garments"
+                className="group btn-gold text-[10px] flex items-center gap-2"
+              >
+                View All Garments
+                <span className="relative flex h-4 w-4 items-center justify-center">
+                  <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                  <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                </span>
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </div>
 
       {/* ── THREE BRAND PANELS ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3">
+      {/* CHANGED: added gap-y-3 for mobile spacing between stacked panels */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-3 sm:gap-y-0">
         {BRAND_PANELS.map((brand, index) => {
           return (
             <motion.div
@@ -171,7 +203,6 @@ export function GarmentsBrands() {
                     <h3 className="text-[#f8aa00] font-bold leading-tight uppercase">
                       {brand.tagline}
                     </h3>
-                    {/* <div className="mt-4 h-px w-8" style={{ backgroundColor: brand.accentColor }} /> */}
                     <p className="mt-4 text-white text-sm leading-relaxed">
                       {brand.description}
                     </p>
@@ -179,7 +210,8 @@ export function GarmentsBrands() {
                 </div>
 
                 {/* White bottom strip: specializing + discover */}
-                <div className="relative h-[120px] z-10 bg-white dark:bg-[var(--bg-surface)] px-5 py-5 border dark:border-[var(--border)]">
+                {/* CHANGED: added mx-3 mb-3 rounded-b-lg on mobile; reset at sm: */}
+                <div className="relative h-[120px] z-10 bg-white dark:bg-[var(--bg-surface)] px-5 py-5 border dark:border-[var(--border)] sm:mx-0 sm:mb-0 sm:rounded-none">
                   <div className="flex h-full items-center justify-between gap-4">
                     <div
                       className={` ${brand.iconBg} p-2  border border-black rounded-full`}
@@ -199,7 +231,10 @@ export function GarmentsBrands() {
                       </span>
                     </div>
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
-                      <ArrowUpRight className="h-4 w-4 text-[var(--text-muted)] transition-colors group-hover:text-white" />
+                      <span className="relative flex h-4 w-4 items-center justify-center">
+                        <ArrowUpRight className="absolute h-4 w-4 text-[var(--text-muted)] transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                        <ArrowRight className="absolute h-4 w-4 text-white opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                      </span>
                     </div>
                   </div>
                   {/* Gold accent line */}
@@ -211,49 +246,20 @@ export function GarmentsBrands() {
         })}
       </div>
 
-      {/* View All CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
-        className="flex justify-center py-10 border-t border-[var(--border)] bg-[var(--bg)]"
-      >
-        <Link href="/products/garments" className="btn-gold text-[10px]">
-          View All Garments <ArrowUpRight className="h-4 w-4" />
+      {/* View All CTA — mobile only, full width */}
+      {/* CHANGED: added w-full and justify-center to make button full width on mobile */}
+      <div className="flex sm:hidden mt-10 border-t border-[var(--border)] bg-[var(--bg)]">
+        <Link
+          href="/products/garments"
+          className="group btn-gold font-mono text-xs font-bold tracking-[0.2em] rounded-none flex w-full items-center justify-center gap-2"
+        >
+          View All Garments
+          <span className="relative flex h-4 w-4 items-center justify-center">
+            <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+            <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+          </span>
         </Link>
-      </motion.div>
-
-      {/* ── VALUE PROPOSITIONS BAR ── */}
-      {/* <div className="bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] dark:border-[var(--border)]">
-        <div className="mx-auto max-w-[1440px]">
-          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[#e0ddd9] p-5 dark:divide-[var(--border)] divide-y sm:divide-y-0">
-            {VALUE_PROPS.map((prop, index) => {
-              const Icon = prop.icon
-              return (
-                <motion.div
-                  key={prop.title}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.5 + index * 0.07 }}
-                  className="flex items-start gap-4 px-8 py-8"
-                >
-                  <div className="shrink-0 mt-0.5">
-                    <Icon className="h-8 w-8 text-[#888] dark:text-[var(--text-muted)]" strokeWidth={1.2} />
-                  </div>
-                  <div>
-                    <span className="block text-[10px] font-bold uppercase tracking-[0.22em] text-[#1a1a1a] dark:text-white mb-1">
-                      {prop.title}
-                    </span>
-                    <span className="text-xs text-[#777] dark:text-[var(--text-muted)] leading-snug">
-                      {prop.desc}
-                    </span>
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
-        </div>
-      </div> */}
+      </div>
 
       {/* ── CUSTOM BRANDS (dynamic) ── */}
       {customBrands.length > 0 && (
