@@ -191,13 +191,12 @@ export function WhoWeAre() {
               <div className="mt-10 flex items-center gap-6">
                 <Link
                   href="/about"
-                  className="group btn-gold font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center gap-2"
+                  className="group btn-gold font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center justify-center gap-2 w-full lg:w-auto"
                 >
                   Explore Corporate Heritage
                   <span className="relative flex h-4 w-4 items-center justify-center">
-                    <ArrowUpRight className="absolute h-4 w-4 transition-all duration-300 group-hover:opacity-0 group-hover:scale-75" />
-
-                    <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />
+                    <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                    <ArrowRight className="absolute h-4 w-4 text-white opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
                   </span>
                 </Link>
               </div>
