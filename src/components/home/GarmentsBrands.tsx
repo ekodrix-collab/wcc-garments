@@ -103,19 +103,18 @@ export function GarmentsBrands() {
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
             className="flex items-center gap-3 mb-3"
           >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gold">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
               OUR BRANDS
             </span>
           </motion.div>
 
           <motion.h2
-            className="font-display text-[20px] sm:text-5xl font-bold text-[#1a1a1a] dark:text-white leading-[1.05] max-w-2xl text text-nowrap"
+            className="mt-4 font-display text-4xl sm:text-5xl font-semibold text-[#1a1a1a] dark:text-white leading-tight"
             initial={{ opacity: 0, y: 30 }}
             animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            Three Brands<br />
-            One Commitment to <span className="text-gold">Excellence</span> 
+            Our Manufacturing <span className="text-gold">Brands</span>
           </motion.h2>
 
           <motion.p
@@ -124,7 +123,7 @@ export function GarmentsBrands() {
             animate={isContainerInView ? { opacity: 1 } : {}}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            WCC brings together three unique brands, each with a distinct identity
+            WCC operates specialized brands, each with a distinct identity
             and shared dedication to quality, craftsmanship and style.
           </motion.p>
         </div>
@@ -208,6 +207,18 @@ export function GarmentsBrands() {
           )
         })}
       </div>
+
+      {/* View All CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
+        className="flex justify-center py-10 border-t border-[var(--border)] bg-[var(--bg)]"
+      >
+        <Link href="/products/garments" className="btn-gold text-[10px]">
+          View All Garments <ArrowUpRight className="h-4 w-4" />
+        </Link>
+      </motion.div>
 
       {/* ── VALUE PROPOSITIONS BAR ── */}
       {/* <div className="bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] dark:border-[var(--border)]">

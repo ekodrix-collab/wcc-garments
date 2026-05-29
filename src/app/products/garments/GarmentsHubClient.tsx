@@ -5,11 +5,14 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronRight, ArrowRight, ArrowUpRight, Tag, Clock, Award, ShieldCheck, Check, Layers, SlidersHorizontal, X } from 'lucide-react'
+import { ChevronRight, ArrowRight, ArrowUpRight, Tag, Clock, ShieldCheck, Check, Layers, SlidersHorizontal, X } from 'lucide-react'
 import { DIVISIONS } from '@/lib/constants'
 import { brandStore } from '@/lib/brand-store'
 import { ProductCard } from '@/components/products/ProductCard'
 import { Product } from '@/types'
+import treasurelogo from '../../../../public/images/tresurelogo.png'
+import vandegrafflogo from '../../../../public/images/vadegrafflogo.png'
+import tomjacklogo from '../../../../public/images/tomjacklogo.png'
 
 // ─── Explicit local types to widen the const-inferred DIVISIONS union ─────────
 interface SubCat {
@@ -132,8 +135,8 @@ const BRANDS_CONFIG = [
     badge: 'PREMIUM LINE',
     style: 'border-gold text-gold bg-gold/5',
     perfectFor: ['Banking Sector', 'Luxury Hotels', 'Corporate Uniforms', 'Government'],
-    bgImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=900&q=80',
-    logoSvg: TreasureLogoSVG
+    bgImage: '/images/treaureimg.png',
+    logo: treasurelogo,
   },
   {
     slug: 'vandegraff',
@@ -146,8 +149,8 @@ const BRANDS_CONFIG = [
     badge: 'VALUE LINE',
     style: 'border-red-500/30 text-red-400 bg-red-950/10',
     perfectFor: ['Retail Chains', 'Mass Market', 'E-Commerce', 'Budget Retail'],
-    bgImage: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80',
-    logoSvg: VandegraffLogoSVG
+    bgImage: '/images/vendegraddimg.png',
+    logo: vandegrafflogo,
   },
   {
     slug: 'tom-jack',
@@ -160,8 +163,8 @@ const BRANDS_CONFIG = [
     badge: 'ACTIVE PREMIUM',
     style: 'border-gold text-gold bg-gold/5',
     perfectFor: ['Tech Startups', 'Creative Agencies', 'Executive Retreats', 'Luxury Golf Clubs'],
-    bgImage: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=900&q=80',
-    logoSvg: TomJackLogoSVG
+    bgImage: '/images/tomkackimg.png',
+    logo: tomjacklogo,
   }
 ]
 
@@ -261,13 +264,17 @@ export default function GarmentsHubClient() {
           </nav>
 
           <div className="mt-8">
-            <p className="text-[11px] font-mono font-bold uppercase tracking-[0.35em] text-gold/80">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
               DIV-01 · Garments Division
               {activeCategory ? ` — ${activeCategory.name}` : ''}
               {activeBrand ? ` · ${activeBrand.name}` : ''}
-            </p>
-            <h1 className="mt-4 font-display text-4xl font-bold leading-[1.05] uppercase md:text-5xl lg:text-[4rem]">
-              {activeCategory ? activeCategory.name : activeBrand ? activeBrand.name : division.heroHeading}
+            </span>
+            <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight text-white">
+              {activeCategory
+                ? <>{activeCategory.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeCategory.name.split(' ').slice(-1)[0]}</span></>
+                : activeBrand
+                ? <>{activeBrand.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeBrand.name.split(' ').slice(-1)[0]}</span></>
+                : <>{division.heroHeading.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{division.heroHeading.split(' ').slice(-1)[0]}</span></>}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/50 md:text-base font-light">
               {activeBrand 
@@ -299,93 +306,85 @@ export default function GarmentsHubClient() {
       {urlCategory === 'all' && urlBrand === 'all' && (
         <section className="mx-auto max-w-[1560px] px-6 lg:px-12 py-16 border-b border-white/5 bg-gradient-to-b from-[#090909] to-[#080808]">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 border border-gold/30 bg-gold/5 mb-4">
-              <Award className="h-3.5 w-3.5 text-gold shrink-0" />
-              <span className="font-mono text-[9px] tracking-[0.3em] text-gold uppercase font-semibold">
-                Select B2B Fashion House
-              </span>
-            </div>
-            <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold uppercase text-white">
-              Browse by Manufacturing <span className="text-gold font-serif italic lowercase font-normal">Line</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
+              ✦ OUR GARMENT BRANDS
+            </span>
+            <h2 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-white">
+              Browse by <span className="text-gold">Brand</span>
             </h2>
-            <p className="mt-3 text-xs sm:text-sm text-white/40 font-light">
-              We operate three specialized fashion houses targeting specific commercial requirements. Click on a brand to view its collection.
+            <p className="mt-4 text-sm sm:text-base leading-relaxed text-white/40 max-w-2xl mx-auto">
+              WCC operates specialized garment brands, each with a distinct identity and commercial focus. Click a brand to explore its collection.
             </p>
           </div>
 
-          {/* 3 Brand Showcase Cards Grid */}
-          <div className="grid gap-6 md:grid-cols-3">
-            {BRANDS_CONFIG.map((b) => {
-              const isSelected = urlBrand === b.slug
-              const LogoComponent = b.logoSvg
-              
+          {/* Brand Panels — Home page panel style */}
+          <div className="grid grid-cols-1 sm:grid-cols-3">
+            {BRANDS_CONFIG.map((b, index) => {
               return (
-                <div
+                <motion.div
                   key={b.slug}
-                  onClick={() => updateFilters(null, isSelected ? 'all' : b.slug)}
-                  className={`group relative overflow-hidden border transition-all duration-500 cursor-pointer flex flex-col justify-between p-6 h-[280px] sm:h-[320px] ${
-                    isSelected 
-                      ? 'border-gold bg-[#0e0e0e] shadow-[0_15px_40px_rgba(218,165,32,0.1)]'
-                      : 'border-white/10 bg-black/40 hover:border-white/20 hover:bg-[#0c0c0c] hover:shadow-[0_15px_30px_rgba(0,0,0,0.4)]'
-                  }`}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-30px' }}
+                  transition={{ duration: 0.8, delay: 0.1 + index * 0.1, ease: [0.76, 0, 0.24, 1] }}
+                  className="relative"
                 >
-                  {/* Background Image subtle overlay */}
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-15 transition-opacity duration-500 z-0"
-                    style={{ backgroundImage: `url('${b.bgImage}')` }}
-                  />
-                  
-                  {/* Top Row: Custom Brand Logo & Badge */}
-                  <div className="relative z-10 flex justify-between items-start">
-                    <div className="w-[140px] opacity-90 group-hover:opacity-100 transition-opacity">
-                      <LogoComponent className="w-full h-auto" />
-                    </div>
-                    <span className={`text-[8px] font-bold tracking-widest px-2 py-0.5 uppercase border ${
-                      isSelected ? 'border-gold text-gold bg-gold/15' : 'border-white/20 text-white/50 bg-white/5'
-                    }`}>
-                      {b.badge}
-                    </span>
-                  </div>
-
-                  {/* Bottom Row: Info and Selectors */}
-                  <div className="relative z-10 space-y-4">
-                    <div>
-                      <h3 className="font-display text-sm font-bold text-white group-hover:text-gold transition-colors uppercase">
-                        {b.tagline}
-                      </h3>
-                      <p className="mt-1 text-[11px] text-white/50 leading-relaxed font-light line-clamp-3">
-                        {b.desc}
-                      </p>
+                  <button
+                    onClick={() => updateFilters(null, b.slug)}
+                    className="group relative flex flex-col overflow-hidden w-full text-left transition-all duration-500"
+                  >
+                    {/* Background photo */}
+                    <div className="absolute inset-0">
+                      <div
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 ease-out group-hover:scale-105"
+                        style={{ backgroundImage: `url('${b.bgImage}')` }}
+                      />
+                      <div className="absolute inset-0 bg-black/55" />
                     </div>
 
-                    {/* Telemetries block */}
-                    <div className="flex justify-between items-center border-t border-white/5 pt-3 font-mono text-[9px] text-white/40">
-                      <div>
-                        <span>MOQ: </span>
-                        <span className="font-bold text-white">{b.moq}</span>
+                    {/* Card content */}
+                    <div className="relative z-10 flex flex-col p-8" style={{ minHeight: '380px' }}>
+                      {/* Logo at top */}
+                      <div className="mb-auto">
+                        <Image
+                          src={b.logo}
+                          alt={`${b.name} logo`}
+                          className="h-8 w-auto object-contain"
+                        />
                       </div>
-                      <div>
-                        <span>CAPACITY: </span>
-                        <span className="font-bold text-gold">{b.styles}</span>
+
+                      {/* Middle: tagline + accent line + description */}
+                      <div className="mt-8">
+                        <h3 className="text-white font-bold leading-tight font-display text-base">
+                          {b.tagline}
+                        </h3>
+                        <div className="mt-4 h-px w-8 bg-gold" />
+                        <p className="mt-4 text-white/70 text-sm leading-relaxed">
+                          {b.desc}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Selection feedback indicator */}
-                    <div className="flex items-center justify-between text-[10px] font-mono font-bold tracking-wider pt-1">
-                      <span className={isSelected ? 'text-gold' : 'text-white/40 group-hover:text-white/70'}>
-                        {isSelected ? '✓ ACTIVE FILTER' : 'EXPLORE COLLECTION'}
-                      </span>
-                      <ArrowRight className={`h-3 w-3 transform transition-transform duration-300 ${
-                        isSelected ? 'translate-x-1 text-gold' : 'group-hover:translate-x-1 text-white/40 group-hover:text-white/70'
-                      }`} />
+                    {/* Bottom strip */}
+                    <div className="relative z-10 bg-[#111] border-t border-white/10 px-8 py-5">
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <span className="block text-[8px] uppercase tracking-[0.3em] font-semibold mb-2 text-gold">
+                            PERFECT FOR
+                          </span>
+                          <span className="text-[11px] text-white/60 leading-snug">
+                            {b.perfectFor.join(', ')}
+                          </span>
+                        </div>
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
+                          <ArrowUpRight className="h-4 w-4 text-white/50 transition-colors group-hover:text-black" />
+                        </div>
+                      </div>
+                      {/* Gold accent line */}
+                      <div className="mt-4 h-[2px] w-0 bg-gold transition-all duration-500 group-hover:w-full" />
                     </div>
-                  </div>
-
-                  {/* Top accent line */}
-                  <div className={`absolute top-0 left-0 right-0 h-[2px] transition-all duration-500 ${
-                    isSelected ? 'bg-gold' : 'bg-transparent group-hover:bg-white/20'
-                  }`} />
-                </div>
+                  </button>
+                </motion.div>
               )
             })}
           </div>
@@ -585,9 +584,9 @@ export default function GarmentsHubClient() {
               <section className="mx-auto max-w-[1560px] px-6 lg:px-12 py-14">
                 <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                   <div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-gold">GARMENTS CATALOG</span>
-                    <h2 className="mt-2 font-display text-2xl font-bold uppercase text-white md:text-3xl">
-                      Browse by Category
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">GARMENTS CATALOG</span>
+                    <h2 className="mt-4 font-display text-4xl sm:text-5xl font-semibold text-white">
+                      Browse by <span className="text-gold">Category</span>
                     </h2>
                   </div>
                   <p className="font-mono text-[10px] text-white/30 uppercase tracking-wider">
@@ -804,14 +803,14 @@ export default function GarmentsHubClient() {
       <section className="border-t border-white/10 bg-[#0A0A0A]">
         <div className="mx-auto max-w-[1560px] px-6 py-12 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-gold">BULK ENQUIRY</p>
-            <h3 className="mt-1 font-display text-xl font-bold uppercase text-white">
-              Ready to order? Request a quotation instantly.
+            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">BULK ENQUIRY</span>
+            <h3 className="mt-3 font-display text-3xl sm:text-4xl font-semibold text-white">
+              Ready to order? <span className="text-gold">Request a quotation</span> instantly.
             </h3>
           </div>
           <Link
             href="/contact"
-            className="flex items-center gap-2.5 bg-gold px-8 py-3.5 font-mono text-xs font-bold text-black uppercase tracking-widest hover:bg-gold/90 transition-all shrink-0 shadow-[0_0_40px_rgba(218,165,32,0.2)]"
+            className="btn-gold text-[10px] shrink-0"
           >
             Request a Quotation <ArrowRight className="h-4 w-4" />
           </Link>
@@ -837,8 +836,8 @@ function ProductsGrid({
     <section className="mx-auto max-w-[1560px] px-6 py-12 lg:px-12 border-t border-white/[0.07]">
       <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-white/30">{subheading}</span>
-          <h2 className="mt-1 font-display text-2xl font-bold uppercase text-white md:text-3xl">{heading}</h2>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">{subheading}</span>
+          <h2 className="mt-4 font-display text-4xl sm:text-5xl font-semibold text-white">{heading}</h2>
         </div>
         {products.length > 0 && (
           <span className="font-mono text-[10px] text-white/25 uppercase tracking-wider">{products.length} item{products.length !== 1 ? 's' : ''}</span>
@@ -866,6 +865,19 @@ function ProductsGrid({
               divisionSlug="garments"
             />
           ))}
+        </div>
+      )}
+
+      {/* View All — plain text link */}
+      {products.length > 0 && (
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/products/garments"
+            className="group inline-flex items-center gap-1.5 text-sm text-white/40 transition-colors duration-200 hover:text-gold"
+          >
+            View All
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
         </div>
       )}
     </section>
