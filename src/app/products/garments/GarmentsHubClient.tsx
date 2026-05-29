@@ -90,35 +90,35 @@ const CATEGORIES = (division.categories ?? []) as GarmentCategory[]
 const CATEGORY_IMAGES: Record<string, string> = {
   'formal-shirts': '/images/formal-shirts.png',
   'blazers-suits': '/images/Blazers and suits.png',
-  'jeans-denims':  '/images/jeans-denims.png',
-  'polo-tshirts':  '/images/polo tshirts.png',
-  'trousers':      '/images/trousers.png',
-  'jackets':       '/images/jackets.png',
+  'jeans-denims': '/images/jeans-denims.png',
+  'polo-tshirts': '/images/polo tshirts.png',
+  'trousers': '/images/trousers.png',
+  'jackets': '/images/jackets.png',
 }
 
 const STYLE_COUNT: Record<string, string> = {
   'formal-shirts': '140+ Styles',
   'blazers-suits': '80+ Styles',
-  'jeans-denims':  '210+ Styles',
-  'polo-tshirts':  '320+ Styles',
-  'trousers':      '110+ Styles',
-  'jackets':       '95+ Styles',
+  'jeans-denims': '210+ Styles',
+  'polo-tshirts': '320+ Styles',
+  'trousers': '110+ Styles',
+  'jackets': '95+ Styles',
 }
 
 const SLUG_TO_CATEGORY: Record<string, string[]> = {
   'formal-shirts': ['Formal Shirts', 'Casual Shirts'],
   'blazers-suits': ['Blazers & Suits', 'Formal Outerwear'],
-  'jeans-denims':  ['Jeans & Denims', 'Cargo Pants'],
-  'polo-tshirts':  ['Polo Shirts', 'T-Shirts', 'Polo & T-Shirts'],
-  'trousers':      ['Trousers & Chinos', 'Trousers', 'Chinos'],
-  'jackets':       ['Outerwear & Jackets', 'Outerwear', 'Jackets'],
+  'jeans-denims': ['Jeans & Denims', 'Cargo Pants'],
+  'polo-tshirts': ['Polo Shirts', 'T-Shirts', 'Polo & T-Shirts'],
+  'trousers': ['Trousers & Chinos', 'Trousers', 'Chinos'],
+  'jackets': ['Outerwear & Jackets', 'Outerwear', 'Jackets'],
 }
 
 type CatStatus = 'active' | 'coming-soon' | 'newly-started'
 
 const STATUS_CONFIG: Record<CatStatus, { badge: string; style: string }> = {
-  'active':        { badge: 'ACTIVE',        style: 'bg-gold text-black' },
-  'coming-soon':   { badge: 'COMING SOON',   style: 'bg-neutral-600 text-white' },
+  'active': { badge: 'ACTIVE', style: 'bg-gold text-black' },
+  'coming-soon': { badge: 'COMING SOON', style: 'bg-neutral-600 text-white' },
   'newly-started': { badge: 'NEWLY STARTED', style: 'bg-amber-500 text-white' },
 }
 
@@ -170,15 +170,15 @@ const BRANDS_CONFIG = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function GarmentsHubClient() {
-  const searchParams   = useSearchParams()
-  const router         = useRouter()
-  const filterBarRef   = useRef<HTMLDivElement>(null)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const filterBarRef = useRef<HTMLDivElement>(null)
 
-  const urlCategory    = searchParams.get('category') ?? 'all'
-  const urlBrand       = searchParams.get('brand') ?? 'all'
+  const urlCategory = searchParams.get('category') ?? 'all'
+  const urlBrand = searchParams.get('brand') ?? 'all'
 
   const activeCategory = (CATEGORIES.find((c) => c.slug === urlCategory) ?? null) as GarmentCategory | null
-  const activeBrand    = BRANDS_CONFIG.find((b) => b.slug === urlBrand) ?? null
+  const activeBrand = BRANDS_CONFIG.find((b) => b.slug === urlBrand) ?? null
 
   const [products, setProducts] = useState<Product[]>([])
 
@@ -212,7 +212,7 @@ export default function GarmentsHubClient() {
   // Navigation helpers that maintain both parameters
   const updateFilters = (catSlug: string | null, brandSlug: string | null) => {
     const params = new URLSearchParams(searchParams.toString())
-    
+
     if (catSlug === 'all' || catSlug === null) {
       if (catSlug === 'all') params.delete('category')
     } else {
@@ -226,7 +226,7 @@ export default function GarmentsHubClient() {
     }
 
     router.push(`/products/garments${params.toString() ? '?' + params.toString() : ''}`, { scroll: false })
-    
+
     // Auto-scroll to catalog grid area only for category filtering for smooth UX
     if (catSlug !== null) {
       setTimeout(() => {
@@ -273,15 +273,15 @@ export default function GarmentsHubClient() {
               {activeCategory
                 ? <>{activeCategory.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeCategory.name.split(' ').slice(-1)[0]}</span></>
                 : activeBrand
-                ? <>{activeBrand.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeBrand.name.split(' ').slice(-1)[0]}</span></>
-                : <>{division.heroHeading.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{division.heroHeading.split(' ').slice(-1)[0]}</span></>}
+                  ? <>{activeBrand.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeBrand.name.split(' ').slice(-1)[0]}</span></>
+                  : <>{division.heroHeading.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{division.heroHeading.split(' ').slice(-1)[0]}</span></>}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/50 md:text-base font-light">
-              {activeBrand 
+              {activeBrand
                 ? `${activeBrand.tagline}. ${activeBrand.desc}`
                 : activeCategory
-                ? `Browse our full range of ${activeCategory.name} — precision-engineered for global B2B wholesale. Request a bulk quotation for any style.`
-                : division.heroSubtitle}
+                  ? `Browse our full range of ${activeCategory.name} — precision-engineered for global B2B wholesale. Request a bulk quotation for any style.`
+                  : division.heroSubtitle}
             </p>
           </div>
 
@@ -407,7 +407,7 @@ export default function GarmentsHubClient() {
                   <SlidersHorizontal className="h-3 w-3" />
                   Active Filters:
                 </span>
-                
+
                 {/* Category Pill */}
                 {urlCategory !== 'all' && activeCategory && (
                   <button
@@ -449,11 +449,10 @@ export default function GarmentsHubClient() {
             {/* ALL tab */}
             <button
               onClick={() => updateFilters('all', null)}
-              className={`relative shrink-0 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${
-                urlCategory === 'all'
+              className={`relative shrink-0 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${urlCategory === 'all'
                   ? 'border-gold text-gold'
                   : 'border-transparent text-white/40 hover:text-white/70'
-              }`}
+                }`}
             >
               All Categories
             </button>
@@ -467,13 +466,12 @@ export default function GarmentsHubClient() {
                   key={cat.slug}
                   onClick={() => !isDisabled && updateFilters(cat.slug, null)}
                   disabled={isDisabled}
-                  className={`relative shrink-0 flex items-center gap-2 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${
-                    isActive
+                  className={`relative shrink-0 flex items-center gap-2 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${isActive
                       ? 'border-gold text-gold'
                       : isDisabled
-                      ? 'border-transparent text-white/20 cursor-not-allowed'
-                      : 'border-transparent text-white/40 hover:text-white/70'
-                  }`}
+                        ? 'border-transparent text-white/20 cursor-not-allowed'
+                        : 'border-transparent text-white/40 hover:text-white/70'
+                    }`}
                 >
                   {cat.name}
                   {isDisabled && <span className="ml-1 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider bg-white/10 text-white/30">SOON</span>}
@@ -514,7 +512,7 @@ export default function GarmentsHubClient() {
               <section className="mx-auto max-w-[1560px] px-6 lg:px-12 pt-12">
                 <div className="relative border border-gold/30 bg-[#0c0c0c] overflow-hidden p-6 sm:p-10 flex flex-col md:flex-row gap-8 items-center justify-between">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(218,165,32,0.06),transparent_50%)]" />
-                  
+
                   <div className="relative z-10 max-w-3xl space-y-4">
                     <span className="font-mono text-[9px] font-bold tracking-widest text-gold border border-gold/30 bg-gold/10 px-2 py-0.5 uppercase">
                       Active Spotlight · {activeBrand.badge}
@@ -549,11 +547,10 @@ export default function GarmentsHubClient() {
                       <div className="flex flex-wrap gap-2">
                         <button
                           onClick={() => updateFilters('all', null)}
-                          className={`px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${
-                            urlCategory === 'all'
+                          className={`px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${urlCategory === 'all'
                               ? 'border-gold bg-gold/15 text-gold'
                               : 'border-white/10 bg-white/5 text-white/60 hover:border-white/30 hover:text-white'
-                          }`}
+                            }`}
                         >
                           All Collections
                         </button>
@@ -565,13 +562,12 @@ export default function GarmentsHubClient() {
                               key={cat.slug}
                               onClick={() => !isDisabled && updateFilters(cat.slug, null)}
                               disabled={isDisabled}
-                              className={`px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${
-                                isActive
+                              className={`px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${isActive
                                   ? 'border-gold bg-gold/15 text-gold'
                                   : isDisabled
-                                  ? 'border-white/5 bg-transparent text-white/20 cursor-not-allowed'
-                                  : 'border-white/10 bg-white/5 text-white/60 hover:border-white/30 hover:text-white'
-                              }`}
+                                    ? 'border-white/5 bg-transparent text-white/20 cursor-not-allowed'
+                                    : 'border-white/10 bg-white/5 text-white/60 hover:border-white/30 hover:text-white'
+                                }`}
                             >
                               {cat.name}
                             </button>
@@ -611,9 +607,9 @@ export default function GarmentsHubClient() {
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {CATEGORIES.sort((a, b) => a.displayOrder - b.displayOrder).map((cat, index) => {
-                    const status    = cat.status as CatStatus
-                    const cfg       = STATUS_CONFIG[status] ?? STATUS_CONFIG['active']
-                    const image     = CATEGORY_IMAGES[cat.slug] ?? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80'
+                    const status = cat.status as CatStatus
+                    const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG['active']
+                    const image = CATEGORY_IMAGES[cat.slug] ?? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80'
                     const styleCount = STYLE_COUNT[cat.slug] ?? '80+ Styles'
                     const isDisabled = status === 'coming-soon'
 
@@ -628,11 +624,10 @@ export default function GarmentsHubClient() {
                         <button
                           onClick={() => !isDisabled && updateFilters(cat.slug, null)}
                           disabled={isDisabled}
-                          className={`group relative block w-full text-left overflow-hidden border transition-all duration-500 ${
-                            isDisabled
+                          className={`group relative block w-full text-left overflow-hidden border transition-all duration-500 ${isDisabled
                               ? 'border-white/5 cursor-not-allowed'
                               : 'border-white/10 hover:border-gold/40 hover:shadow-[0_20px_60px_rgba(218,165,32,0.08)]'
-                          }`}
+                            }`}
                         >
                           {/* Image */}
                           <div className="relative aspect-[4/3] overflow-hidden">
@@ -779,11 +774,10 @@ export default function GarmentsHubClient() {
                     {activeCategory.subCategories.map((sub) => (
                       <span
                         key={sub.id}
-                        className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider border transition-colors ${
-                          sub.status === 'active'
+                        className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider border transition-colors ${sub.status === 'active'
                             ? 'border-gold/30 bg-gold/10 text-gold cursor-default'
                             : 'border-white/10 bg-white/5 text-white/30'
-                        }`}
+                          }`}
                       >
                         {sub.name}
                         {sub.status === 'coming-soon' && <span className="ml-2 text-[7px]">SOON</span>}
@@ -888,7 +882,7 @@ function ProductsGrid({
       {products.length > 0 && (
         <div className="mt-10 flex justify-center">
           <Link
-            href="/products/garments"
+            href="/products/garments/all"
             className="group inline-flex items-center gap-1.5 text-sm text-white/40 transition-colors duration-200 hover:text-gold"
           >
             View All

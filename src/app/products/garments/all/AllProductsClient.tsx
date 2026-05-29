@@ -25,10 +25,10 @@ const CATEGORIES = (division.categories ?? []) as GarmentCategory[]
 const SLUG_TO_CATEGORY: Record<string, string[]> = {
   'formal-shirts': ['Formal Shirts', 'Casual Shirts'],
   'blazers-suits': ['Blazers & Suits', 'Formal Outerwear'],
-  'jeans-denims':  ['Jeans & Denims', 'Cargo Pants'],
-  'polo-tshirts':  ['Polo Shirts', 'T-Shirts', 'Polo & T-Shirts'],
-  'trousers':      ['Trousers & Chinos', 'Trousers', 'Chinos'],
-  'jackets':       ['Outerwear & Jackets', 'Outerwear', 'Jackets'],
+  'jeans-denims': ['Jeans & Denims', 'Cargo Pants'],
+  'polo-tshirts': ['Polo Shirts', 'T-Shirts', 'Polo & T-Shirts'],
+  'trousers': ['Trousers & Chinos', 'Trousers', 'Chinos'],
+  'jackets': ['Outerwear & Jackets', 'Outerwear', 'Jackets'],
 }
 
 const BRANDS_CONFIG = [
@@ -108,7 +108,7 @@ export default function AllProductsClient() {
               All Garment <span className="text-gold">Products</span>
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/50 md:text-base font-light">
-              Browse our complete garment catalog — every category, every brand, every style displayed in one unified view. 
+              Browse our complete garment catalog — every category, every brand, every style displayed in one unified view.
               Perfect for wholesale buyers exploring our full B2B range.
             </p>
           </div>
@@ -163,11 +163,10 @@ export default function AllProductsClient() {
               </span>
               <button
                 onClick={() => setActiveBrand('all')}
-                className={`shrink-0 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${
-                  activeBrand === 'all'
+                className={`shrink-0 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${activeBrand === 'all'
                     ? 'border-gold bg-gold/15 text-gold'
                     : 'border-white/10 bg-white/5 text-white/50 hover:border-white/30 hover:text-white'
-                }`}
+                  }`}
               >
                 All Brands
               </button>
@@ -175,11 +174,10 @@ export default function AllProductsClient() {
                 <button
                   key={b.slug}
                   onClick={() => setActiveBrand(b.slug)}
-                  className={`shrink-0 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${
-                    activeBrand === b.slug
+                  className={`shrink-0 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider border transition-colors ${activeBrand === b.slug
                       ? 'border-gold bg-gold/15 text-gold'
                       : 'border-white/10 bg-white/5 text-white/50 hover:border-white/30 hover:text-white'
-                  }`}
+                    }`}
                 >
                   {b.name}
                 </button>
