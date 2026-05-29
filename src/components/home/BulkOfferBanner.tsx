@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight, Calendar } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface BulkOfferBannerProps {
@@ -41,21 +41,49 @@ export default function BulkOfferBanner({
   const [current, setCurrent] = useState(0);
 
   const [data, setData] = useState({
-    enabled, tagText, headingStart, headingHighlight, description,
-    discountPercentage, discountText, discountSubText, offerEndDate,
-    buttonText, slideImages
+    enabled,
+    tagText,
+    headingStart,
+    headingHighlight,
+    description,
+    discountPercentage,
+    discountText,
+    discountSubText,
+    offerEndDate,
+    buttonText,
+    slideImages,
   });
 
   const slideImagesString = JSON.stringify(slideImages);
 
   useEffect(() => {
     const loaded = contentStore.getSectionData("bulk-offer", {
-      enabled, tagText, headingStart, headingHighlight, description,
-      discountPercentage, discountText, discountSubText, offerEndDate,
-      buttonText, slideImages
+      enabled,
+      tagText,
+      headingStart,
+      headingHighlight,
+      description,
+      discountPercentage,
+      discountText,
+      discountSubText,
+      offerEndDate,
+      buttonText,
+      slideImages,
     });
     setData(loaded);
-  }, [enabled, tagText, headingStart, headingHighlight, description, discountPercentage, discountText, discountSubText, offerEndDate, buttonText, slideImagesString]);
+  }, [
+    enabled,
+    tagText,
+    headingStart,
+    headingHighlight,
+    description,
+    discountPercentage,
+    discountText,
+    discountSubText,
+    offerEndDate,
+    buttonText,
+    slideImagesString,
+  ]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,10 +99,8 @@ export default function BulkOfferBanner({
       <div className="relative mx-auto max-w-7xl">
         <div className="overflow-hidden">
           <div className="grid grid-cols-1 items-center gap-10 px-5 py-10 md:p-8 lg:grid-cols-2 lg:p-14">
-
-            {/* Left Content */}
-            <div className="space-y-8">
-
+            {/* Left Content — tag + heading + description + discount card */}
+            <div className="space-y-8 order-1 lg:order-1">
               {/* Tag / Overline */}
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
                 {data.tagText}
@@ -83,7 +109,8 @@ export default function BulkOfferBanner({
               {/* Heading */}
               <div className="space-y-0">
                 <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-white md:text-5xl lg:text-6xl">
-                  {data.headingStart} <span className="text-gold">{data.headingHighlight}</span>
+                  {data.headingStart}{" "}
+                  <span className="text-gold">{data.headingHighlight}</span>
                 </h2>
                 <p className="mt-4 max-w-xl text-sm leading-relaxed text-gray-400">
                   {data.description}
@@ -112,36 +139,44 @@ export default function BulkOfferBanner({
                   <Calendar className="text-purple-400" size={20} />
                   <div>
                     <p className="text-xs text-gray-400">Offer Ends</p>
-                    <p className="text-sm font-medium text-white">{data.offerEndDate}</p>
+                    <p className="text-sm font-medium text-white">
+                      {data.offerEndDate}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Button */}
-              <div className="hidden lg:block w-full">
+              {/* Button — visible only on lg+ inside left column */}
+              <div className="mt-10 w-full hidden lg:block">
                 <Link
                   href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
-                  className="btn-gold text-[10px]"
+                  className="group btn-gold !text-white font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
-                  {data.buttonText} <ArrowUpRight className="h-4 w-4" />
+                  {data.buttonText}
+                  <span className="relative flex h-4 w-4 items-center justify-center">
+                    <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                    <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                  </span>
                 </Link>
               </div>
             </div>
 
             {/* Right Side Slider */}
-            <div className="relative flex h-[400px] lg:h-[520px] w-full items-center justify-center overflow-hidden">
-
+            <div className="relative flex h-[400px] lg:h-[520px] w-full items-center justify-center overflow-hidden order-2 lg:order-2">
               {/* Glow */}
               <div className="absolute h-[300px] w-[300px] lg:h-[350px] lg:w-[350px] rounded-full bg-blue-500/20 blur-[120px]" />
 
               {/* Main Slider */}
-              <div className="relative h-[350px] w-full md:h-[430px] md:w-full overflow-hidden rounded-3xl bg-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+              <div className="relative h-[350px] w-full md:h-[430px] md:w-full overflow-hidden bg-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
                 <div
                   className="flex h-full transition-transform duration-700 ease-in-out"
                   style={{ transform: `translateX(-${current * 100}%)` }}
                 >
                   {data.slideImages.map((img, index) => (
-                    <div key={index} className="relative h-full min-w-full overflow-hidden">
+                    <div
+                      key={index}
+                      className="relative h-full min-w-full overflow-hidden"
+                    >
                       <Image
                         src={img}
                         alt={`Bulk Product ${index + 1}`}
@@ -154,16 +189,19 @@ export default function BulkOfferBanner({
               </div>
             </div>
 
-            {/* Mobile Button - Bottom */}
-            <div className="w-full lg:hidden text-center">
+            {/* Button — visible only on mobile, below the slider */}
+            <div className="w-full order-3 lg:hidden">
               <Link
                 href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
-                className="btn-gold text-[10px]"
+                className="group btn-gold !text-white font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center justify-center gap-2 w-full sm:w-auto"
               >
-                {data.buttonText} <ArrowUpRight className="h-4 w-4" />
+                {data.buttonText}
+                <span className="relative flex h-4 w-4 items-center justify-center">
+                  <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                  <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                </span>
               </Link>
             </div>
-
           </div>
         </div>
       </div>

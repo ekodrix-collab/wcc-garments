@@ -15,7 +15,7 @@ const CAMPAIGN_SETS = [
     left: "/images/products/cargo_work_pants.png",
     right: "/images/products/chef_uniform.png",
     title: "Industrial Elegance",
-    tag: "Campaign 2026"
+    tag: "Campaign 2026",
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const CAMPAIGN_SETS = [
     left: "/images/products/luxury_bath_towels.png",
     right: "/images/products/egyptian_cotton_shirt.png",
     title: "Hospitality & Bedding",
-    tag: "Luxury Suite"
+    tag: "Luxury Suite",
   },
   {
     id: 3,
@@ -31,15 +31,16 @@ const CAMPAIGN_SETS = [
     left: "/images/products/cargo_work_pants.png",
     right: "/images/products/hotel_bed_linen.png",
     title: "Professional Workwear",
-    tag: "Corporate Uniforms"
-  }
+    tag: "Corporate Uniforms",
+  },
 ];
 
 const ALL_IMAGE_PATHS = Array.from(
-  new Set(CAMPAIGN_SETS.flatMap((c) => [c.center, c.left, c.right]))
+  new Set(CAMPAIGN_SETS.flatMap((c) => [c.center, c.left, c.right])),
 );
 
 import { contentStore } from "@/lib/content-store";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export function HeroSection(): JSX.Element {
   const [campaignSets, setCampaignSets] = useState(CAMPAIGN_SETS);
@@ -47,7 +48,9 @@ export function HeroSection(): JSX.Element {
   const [allLoaded, setAllLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    const loaded = contentStore.getSectionData("hero", { campaigns: CAMPAIGN_SETS });
+    const loaded = contentStore.getSectionData("hero", {
+      campaigns: CAMPAIGN_SETS,
+    });
     if (loaded && loaded.campaigns) {
       setCampaignSets(loaded.campaigns);
     }
@@ -56,7 +59,7 @@ export function HeroSection(): JSX.Element {
   useEffect(() => {
     let count = 0;
     const allPaths = Array.from(
-      new Set(campaignSets.flatMap((c) => [c.center, c.left, c.right]))
+      new Set(campaignSets.flatMap((c) => [c.center, c.left, c.right])),
     );
     if (allPaths.length === 0) {
       setAllLoaded(true);
@@ -102,10 +105,8 @@ export function HeroSection(): JSX.Element {
         {/* Hero Content */}
         <div className="relative z-[5] w-full flex flex-col items-center justify-center hover-trigger cursor-default px-6 md:px-0 py-16 md:py-0">
           <div className="relative w-full max-w-[1440px] md:px-12 flex flex-col md:grid md:grid-cols-12 md:grid-rows-[auto_auto] md:gap-8 md:items-center gap-6 justify-center items-center">
-
             {/* ── TEXT BLOCK ── */}
             <div className="contents md:flex md:flex-col md:col-start-1 md:col-span-7 md:row-start-1 md:row-span-2 md:self-center md:items-start">
-
               <div className="flex flex-col items-center md:items-start justify-center text-center md:text-left order-1 md:order-none w-full">
                 {/* 
                   CHANGE: Added `text-center md:text-left` to this inner container div.
@@ -116,11 +117,15 @@ export function HeroSection(): JSX.Element {
                   <motion.span
                     initial={{ opacity: 0, scale: 1.8, y: 40 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                    transition={{
+                      duration: 2,
+                      ease: [0.16, 1, 0.3, 1],
+                      delay: 0.2,
+                    }}
                     className="block font-sans font-bold text-[#3b82f6] text-[clamp(52px,18vw,110px)] sm:text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.03em] whitespace-nowrap w-full text-center md:text-left"
                     style={{
-                      WebkitTextStroke: '1.2px #3b82f6',
-                      WebkitTextFillColor: 'transparent',
+                      WebkitTextStroke: "1.2px #3b82f6",
+                      WebkitTextFillColor: "transparent",
                     }}
                   >
                     WESTERN
@@ -129,7 +134,11 @@ export function HeroSection(): JSX.Element {
                   <motion.span
                     initial={{ opacity: 0, scale: 0.35, y: 80 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+                    transition={{
+                      duration: 2.5,
+                      ease: [0.16, 1, 0.3, 1],
+                      delay: 0.35,
+                    }}
                     className="block font-sans font-bold text-black dark:text-white text-[clamp(52px,18vw,110px)] sm:text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.06em] whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)] w-full text-center md:text-left"
                   >
                     CLOTHING
@@ -138,7 +147,11 @@ export function HeroSection(): JSX.Element {
                   <motion.span
                     initial={{ opacity: 0, scale: 0.35, y: 80 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
+                    transition={{
+                      duration: 2.5,
+                      ease: [0.16, 1, 0.3, 1],
+                      delay: 0.45,
+                    }}
                     className="block font-sans font-bold text-black dark:text-white text-[clamp(52px,18vw,110px)] sm:text-[clamp(36px,9vw,110px)] leading-[0.9] tracking-[-0.06em] whitespace-nowrap drop-shadow-[0_0_30px_rgba(255,255,255,0.08)] w-full text-center md:text-left"
                   >
                     COMPANY
@@ -147,33 +160,49 @@ export function HeroSection(): JSX.Element {
 
                 <p
                   className={[
-                    "mt-6 font-barlow-body text-[10px] sm:text-[11px] font-bold tracking-[0.15em]",
-                    "uppercase leading-[1.8] text-neutral-700 dark:text-neutral-300 md:text-blue-600/80 md:dark:text-blue-400/80 max-w-[480px] md:max-w-[700px]",
+                    "mt-6  text-[8px] sm:text-[12px] ",
+                    "text-black dark:text-white md:text-black md:dark:text-white max-w-[480px] md:max-w-[700px]",
                     "animate-fade-up [animation-delay:1100ms] hidden md:block",
                   ].join(" ")}
                 >
-                  An industrial fashion manufacturing group operating at global scale. Delivering bespoke garments, hospitality uniforms, home textiles, and premium raw materials across 50+ countries.
+                  An industrial fashion manufacturing group operating at global
+                  scale. Delivering bespoke garments, hospitality uniforms, home
+                  textiles, and premium raw materials across 50+ countries.
                 </p>
               </div>
 
-              <div className="w-full flex justify-center md:justify-start animate-fade-up [animation-delay:1200ms] order-3 md:order-none mt-0 md:mt-8 z-50 relative">
+              <div className="sm:mt-5 flex items-center gap-6 order-3 w-full sm:w-auto">
                 <Link
                   href="/contact"
-                  className="group flex items-center justify-center gap-2 border border-[#3b82f6] bg-[#3b82f6] w-full sm:w-auto px-8 py-4 md:py-3.5 font-mono text-[12px] md:text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-black hover:border-black hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black"
+                  className="group btn-gold font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
-                  <span>Request a Quotation</span>
-                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  Request a Quotation
+                  <span className="relative flex h-4 w-4 items-center justify-center">
+                    <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+
+                    <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                  </span>
                 </Link>
               </div>
             </div>
 
             {/* ── IMAGE CAROUSEL BLOCK ── */}
             <div className="relative flex items-center justify-center md:col-start-8 md:col-span-5 md:row-start-1 md:row-span-2 w-full h-[320px] sm:h-[400px] md:h-[540px] select-none z-[40] order-2 md:order-none">
-
               {/* Hidden preload */}
-              <div className="absolute w-0 h-0 overflow-hidden pointer-events-none opacity-0" aria-hidden="true">
+              <div
+                className="absolute w-0 h-0 overflow-hidden pointer-events-none opacity-0"
+                aria-hidden="true"
+              >
                 {ALL_IMAGE_PATHS.map((src) => (
-                  <Image key={src} src={src} alt="" fill priority sizes="1px" className="object-cover" />
+                  <Image
+                    key={src}
+                    src={src}
+                    alt=""
+                    fill
+                    priority
+                    sizes="1px"
+                    className="object-cover"
+                  />
                 ))}
               </div>
 
@@ -183,12 +212,22 @@ export function HeroSection(): JSX.Element {
                   key={`left-${campaign.id}`}
                   initial={{ opacity: 0, x: -120, y: 0, rotate: -20 }}
                   animate={{ opacity: 0.4, x: -65, y: -25, rotate: -10 }}
-                  exit={{ opacity: 0, x: -40, rotate: -5, transition: { duration: 0.4, ease: "easeIn" } }}
-                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+                  exit={{
+                    opacity: 0,
+                    x: -40,
+                    rotate: -5,
+                    transition: { duration: 0.4, ease: "easeIn" },
+                  }}
+                  transition={{
+                    duration: 1.4,
+                    ease: [0.16, 1, 0.3, 1],
+                    delay: 0.6,
+                  }}
                   className="absolute w-[160px] h-[220px] sm:w-[200px] sm:h-[270px] md:w-[260px] md:h-[360px] overflow-hidden"
                   style={{
                     border: "1px boreder-black",
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                    boxShadow:
+                      "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
                   }}
                 >
                   <Image
@@ -210,12 +249,22 @@ export function HeroSection(): JSX.Element {
                   key={`right-${campaign.id}`}
                   initial={{ opacity: 0, x: 120, y: 40, rotate: 20 }}
                   animate={{ opacity: 0.3, x: 65, y: 15, rotate: 8 }}
-                  exit={{ opacity: 0, x: 40, rotate: 5, transition: { duration: 0.4, ease: "easeIn" } }}
-                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 1.0 }}
+                  exit={{
+                    opacity: 0,
+                    x: 40,
+                    rotate: 5,
+                    transition: { duration: 0.4, ease: "easeIn" },
+                  }}
+                  transition={{
+                    duration: 1.4,
+                    ease: [0.16, 1, 0.3, 1],
+                    delay: 1.0,
+                  }}
                   className="absolute w-[160px] h-[220px] sm:w-[200px] sm:h-[270px] md:w-[260px] md:h-[360px] overflow-hidden"
                   style={{
                     border: "1px boreder-black",
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                    boxShadow:
+                      "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
                   }}
                 >
                   <Image
@@ -237,12 +286,22 @@ export function HeroSection(): JSX.Element {
                   key={`center-${campaign.id}`}
                   initial={{ opacity: 0, scale: 0.8, y: 80, rotate: 0 }}
                   animate={{ opacity: 1, scale: 1, y: -10, rotate: -2 }}
-                  exit={{ opacity: 0, scale: 0.9, y: 20, transition: { duration: 0.4, ease: "easeIn" } }}
-                  transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 1.4 }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.9,
+                    y: 20,
+                    transition: { duration: 0.4, ease: "easeIn" },
+                  }}
+                  transition={{
+                    duration: 1.6,
+                    ease: [0.16, 1, 0.3, 1],
+                    delay: 1.4,
+                  }}
                   className="absolute w-[180px] h-[245px] sm:w-[220px] sm:h-[300px] md:w-[280px] md:h-[390px] overflow-hidden z-10 group cursor-pointer"
                   style={{
                     border: "1px boreder-black",
-                    boxShadow: "0 0 0 1px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08)",
+                    boxShadow:
+                      "0 0 0 1px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08)",
                   }}
                 >
                   <Image
@@ -266,7 +325,6 @@ export function HeroSection(): JSX.Element {
                   </div>
                 </motion.div>
               </AnimatePresence>
-
             </div>
           </div>
         </div>
