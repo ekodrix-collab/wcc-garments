@@ -131,6 +131,28 @@ export function NewArrivals() {
               })}
             </AnimatePresence>
           </div>
+
+          {/* View All text link */}
+          {products.length > 0 && (
+            <div className="mt-10 flex justify-center">
+              <Link
+                href={
+                  activeTab === 'All'          ? '/products' :
+                  activeTab === 'Garments'     ? '/products/garments' :
+                  activeTab === 'Uniforms'     ? '/products/uniforms' :
+                  activeTab === 'Hospitality'  ? '/products/hospitality' :
+                  activeTab === 'Home'         ? '/products/home' :
+                  activeTab === 'Fragrance'    ? '/products/fragrance' :
+                  activeTab === 'Households'   ? '/products/households' :
+                  '/products'
+                }
+                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--text-muted)] transition-colors duration-200 hover:text-gold"
+              >
+                View All {activeTab === 'All' ? 'Products' : activeTab}
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </section>

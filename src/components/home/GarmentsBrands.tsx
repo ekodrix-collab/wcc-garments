@@ -97,20 +97,18 @@ export function GarmentsBrands() {
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
             className="flex items-center gap-3 mb-3"
           >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gold">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
               OUR BRANDS
             </span>
           </motion.div>
 
           <motion.h2
-            className="font-display text-[20px] sm:text-5xl font-bold text-[#1a1a1a] dark:text-white leading-[1.05] max-w-2xl text text-nowrap"
+            className="mt-4 font-display text-4xl sm:text-5xl font-semibold text-[#1a1a1a] dark:text-white leading-tight"
             initial={{ opacity: 0, y: 30 }}
             animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            Three Brands
-            <br />
-            One Commitment to <span className="text-gold">Excellence</span>
+            Our Manufacturing <span className="text-gold">Brands</span>
           </motion.h2>
 
           <motion.p
@@ -119,8 +117,8 @@ export function GarmentsBrands() {
             animate={isContainerInView ? { opacity: 1 } : {}}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            WCC brings together three unique brands, each with a distinct
-            identity and shared dedication to quality, craftsmanship and style.
+            WCC operates specialized brands, each with a distinct identity
+            and shared dedication to quality, craftsmanship and style.
           </motion.p>
         </div>
       </div>
@@ -212,6 +210,50 @@ export function GarmentsBrands() {
           );
         })}
       </div>
+
+      {/* View All CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
+        className="flex justify-center py-10 border-t border-[var(--border)] bg-[var(--bg)]"
+      >
+        <Link href="/products/garments" className="btn-gold text-[10px]">
+          View All Garments <ArrowUpRight className="h-4 w-4" />
+        </Link>
+      </motion.div>
+
+      {/* ── VALUE PROPOSITIONS BAR ── */}
+      {/* <div className="bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] dark:border-[var(--border)]">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[#e0ddd9] p-5 dark:divide-[var(--border)] divide-y sm:divide-y-0">
+            {VALUE_PROPS.map((prop, index) => {
+              const Icon = prop.icon
+              return (
+                <motion.div
+                  key={prop.title}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={isContainerInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.5 + index * 0.07 }}
+                  className="flex items-start gap-4 px-8 py-8"
+                >
+                  <div className="shrink-0 mt-0.5">
+                    <Icon className="h-8 w-8 text-[#888] dark:text-[var(--text-muted)]" strokeWidth={1.2} />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-bold uppercase tracking-[0.22em] text-[#1a1a1a] dark:text-white mb-1">
+                      {prop.title}
+                    </span>
+                    <span className="text-xs text-[#777] dark:text-[var(--text-muted)] leading-snug">
+                      {prop.desc}
+                    </span>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </div> */}
 
       {/* ── CUSTOM BRANDS (dynamic) ── */}
       {customBrands.length > 0 && (

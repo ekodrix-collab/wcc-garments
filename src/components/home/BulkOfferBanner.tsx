@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight, Calendar, Tag } from "lucide-react";
+import { ArrowUpRight, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface BulkOfferBannerProps {
@@ -75,20 +75,17 @@ export default function BulkOfferBanner({
             {/* Left Content */}
             <div className="space-y-8">
 
-              {/* Tag */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-blue-700 px-3 py-1.5">
-                <Tag className="text-white" size={12} />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white">
-                  {data.tagText}
-                </span>
-              </div>
+              {/* Tag / Overline */}
+              <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
+                {data.tagText}
+              </span>
 
               {/* Heading */}
-              <div className="space-y-4">
-                <h2 className="text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
-                  {data.headingStart} <span className="text-blue-600">{data.headingHighlight}</span>
+              <div className="space-y-0">
+                <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-white md:text-5xl lg:text-6xl">
+                  {data.headingStart} <span className="text-gold">{data.headingHighlight}</span>
                 </h2>
-                <p className="max-w-xl text-sm leading-relaxed text-gray-400">
+                <p className="mt-4 max-w-xl text-sm leading-relaxed text-gray-400">
                   {data.description}
                 </p>
               </div>
@@ -124,9 +121,9 @@ export default function BulkOfferBanner({
               <div className="hidden lg:block w-full">
                 <Link
                   href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
-                  className="inline-flex items-center gap-2 border border-gold px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-all hover:bg-gold whitespace-nowrap hover:text-white"
+                  className="btn-gold text-[10px]"
                 >
-                  Request Bulk Quote <ArrowUpRight className="h-4 w-4" />
+                  {data.buttonText} <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
@@ -161,9 +158,9 @@ export default function BulkOfferBanner({
             <div className="w-full lg:hidden text-center">
               <Link
                 href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
-                className="inline-flex items-center text-center gap-2 border border-gold px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-all hover:bg-gold whitespace-nowrap hover:text-white"
+                className="btn-gold text-[10px]"
               >
-                Request Bulk Quote <ArrowUpRight className="h-4 w-4" />
+                {data.buttonText} <ArrowUpRight className="h-4 w-4" />
               </Link>
             </div>
 
