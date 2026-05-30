@@ -201,11 +201,11 @@ export function EnquiryConsole({
                     }}
                     className={`flex h-8 w-8 items-center justify-center text-xs font-medium transition-all cursor-pointer relative z-30 ${
                       step >= s
-                        ? 'bg-gold text-black font-bold'
+                        ? 'bg-gold text-white font-bold'
                         : 'border border-[var(--border)] text-[var(--text-muted)] hover:border-gold'
                     }`}
                   >
-                    {step > s ? <Check className="h-3.5 w-3.5 text-black font-bold" /> : s}
+                    {step > s ? <Check className="h-3.5 w-3.5 text-white font-bold" /> : s}
                   </button>
                   {s < 3 && (
                     <div
