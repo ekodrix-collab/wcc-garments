@@ -19,6 +19,7 @@ interface ProductCardProps {
     is_offer: boolean
     offer_label: string | null
     short_description?: string | null
+    brand_slug?: string | null
   }
   index?: number
   coverColor?: string
@@ -26,7 +27,7 @@ interface ProductCardProps {
   divisionSlug?: string
 }
 
-export function ProductCard({ product, index = 0, coverColor = '#e8e5e0', divisionSlug }: ProductCardProps) {
+export function ProductCard({ product, index = 0, coverColor = '#ffffff', divisionSlug }: ProductCardProps) {
   const effectiveDivision = divisionSlug || product.division?.slug || 'products'
   const [hovered, setHovered] = useState(false)
   const [revealed, setRevealed] = useState(false)
@@ -61,7 +62,7 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0', divisi
     >
       <Link
         href={`/products/${effectiveDivision}/${product.slug}`}
-        className="relative mx-auto block w-full max-w-[420px] overflow-hidden border border-[var(--border)] bg-[var(--bg-surface)]"
+        className="relative mx-auto block w-full max-w-[420px] overflow-hidden border border-[var(--border)] bg-white"
         style={{ aspectRatio: '1/1', background: coverColor }}
         ref={containerRef}
       >
@@ -69,7 +70,7 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0', divisi
         <motion.div
           animate={{ scale: hovered ? 1.01 : 1 }}
           transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 h-full w-full bg-white"
         >
           <Image
             src={product.images?.[0] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=85'}
@@ -125,9 +126,24 @@ export function ProductCard({ product, index = 0, coverColor = '#e8e5e0', divisi
 
       {/* Editorial Typographic Info */}
       <div className="mt-4 px-1">
-        <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-gold/90">
-          {product.division?.name || 'WCC DIVISION'}
-        </span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="block text-[9px] font-medium uppercase tracking-[0.18em] text-gold/90">
+            {product.division?.name || 'WCC DIVISION'}
+          </span>
+          {product.brand_slug && (
+            <span className={`px-2 py-0.5 text-[8px] font-mono font-bold tracking-[0.15em] uppercase border ${
+              product.brand_slug === 'treasure'
+                ? 'border-gold text-gold bg-gold/5'
+                : product.brand_slug === 'vandegraff'
+                ? 'border-[#8B1A1A] text-[#8B1A1A] dark:text-red-400 bg-[#8B1A1A]/5'
+                : product.brand_slug === 'tom-jack'
+                ? 'border-amber-500/30 text-amber-500 bg-amber-500/5'
+                : 'border-[var(--border)] text-[var(--text-muted)] bg-[var(--bg)]'
+            }`}>
+              {product.brand_slug === 'tom-jack' ? 'TOM & JACK' : product.brand_slug.toUpperCase()}
+            </span>
+          )}
+        </div>
 
         <h3 className="mt-2 text-base font-semibold leading-snug text-[var(--text)] transition-colors duration-300 md:text-lg">
           {product.name}

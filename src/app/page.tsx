@@ -1,5 +1,4 @@
 import { HeroSection } from '@/components/home/HeroSection'
-import { MarqueeBanner } from '@/components/home/MarqueeBanner'
 import { WhoWeAre } from '@/components/home/WhoWeAre'
 import { DivisionCutouts } from '@/components/home/DivisionCutouts'
 import { GarmentsBrands } from '@/components/home/GarmentsBrands'
@@ -8,7 +7,6 @@ import { NewArrivals } from '@/components/home/NewArrivals'
 import { KillingOffers } from '@/components/home/KillingOffers'
 import { GlobalPresence } from '@/components/home/GlobalPresence'
 import { ManufacturingStory } from '@/components/home/ManufacturingStory'
-import { WhyWCC } from '@/components/home/WhyWCC'
 import { EnquiryConsole } from '@/components/home/EnquiryConsole'
 import { CoverDemo } from '@/components/ui/cover-demo'
 import BulkOfferBanner from '@/components/home/BulkOfferBanner'
@@ -20,11 +18,9 @@ export default function HomePage() {
         <HeroSection />
       </div>
 
-      <main className="relative z-20 mx-auto max-w-[1440px] px-0 mt-[100vh]">
-        {/* <MarqueeBanner /> */}
-       
+      <main className="relative z-20 mx-auto max-w-[1440px] px-0 mt-[100vh]">       
         <WhoWeAre />
-         <BulkOfferBanner/>
+        <BulkOfferBanner />
         <DivisionCutouts />
         <GarmentsBrands />
         <HouseholdShowcase />
@@ -33,7 +29,6 @@ export default function HomePage() {
         <GlobalPresence />
         <ManufacturingStory />
         <CoverDemo />
-        {/* <WhyWCC /> */}
         <EnquiryConsole />
       </main>
     </>
