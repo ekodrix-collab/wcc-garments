@@ -90,7 +90,7 @@ export function GarmentsBrands() {
     >
       {/* ── TOP HERO SECTION ── */}
       <div className="relative overflow-hidden bg-[#f5f4f2] dark:bg-[var(--bg-subtle)] py-10 md:py-15">
-        <div className="relative mx-auto max-w-[1440px] px-6 lg:px-12">
+        <div className="relative mx-auto max-w-[1440px] px-2 md:px-6 lg:px-12">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <motion.div
@@ -186,7 +186,7 @@ export function GarmentsBrands() {
 
                 {/* Image overlay content */}
                 <div
-                  className="relative z-10 flex flex-col p-8"
+                  className="relative z-10 flex flex-col p-2 md:p-6"
                   style={{ minHeight: "380px" }}
                 >
                   {/* Logo area — top */}
@@ -267,7 +267,7 @@ export function GarmentsBrands() {
           initial={{ opacity: 0 }}
           animate={isContainerInView ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: 0.45 }}
-          className="bg-[var(--bg)] border-t border-[var(--border)] px-6 lg:px-12 py-8 mx-auto max-w-[1440px]"
+          className="bg-[var(--bg)] border-t border-[var(--border)] px-2 md:px-6 lg:px-12 py-8 mx-auto max-w-[1440px]"
         >
           <span className="mb-4 block font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)]">
             Dynamically synchronized portfolios
