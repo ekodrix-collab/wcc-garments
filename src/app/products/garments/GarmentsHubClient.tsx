@@ -549,12 +549,12 @@ export default function GarmentsHubClient() {
                               className={`object-cover transition-transform duration-700 ease-out ${
                                 isDisabled
                                   ? 'grayscale opacity-30'
-                                  : 'opacity-60 group-hover:scale-[1.04] group-hover:opacity-70'
+                                  : 'group-hover:scale-[1.04]'
                               }`}
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-                            <div className={`absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 ${!isDisabled ? 'group-hover:opacity-100' : ''}`} />
+                            <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                            <div className={`absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 ${!isDisabled ? 'group-hover:opacity-100' : ''}`} />
 
                             {status !== 'active' && (
                               <span className={`absolute left-4 top-4 px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10 ${cfg.style}`}>
