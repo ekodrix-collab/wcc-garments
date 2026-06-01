@@ -1,8 +1,14 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { startTransition, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductCard } from './ProductCard'
+import {
+  categoryMatchesSelection,
+  getDivisionCategoryHref,
+  resolveDivisionCategorySlug,
+} from '@/lib/category-routing'
 
 interface Category {
   id: string
@@ -20,7 +26,7 @@ interface DivisionProductsClientProps {
     slug: string
     images: string[]
     division?: { name: string; slug: string } | null
-    category?: { name: string } | null
+    category?: { name: string; slug?: string } | null
     moq: string | null
     is_new: boolean
     is_offer: boolean
@@ -30,6 +36,7 @@ interface DivisionProductsClientProps {
   categories: Category[]
   divisionSlug: string
   divisionName: string
+  initialCategorySlug?: string
 }
 
 export function DivisionProductsClient({
@@ -37,9 +44,17 @@ export function DivisionProductsClient({
   categories,
   divisionSlug,
   divisionName,
+  initialCategorySlug,
 }: DivisionProductsClientProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const router = useRouter()
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    resolveDivisionCategorySlug(divisionSlug, initialCategorySlug) ?? 'all'
+  )
   const filterBarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setSelectedCategory(resolveDivisionCategorySlug(divisionSlug, initialCategorySlug) ?? 'all')
+  }, [divisionSlug, initialCategorySlug])
 
   // Sort categories by displayOrder
   const sortedCategories = [...categories].sort((a, b) => a.displayOrder - b.displayOrder)
@@ -49,18 +64,25 @@ export function DivisionProductsClient({
     if (selectedCategory === 'all') return true
     
     const productCatName = product.category?.name || ''
+    const productCatSlug = product.category?.slug || null
     const targetCat = categories.find((c) => c.slug === selectedCategory)
     if (!targetCat) return true
 
-    // Robust case-insensitive name matching
-    const normProd = productCatName.toLowerCase().replace(/[^a-z0-9]/g, '')
-    const normCat = targetCat.name.toLowerCase().replace(/[^a-z0-9]/g, '')
-    
-    return normProd.includes(normCat) || normCat.includes(normProd)
+    return categoryMatchesSelection({
+      divisionSlug,
+      productCategoryName: productCatName,
+      productCategorySlug: productCatSlug,
+      selectedCategory,
+      targetCategoryName: targetCat.name,
+    })
   })
 
   const handleCategoryChange = (slug: string) => {
     setSelectedCategory(slug)
+    startTransition(() => {
+      router.replace(getDivisionCategoryHref(divisionSlug, slug))
+    })
+
     // Scroll to the catalog grid smoothly
     setTimeout(() => {
       filterBarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
