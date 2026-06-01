@@ -278,8 +278,8 @@ export default function GarmentsHubClient() {
                 >
 
                   {/* Card content */}
-                  <div className="relative z-10 flex flex-col place-items-start p-5  gap-4">
-                    <div className="mb-auto border-2 border-transparent hover:border-[var(--border)]">
+                  <div className="relative z-10 flex flex-col place-items-center p-5  gap-4">
+                    <div className="mb-auto border-2 w-full border-transparent hover:border-[var(--border)]">
                       <Image
                         src={b.brandImage}
                         width={250}
