@@ -206,7 +206,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Mobile Vertical Timeline */}
+          {/* Mobil Timeline */}
           <div className="lg:hidden max-w-lg mx-auto">
             {TIMELINE.map((item, i) => (
               <motion.div
