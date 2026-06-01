@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileText, ArrowRight } from 'lucide-react'
+import { getProductHref } from '@/lib/category-routing'
 
 interface ProductCardProps {
   product: {
@@ -23,7 +24,7 @@ interface ProductCardProps {
   }
   index?: number
   coverColor?: string
-  /** Division slug for building /products/[division]/[slug] URLs */
+  /** Division slug for building /products/[division]/details/[slug] URLs */
   divisionSlug?: string
 }
 
@@ -61,7 +62,7 @@ export function ProductCard({ product, index = 0, coverColor = '#ffffff', divisi
       onMouseLeave={() => setHovered(false)}
     >
       <Link
-        href={`/products/${effectiveDivision}/${product.slug}`}
+        href={getProductHref(effectiveDivision, product.slug)}
         className="relative mx-auto block w-full max-w-[420px] overflow-hidden border border-[var(--border)] bg-white"
         style={{ aspectRatio: '1/1', background: coverColor }}
         ref={containerRef}
