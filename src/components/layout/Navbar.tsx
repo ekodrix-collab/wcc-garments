@@ -7,15 +7,21 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, ChevronDown, Building2, ShieldCheck, Factory, Briefcase, Home, Package, ArrowRight, Award, Clock, Mail, MessageCircle, Globe, Flame, Sparkles, Layers } from 'lucide-react'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { NAV_LINKS } from '@/lib/constants'
+import { NAV_LINKS, SITE_CONFIG } from '@/lib/constants'
+import { contentStore } from '@/lib/content-store'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [megaMenuOpen, setMegaMenuOpen] = useState(false)
+  const [config, setConfig] = useState(SITE_CONFIG)
   const pathname = usePathname()
 
   const isAdmin = pathname.startsWith('/admin')
+
+  useEffect(() => {
+    setConfig(contentStore.getSiteConfig())
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
@@ -57,10 +63,10 @@ export function Navbar() {
             </div>
             <div className="flex flex-col">
               <span className="font-poppins font-bold text-black dark:text-white tracking-widest text-[13px]">
-                WCC FASHIONS
+                {config.name.toUpperCase()}
               </span>
               <span className="font-poppins text-[7px] font-medium uppercase tracking-[0.40em] text-gold/80">
-                Western Clothing Co.
+                {config.fullName}
               </span>
             </div>
           </Link>
@@ -369,17 +375,17 @@ export function Navbar() {
               <div className="relative z-10 p-5 bg-black/40 border-t border-white/[0.06] rounded-b-3xl">
                 <div className="grid grid-cols-2 gap-2.5">
                   <a
-                    href="mailto:info@wccgarments.com"
+                    href={`mailto:${config.email}`}
                     className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 transition-all duration-300 hover:border-gold/40 hover:bg-gold/5"
                   >
                     <Mail className="h-3.5 w-3.5 text-gold shrink-0" />
                     <div className="min-w-0">
                       <p className="font-mono text-[7px] uppercase tracking-wider text-white/40">Email</p>
-                      <p className="font-mono text-[8px] font-bold text-white truncate">info@wccgarments.com</p>
+                      <p className="font-mono text-[8px] font-bold text-white truncate">{config.email}</p>
                     </div>
                   </a>
                   <a
-                    href="https://wa.me/971000000000"
+                    href={`https://wa.me/${config.whatsapp.replace(/[^0-9]/g, '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 transition-all duration-300 hover:border-emerald-400/40 hover:bg-emerald-400/5"
@@ -393,7 +399,7 @@ export function Navbar() {
                 </div>
 
                 <div className="mt-4 flex items-center justify-between text-[8px] font-mono text-white/20 uppercase tracking-widest">
-                  <span>© 2026 WCC Fashions LLC</span>
+                  <span>© 2026 {config.fullName}</span>
                   <ThemeToggle />
                 </div>
               </div>

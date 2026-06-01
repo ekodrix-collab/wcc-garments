@@ -1,64 +1,208 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export default function BulkOfferBanner() {
-  const enabled = true;
+interface BulkOfferBannerProps {
+  enabled?: boolean;
+  tagText?: string;
+  headingStart?: string;
+  headingHighlight?: string;
+  description?: string;
+  discountPercentage?: number;
+  discountText?: string;
+  discountSubText?: string;
+  offerEndDate?: string;
+  buttonText?: string;
+  slideImages?: string[];
+}
 
-  // Admin ON/OFF
-  if (!enabled) return null;
+import { contentStore } from "@/lib/content-store";
+import Link from "next/link";
+
+export default function BulkOfferBanner({
+  enabled = true,
+  tagText = "Bulk Garments Order",
+  headingStart = "Exclusive Discounts on Bulk Garment",
+  headingHighlight = "Orders",
+  description = "Large-scale premium clothing production for brands, wholesalers, and businesses with top-quality materials and reliable delivery.",
+  discountPercentage = 25,
+  discountText = "Flat Discount",
+  discountSubText = "On orders above 500 pieces",
+  offerEndDate = "June 30, 2026",
+  buttonText = "Get Quote",
+  slideImages = [
+    "/images/bulkoffer/premium_hoodie.png",
+    "/images/bulkoffer/premium_jeans.png",
+    "/images/bulkoffer/premium_shirt.png",
+  ],
+}: BulkOfferBannerProps) {
+  const [current, setCurrent] = useState(0);
+
+  const [data, setData] = useState({
+    enabled,
+    tagText,
+    headingStart,
+    headingHighlight,
+    description,
+    discountPercentage,
+    discountText,
+    discountSubText,
+    offerEndDate,
+    buttonText,
+    slideImages,
+  });
+
+  const slideImagesString = JSON.stringify(slideImages);
+
+  useEffect(() => {
+    const loaded = contentStore.getSectionData("bulk-offer", {
+      enabled,
+      tagText,
+      headingStart,
+      headingHighlight,
+      description,
+      discountPercentage,
+      discountText,
+      discountSubText,
+      offerEndDate,
+      buttonText,
+      slideImages,
+    });
+    setData(loaded);
+  }, [
+    enabled,
+    tagText,
+    headingStart,
+    headingHighlight,
+    description,
+    discountPercentage,
+    discountText,
+    discountSubText,
+    offerEndDate,
+    buttonText,
+    slideImagesString,
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % data.slideImages.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [data.slideImages.length]);
+
+  if (!data.enabled) return null;
 
   return (
-    <section className="w-full">
-      <div className="relative h-[250px] overflow-hidden md:h-[320px]">
+    <section className="relative overflow-hidden bg-black py-5">
+      <div className="relative mx-auto max-w-7xl">
+        <div className="overflow-hidden">
+          <div className="grid grid-cols-1 items-center gap-10 px-5 py-10 md:p-8 lg:grid-cols-2 lg:p-14">
+            {/* Left Content — tag + heading + description + discount card */}
+            <div className="space-y-8 order-1 lg:order-1">
+              {/* Tag / Overline */}
+              <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
+                {data.tagText}
+              </span>
 
-        {/* Desktop Banner */}
-        <Image
-          src="/images/bulkoffer/offer.png"
-          alt="Bulk Offer Banner"
-          fill
-          priority
-          className="hidden object-fill md:block"
-        />
+              {/* Heading */}
+              <div className="space-y-0">
+                <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-white md:text-5xl lg:text-6xl">
+                  {data.headingStart}{" "}
+                  <span className="text-gold">{data.headingHighlight}</span>
+                </h2>
+                <p className="mt-4 max-w-xl text-sm leading-relaxed text-gray-400">
+                  {data.description}
+                </p>
+              </div>
 
-        {/* Mobile Banner */}
-        <Image
-          src="/images/bulkoffer/offermobile.png"
-          alt="Bulk Offer Banner"
-          fill
-          priority
-          className="object-fill md:hidden"
-        />
+              {/* Offer Card */}
+              <div className="flex flex-col gap-5 border border-white/10 bg-white/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-md bg-gradient-to-br from-blue-500 to-purple-600 text-2xl font-bold text-white shadow-lg">
+                    {data.discountPercentage}%
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold text-white">
+                      {data.discountText}
+                    </h4>
+                    <p className="text-sm text-gray-400">
+                      {data.discountSubText}
+                    </p>
+                  </div>
+                </div>
 
-        {/* Limited Time Offer Badge */}
-        <div className="absolute left-4 top-4 z-20 md:left-6 md:top-6">
-          <div className="group relative overflow-hidden rounded-r-xl rounded-b-xl border border-white bg-[#030068] px-4 py-2 shadow-[0_0_30px_rgba(29,78,216,0.9)] md:px-6 md:py-3">
+                <div className="hidden h-12 w-px bg-white/10 sm:block" />
 
-            {/* Glow Effect */}
-            <div className="absolute inset-0 animate-pulse bg-white/10" />
+                <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <Calendar className="text-purple-400" size={20} />
+                  <div>
+                    <p className="text-xs text-gray-400">Offer Ends</p>
+                    <p className="text-sm font-medium text-white">
+                      {data.offerEndDate}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            {/* Shine Animation */}
-            <div className="absolute -left-16 top-0 h-full w-10 rotate-12 bg-white/40 blur-md transition-all duration-700 group-hover:left-[130%]" />
+              {/* Button — visible only on lg+ inside left column */}
+              <div className="mt-10 w-full hidden lg:block">
+                <Link
+                  href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
+                  className="group btn-gold !text-white font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center justify-center gap-2 w-full sm:w-auto"
+                >
+                  {data.buttonText}
+                  <span className="relative flex h-4 w-4 items-center justify-center">
+                    <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                    <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                  </span>
+                </Link>
+              </div>
+            </div>
 
-            {/* Text */}
-            <p className="relative text-[9px] font-semibold uppercase tracking-wide text-white md:text-xs">
-              Limited Time Offer
-            </p>
+            {/* Right Side Slider */}
+            <div className="relative flex h-[400px] lg:h-[520px] w-full items-center justify-center overflow-hidden order-2 lg:order-2">
+              {/* Glow */}
+              <div className="absolute h-[300px] w-[300px] lg:h-[350px] lg:w-[350px] rounded-full bg-blue-500/20 blur-[120px]" />
+
+              {/* Main Slider */}
+              <div className="relative h-[350px] w-full md:h-[430px] md:w-full overflow-hidden bg-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+                <div
+                  className="flex h-full transition-transform duration-700 ease-in-out"
+                  style={{ transform: `translateX(-${current * 100}%)` }}
+                >
+                  {data.slideImages.map((img, index) => (
+                    <div
+                      key={index}
+                      className="relative h-full min-w-full overflow-hidden"
+                    >
+                      <Image
+                        src={img}
+                        alt={`Bulk Product ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform duration-700 hover:scale-110"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Button — visible only on mobile, below the slider */}
+            <div className="w-full order-3 lg:hidden">
+              <Link
+                href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
+                className="group btn-gold !text-white font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center justify-center gap-2 w-full sm:w-auto"
+              >
+                {data.buttonText}
+                <span className="relative flex h-4 w-4 items-center justify-center">
+                  <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                  <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                </span>
+              </Link>
+            </div>
           </div>
-        </div>
-
-        {/* Button */}
-        <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 md:bottom-5 md:left-auto md:right-5 md:translate-x-0">
-          <button className="group flex items-center gap-1 bg-blue-700 px-4 py-2 text-xs font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-600 md:px-6 md:py-2.5 md:text-sm">
-
-            <span>Make Quotation</span>
-
-            {/* Arrow */}
-            <span className="flex h-5 w-7 items-center justify-center rounded-full transition-all duration-300 group-hover:translate-x-1">
-              <ArrowRight size={18} />
-            </span>
-          </button>
         </div>
       </div>
     </section>

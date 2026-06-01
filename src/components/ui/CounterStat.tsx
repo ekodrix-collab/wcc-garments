@@ -50,7 +50,7 @@ export function CounterStat({
   return (
     <div ref={ref} className={className}>
       {/* Clean Premium Editorial Display Number */}
-      <div className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">
+      <div className="font-display text-4xl font-bold tracking-tight text-[var(--text)] md:text-5xl lg:text-6xl">
         {prefix}
         {count.toLocaleString()}
         {suffix}

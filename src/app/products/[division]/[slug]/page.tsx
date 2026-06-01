@@ -100,11 +100,10 @@ export default function ProductDetailPage({
                     <button
                       key={`${img}-${i}`}
                       onClick={() => setActiveImage(i)}
-                      className={`relative aspect-square overflow-hidden border transition-all ${
-                        activeImage === i
+                      className={`relative aspect-square overflow-hidden border transition-all ${activeImage === i
                           ? 'border-gold shadow-[0_0_0_1px_rgba(212,175,55,0.35)]'
                           : 'border-[var(--border)] opacity-75 hover:opacity-100'
-                      }`}
+                        }`}
                       aria-label={`View image ${i + 1}`}
                     >
                       <Image

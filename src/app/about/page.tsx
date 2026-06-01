@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { RevealText } from '@/components/ui/RevealText'
 import { CounterStat } from '@/components/ui/CounterStat'
 import { GlobalPresence } from '@/components/home/GlobalPresence'
-import { MapPin, Target, Lightbulb, Users, ShieldCheck, Factory, Globe2 } from 'lucide-react'
+import { MapPin, Target, Lightbulb, Users, ShieldCheck, Factory, Globe2, Layers } from 'lucide-react'
 
 const TIMELINE = [
   { year: '2001', event: 'WCC Fashions founded in Bangalore, India.' },
@@ -33,41 +33,69 @@ const VALUES = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
+    <div className="min-h-screen bg-[var(--bg)] mt-16">
       {/* Hero */}
-      <div className="border-b border-[var(--border)] pt-32 pb-16">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-              <span className="font-display text-sm font-semibold tracking-widest text-gold uppercase mb-6 block">
-                Since 2001
-              </span>
-              <h1 className="font-display text-display-md font-semibold text-[var(--text)]">
-                25+ Years of <span className="font-light italic text-gold">Manufacturing Excellence</span>
-              </h1>
-              <div className="mt-8 space-y-4 text-sm leading-relaxed text-[var(--text-muted)] max-w-lg">
-                <p>
-                  Established in 2001 in Bangalore, India, WCC Fashions (WCC Fashions LLC) has evolved into a premier multi-division industrial textile manufacturing group. With our global headquarters strategically located in Dubai, UAE, we have spent over a quarter-century perfecting the art of bulk textile production for B2B clients worldwide.
-                </p>
-                <p>
-                  We are not just a supplier; we are your manufacturing partner. Operating 7 international production facilities across 3 countries, we deliver export-grade garments, professional uniforms, luxury hospitality linens, home furnishings, and specialized fragrances.
-                </p>
-              </div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-surface)] rounded-none border border-[var(--border)] shadow-2xl group cursor-pointer">
-              <Image src="/images/aboutpage-image.png" alt="WCC Fashions Manufacturing Facility" fill className="object-cover scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out rounded-none" priority sizes="(max-width: 1024px) 100vw, 50vw" />
-            </motion.div>
-          </div>
+      <div className="relative min-h-[500px] md:min-h-[600px] lg:min-h-[70vh] w-full flex items-center overflow-hidden">
+        <Image src="/images/about-hero.jpg" alt="WCC Fashions Manufacturing Facility" fill className="object-cover object-center" priority sizes="100vw" />
+
+        {/* Subtle Dark Gradient Overlay behind text only */}
+        <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-black/95 via-black/80 to-transparent w-full md:w-[60%] lg:w-[45%] z-10" />
+
+        <div className="relative z-20 w-full mx-auto max-w-[1440px] px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="w-full md:w-[50%] lg:w-[35%]"
+          >
+            <span className="font-display text-sm font-semibold tracking-widest text-gold uppercase mb-6 block">
+              Since 2001
+            </span>
+            <h1 className="font-display text-5xl lg:textxl leading-[1.1] font-bold text-white mb-6">
+              25+ Years of <br />
+              <span className="font-bold text-gold">Manufacturing Excellence</span>
+            </h1>
+            <p className="text-sm leading-relaxed text-neutral-300 mb-10">
+              Founded in Bangalore in 2001, WCC Fashions has grown into a global textile manufacturing partner with headquarters in Dubai. We operate 7 production facilities across 3 countries, delivering export-quality garments, uniforms, hospitality linens, home furnishings, and fragrances for B2B clients worldwide.
+            </p>
+
+          </motion.div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="bg-[var(--bg-surface)] py-16 border-b border-[var(--border)]">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 lg:grid-cols-4">
-          <CounterStat end={25} suffix="+" label="Years Experience" />
-          <CounterStat end={7} label="Production Centers" />
-          <CounterStat end={6} label="Specialized Divisions" />
-          <CounterStat end={50} suffix="+" label="Countries Served" />
+      {/* Hero Stats Bar */}
+      <div className="bg-black py-10 border-b border-[var(--border)]">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Globe2 className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">50+</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Countries</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Factory className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">7</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Production<br className="hidden lg:block"/>Facilities</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Layers className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">6</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Specialized<br className="hidden lg:block"/>Divisions</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Users className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">25+</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Years<br className="hidden lg:block"/>Experience</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -103,7 +131,7 @@ export default function AboutPage() {
             <RevealText><h2 className="font-display text-display-sm font-semibold text-[var(--text)]">Global <span className="font-light italic text-gold">Footprint</span></h2></RevealText>
             <p className="mt-4 text-[var(--text-muted)]">7 international production and sourcing locations across 3 countries, strategically headquartered in Dubai.</p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {LOCATIONS.map((loc, i) => (
               <motion.div key={loc.country} className="border border-[var(--border)] bg-[var(--bg)] p-6" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>

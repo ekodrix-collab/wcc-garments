@@ -7,12 +7,24 @@ import { ArrowUpRight } from 'lucide-react'
 import { MOCK_IMAGES } from '@/lib/constants'
 
 const DIVISION_IMAGES: Record<string, string> = {
-  garments: MOCK_IMAGES.garments,
-  uniforms: MOCK_IMAGES.uniforms,
+  garments:    MOCK_IMAGES.garments,
+  uniforms:    MOCK_IMAGES.uniforms,
   hospitality: MOCK_IMAGES.hospitality,
-  home: MOCK_IMAGES.home,
-  fragrance: MOCK_IMAGES.fragrance,
-  households: MOCK_IMAGES.households,
+  home:        MOCK_IMAGES.home,
+  fragrance:   MOCK_IMAGES.fragrance,
+  households:  MOCK_IMAGES.households,
+}
+
+// ── Same STATUS_CONFIG as KillingOffers ──────────────────────────────────────
+type DivisionStatus = 'flagship' | 'established' | 'expanding' | 'newly-started' | 'active' | 'coming-soon'
+
+const STATUS_CONFIG: Record<DivisionStatus, { badge: string; style: string }> = {
+  flagship:        { badge: 'FLAGSHIP',       style: 'bg-gold text-black' },
+  established:     { badge: 'ESTABLISHED',    style: 'bg-blue-500 text-white' },
+  expanding:       { badge: 'MAJOR EXPANSION',style: 'bg-emerald-500 text-white' },
+  'newly-started': { badge: 'NEWLY STARTED',  style: 'bg-amber-500 text-white' },
+  active:          { badge: 'ACTIVE',         style: 'bg-gold text-black' },
+  'coming-soon':   { badge: 'COMING SOON',    style: 'bg-neutral-600 text-white' },
 }
 
 interface DivisionCardProps {
@@ -20,6 +32,7 @@ interface DivisionCardProps {
     name: string
     slug: string
     icon: string
+    status?: string
     description: string
     heroHeading: string
     stat1Label: string
@@ -36,7 +49,9 @@ interface DivisionCardProps {
 }
 
 export function DivisionCard({ division, productCount, index, variant = 'small' }: DivisionCardProps) {
-  const image = DIVISION_IMAGES[division.slug] || MOCK_IMAGES.textiles
+  const image     = DIVISION_IMAGES[division.slug] || MOCK_IMAGES.textiles
+  const status    = (division.status ?? 'active') as DivisionStatus
+  const statusCfg = STATUS_CONFIG[status] ?? STATUS_CONFIG['active']
 
   return (
     <motion.div
@@ -52,9 +67,7 @@ export function DivisionCard({ division, productCount, index, variant = 'small' 
         aria-label={`Browse ${division.name} products`}
       >
         {/* Image */}
-        <div
-          className={`relative w-full overflow-hidden ${variant === 'large' ? 'aspect-[16/7]' : 'aspect-[4/3]'}`}
-        >
+        <div className={`relative w-full overflow-hidden ${variant === 'large' ? 'aspect-[16/7]' : 'aspect-[4/3]'}`}>
           <Image
             src={image}
             alt={`${division.name} products — WCC Garments`}
@@ -62,12 +75,12 @@ export function DivisionCard({ division, productCount, index, variant = 'small' 
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             sizes={variant === 'large' ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
           />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          {/* Gradient overlay — strong enough for any image brightness */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/10" />
 
-          {/* Division code top-left */}
-          <span className="absolute left-4 top-4 border border-white/20 bg-black/40 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
-            {division.icon}
+          {/* Status badge — top-left, same KillingOffers pattern */}
+          <span className={`absolute left-4 top-4 px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10 ${statusCfg.style}`}>
+            {statusCfg.badge}
           </span>
 
           {/* Arrow top-right */}
@@ -77,10 +90,10 @@ export function DivisionCard({ division, productCount, index, variant = 'small' 
 
           {/* Heading overlay at bottom */}
           <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold/90">
-              {division.name}
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+              {division.icon} · {division.name}
             </p>
-            <h2 className={`mt-1.5 font-display font-semibold leading-snug text-white ${variant === 'large' ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}`}>
+            <h2 className={`mt-1.5 font-display font-semibold leading-snug text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] ${variant === 'large' ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}`}>
               {division.heroHeading}
             </h2>
           </div>
@@ -89,21 +102,15 @@ export function DivisionCard({ division, productCount, index, variant = 'small' 
         {/* Bottom stats bar */}
         <div className="grid grid-cols-3 divide-x divide-[var(--border)] border-t border-[var(--border)]">
           <div className="px-4 py-3">
-            <p className="text-[9px] uppercase tracking-[0.14em] text-[var(--text-muted)]">
-              {division.stat1Label}
-            </p>
+            <p className="text-[9px] uppercase tracking-[0.14em] text-[var(--text-muted)]">{division.stat1Label}</p>
             <p className="mt-0.5 text-xs font-semibold text-[var(--text)]">{division.stat1Value}</p>
           </div>
           <div className="px-4 py-3">
-            <p className="text-[9px] uppercase tracking-[0.14em] text-[var(--text-muted)]">
-              {division.stat2Label}
-            </p>
+            <p className="text-[9px] uppercase tracking-[0.14em] text-[var(--text-muted)]">{division.stat2Label}</p>
             <p className="mt-0.5 text-xs font-semibold text-[var(--text)]">{division.stat2Value}</p>
           </div>
           <div className="px-4 py-3">
-            <p className="text-[9px] uppercase tracking-[0.14em] text-[var(--text-muted)]">
-              Products
-            </p>
+            <p className="text-[9px] uppercase tracking-[0.14em] text-[var(--text-muted)]">Products</p>
             <p className="mt-0.5 text-xs font-semibold text-[var(--text)]">{productCount} Listed</p>
           </div>
         </div>
