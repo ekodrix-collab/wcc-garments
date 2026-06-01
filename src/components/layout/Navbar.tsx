@@ -9,6 +9,7 @@ import { ArrowUpRight, ChevronDown, Building2, ShieldCheck, Factory, Briefcase, 
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { NAV_LINKS, SITE_CONFIG } from '@/lib/constants'
 import { contentStore } from '@/lib/content-store'
+import { getProductHref } from '@/lib/category-routing'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -211,8 +212,8 @@ export function Navbar() {
                     </div>
                     <div className="space-y-4">
                       {[
-                        { href: '/products/garments/egyptian-cotton-premium-shirts', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80', alt: 'Premium Shirt', title: 'Egyptian Cotton Shirts', sub: '300TC / Bespoke corporate fits', moq: 'MOQ: 500 Pcs', badge: 'High Demand', badgeColor: 'text-gold bg-gold/10' },
-                        { href: '/products/garments/executive-velvet-blazer', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&q=80', alt: 'Velvet Blazer', title: 'Executive Velvet Blazer', sub: 'Italian cotton velvet blazers', moq: 'MOQ: 50 Units', badge: 'Bespoke Cut', badgeColor: 'text-blue-400 bg-blue-400/10' },
+                        { href: getProductHref('garments', 'egyptian-cotton-premium-shirts'), img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80', alt: 'Premium Shirt', title: 'Egyptian Cotton Shirts', sub: '300TC / Bespoke corporate fits', moq: 'MOQ: 500 Pcs', badge: 'High Demand', badgeColor: 'text-gold bg-gold/10' },
+                        { href: getProductHref('garments', 'executive-velvet-blazer'), img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&q=80', alt: 'Velvet Blazer', title: 'Executive Velvet Blazer', sub: 'Italian cotton velvet blazers', moq: 'MOQ: 50 Units', badge: 'Bespoke Cut', badgeColor: 'text-blue-400 bg-blue-400/10' },
                       ].map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
                           {/* Pure White Background Container for Product Image */}
@@ -246,8 +247,8 @@ export function Navbar() {
                     </div>
                     <div className="space-y-4">
                       {[
-                        { href: '/products/households/microfiber-cleaning-cloths', img: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=80', alt: 'Microfiber Cloths', title: 'Microfiber Cleaning Cloths', sub: 'High-density commercial grade', moq: 'MOQ: 5,000 Pcs', badge: 'Best Seller', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
-                        { href: '/products/hospitality/hotel-bed-linen-collection', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: '400TC Combed Egyptian Cotton', moq: 'MOQ: 200 Sets', badge: 'Premium Tier', badgeColor: 'text-amber-400 bg-amber-400/10' },
+                        { href: getProductHref('households', 'microfiber-cleaning-cloths'), img: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=80', alt: 'Microfiber Cloths', title: 'Microfiber Cleaning Cloths', sub: 'High-density commercial grade', moq: 'MOQ: 5,000 Pcs', badge: 'Best Seller', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
+                        { href: getProductHref('hospitality', 'hotel-bed-linen-collection'), img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: '400TC Combed Egyptian Cotton', moq: 'MOQ: 200 Sets', badge: 'Premium Tier', badgeColor: 'text-amber-400 bg-amber-400/10' },
                       ].map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
                           {/* Pure White Background Container for Product Image */}
