@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { RevealText } from '@/components/ui/RevealText'
 import { CounterStat } from '@/components/ui/CounterStat'
 import { GlobalPresence } from '@/components/home/GlobalPresence'
-import { MapPin, Target, Lightbulb, Users, ShieldCheck, Factory, Globe2 } from 'lucide-react'
+import { MapPin, Target, Lightbulb, Users, ShieldCheck, Factory, Globe2, Layers } from 'lucide-react'
 
 const TIMELINE = [
   { year: '2001', event: 'WCC Fashions founded in Bangalore, India.' },
@@ -35,7 +35,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[var(--bg)] mt-16">
       {/* Hero */}
-      <div className="relative min-h-[700px] lg:min-h-[85vh] w-full flex items-center border-b border-[var(--border)] overflow-hidden">
+      <div className="relative min-h-[500px] md:min-h-[600px] lg:min-h-[70vh] w-full flex items-center overflow-hidden">
         <Image src="/images/about-hero.jpg" alt="WCC Fashions Manufacturing Facility" fill className="object-cover object-center" priority sizes="100vw" />
 
         {/* Subtle Dark Gradient Overlay behind text only */}
@@ -59,41 +59,43 @@ export default function AboutPage() {
               Founded in Bangalore in 2001, WCC Fashions has grown into a global textile manufacturing partner with headquarters in Dubai. We operate 7 production facilities across 3 countries, delivering export-quality garments, uniforms, hospitality linens, home furnishings, and fragrances for B2B clients worldwide.
             </p>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
-              <div className="flex items-center gap-4 text-left">
-                <Globe2 className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
-                <div>
-                  <p className="text-3xl font-bold text-white mb-1">3</p>
-                  <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Countries</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-left">
-                <Factory className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
-                <div>
-                  <p className="text-3xl font-bold text-white mb-1">7</p>
-                  <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Production<br />Facilities</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-left">
-                <Users className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
-                <div>
-                  <p className="text-3xl font-bold text-white mb-1">25+</p>
-                  <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Years<br />Experience</p>
-                </div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="bg-[var(--bg-surface)] py-16 border-b border-[var(--border)]">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 lg:grid-cols-4">
-          <CounterStat end={25} suffix="+" label="Years Experience" />
-          <CounterStat end={7} label="Production Centers" />
-          <CounterStat end={6} label="Specialized Divisions" />
-          <CounterStat end={50} suffix="+" label="Countries Served" />
+      {/* Hero Stats Bar */}
+      <div className="bg-black py-10 border-b border-[var(--border)]">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Globe2 className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">50+</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Countries</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Factory className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">7</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Production<br className="hidden lg:block"/>Facilities</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Layers className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">6</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Specialized<br className="hidden lg:block"/>Divisions</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Users className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">25+</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Years<br className="hidden lg:block"/>Experience</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
