@@ -568,7 +568,7 @@ export default function GarmentsHubClient() {
 
                             {!isDisabled && (
                               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-400">
-                                <div className="flex items-center gap-2 bg-gold text-black px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest shadow-2xl transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                <div className="flex items-center gap-2 bg-gold text-white px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest shadow-2xl transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                                   Filter by {cat.name} <ArrowRight className="h-3.5 w-3.5" />
                                 </div>
                               </div>
