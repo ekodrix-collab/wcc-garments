@@ -8,6 +8,7 @@ import { ArrowUpRight, ArrowRight } from 'lucide-react'
 
 import { useState, useEffect } from 'react'
 import { contentStore } from '@/lib/content-store'
+import { getDivisionCategoryHref } from '@/lib/category-routing'
 
 const DEFAULT_HOUSEHOLDS = {
   indicator: "HIGH-DEMAND HOUSEHOLD MANUFACTURING",
@@ -80,7 +81,7 @@ export function HouseholdShowcase() {
               }}
             >
               <Link
-                href={`/products?category=${category.slug}`}
+                href={getDivisionCategoryHref('households', category.slug || category.name)}
                 className="group relative block overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-none transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
                 data-cursor="view"
               >
