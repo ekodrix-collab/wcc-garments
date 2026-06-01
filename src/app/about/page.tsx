@@ -151,36 +151,83 @@ export default function AboutPage() {
       <GlobalPresence />
 
       {/* Timeline */}
-      <div className="py-section bg-[var(--bg)] border-t border-[var(--border)]">
+      <div className="py-section bg-[var(--bg)] border-t border-[var(--border)] overflow-hidden">
         <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="grid lg:grid-cols-3 gap-16">
-            <div className="lg:col-span-1">
-              <RevealText><h2 className="font-display text-display-sm font-semibold text-[var(--text)]">Our Journey</h2></RevealText>
-              <p className="mt-6 text-[var(--text-muted)] leading-relaxed">
-                From our origins in Bangalore in 2001 to our current status as a Dubai-headquartered global manufacturing group, our 25-year journey has been defined by continuous expansion, uncompromised quality, and strong B2B partnerships.
-              </p>
-            </div>
-            <div className="lg:col-span-2">
-              <div className="max-w-2xl">
-                {TIMELINE.map((item, i) => (
+          <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
+            <RevealText><h2 className="font-display text-display-sm font-semibold text-[var(--text)]">Our <span className='text-gold'>Journey</span></h2></RevealText>
+            <p className="mt-6 text-sm text-[var(--text-muted)] leading-relaxed">
+              From our origins in Bangalore in 2001 to our current status as a Dubai-headquartered global manufacturing group, our 25-year journey has been defined by continuous expansion, uncompromised quality, and strong B2B partnerships.
+            </p>
+          </div>
+
+          {/* Desktop/Tablet Horizontal Timeline */}
+          <div className="hidden lg:block relative w-full pb-10">
+            <div className="relative flex justify-between items-center w-full min-h-[350px]">
+              {/* Actual line that we'll draw through the middle */}
+              <div className="absolute left-0 right-0 top-1/2 h-[3px] bg-[var(--border)] -translate-y-1/2 rounded-full" />
+              
+              {/* Arrow head at the end of the line */}
+              <div className="absolute right-0 top-1/2 w-4 h-4 border-t-[3px] border-r-[3px] border-[var(--border)] transform rotate-45 -translate-y-1/2 translate-x-[2px]" />
+
+              {TIMELINE.map((item, i) => {
+                const isEven = i % 2 === 0;
+                return (
                   <motion.div
                     key={item.year}
-                    className="flex gap-8 border-l-2 border-[var(--border)] py-6 pl-8 relative"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    className="relative flex flex-col items-center flex-1 group"
+                    initial={{ opacity: 0, y: isEven ? -20 : 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.05 }}
+                    transition={{ delay: i * 0.1 }}
                   >
-                    <span className="absolute -left-[5px] top-[30px] h-2 w-2 rounded-full bg-gold" />
-                    <span className="flex-shrink-0 font-display text-2xl font-bold text-gold w-20">
-                      {item.year}
-                    </span>
-                    <p className="text-sm text-[var(--text-muted)] pt-1">{item.event}</p>
+                    {isEven ? (
+                      <div className="absolute bottom-1/2 mb-3 flex flex-col items-center w-full px-2">
+                        <div className="bg-[var(--bg-surface)] border border-[var(--border)] p-4 xl:p-5 rounded-xl text-center shadow-lg group-hover:border-gold/50 transition-colors duration-300 relative w-full max-w-[190px]">
+                          <span className="font-display text-2xl xl:text-3xl font-bold text-gold block mb-2 xl:mb-3">{item.year}</span>
+                          <p className="text-[11px] xl:text-xs text-[var(--text-muted)] group-hover:text-neutral-300 transition-colors leading-relaxed">{item.event}</p>
+                        </div>
+                        <div className="h-6 xl:h-8 w-[2px] border-l-2 border-dashed border-[var(--border)] group-hover:border-gold/50 transition-colors duration-300 mt-3" />
+                      </div>
+                    ) : (
+                      <div className="absolute top-1/2 mt-3 flex flex-col items-center w-full px-2">
+                        <div className="h-6 xl:h-8 w-[2px] border-l-2 border-dashed border-[var(--border)] group-hover:border-gold/50 transition-colors duration-300 mb-3" />
+                        <div className="bg-[var(--bg-surface)] border border-[var(--border)] p-4 xl:p-5 rounded-xl text-center shadow-lg group-hover:border-gold/50 transition-colors duration-300 relative w-full max-w-[190px]">
+                          <span className="font-display text-2xl xl:text-3xl font-bold text-gold block mb-2 xl:mb-3">{item.year}</span>
+                          <p className="text-[11px] xl:text-xs text-[var(--text-muted)] group-hover:text-neutral-300 transition-colors leading-relaxed">{item.event}</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* The Node on the line */}
+                    <div className="w-4 h-4 xl:w-5 xl:h-5 rounded-full bg-[var(--bg)] border-[3px] border-gold z-10 group-hover:scale-125 group-hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] group-hover:bg-gold transition-all duration-300" />
                   </motion.div>
-                ))}
-              </div>
+                )
+              })}
             </div>
           </div>
+
+          {/* Mobil Timeline */}
+          <div className="lg:hidden max-w-lg mx-auto">
+            {TIMELINE.map((item, i) => (
+              <motion.div
+                key={item.year}
+                className="flex gap-5 border-l-[3px] border-[var(--border)] pb-8 pl-6 relative last:pb-0 last:border-transparent"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <span className="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-[var(--bg)] border-[3px] border-gold" />
+                <div className="-mt-2 bg-[var(--bg-surface)] border border-[var(--border)] p-5 rounded-xl w-full hover:border-gold/50 transition-colors">
+                  <span className="font-display text-2xl font-bold text-gold block mb-2">
+                    {item.year}
+                  </span>
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">{item.event}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
         </div>
       </div>
 
