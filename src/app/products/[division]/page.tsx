@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { DIVISIONS, MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
-import { ProductGrid } from '@/components/products/ProductGrid'
+import { DivisionProductsClient } from '@/components/products/DivisionProductsClient'
 
 // ── Pre-build all 6 division pages at build time ──────────────────────────────
 export function generateStaticParams() {
@@ -225,11 +225,13 @@ export default async function DivisionCategoryPage({
           </div>
         </header>
 
-        {/* ── Product Grid ──────────────────────────────────────────────── */}
+        {/* ── Product Grid with Category Filter Tabs ─────────────────────── */}
         <section className="mx-auto max-w-[1560px] px-6 py-12 lg:px-12 lg:py-16">
-          <ProductGrid
+          <DivisionProductsClient
             products={mappedProducts}
+            categories={division.categories}
             divisionSlug={divisionSlug}
+            divisionName={division.name}
           />
         </section>
 

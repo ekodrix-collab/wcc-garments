@@ -1,17 +1,34 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, MessageCircle } from 'lucide-react'
-import { MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
+import { ArrowRight, ArrowUpRight, MessageCircle } from 'lucide-react'
+import { SITE_CONFIG } from '@/lib/constants'
 import { ProductCard } from '@/components/products/ProductCard'
+import { brandStore } from '@/lib/brand-store'
+import { contentStore } from '@/lib/content-store'
 
 const CATEGORIES = ['All', 'Garments', 'Uniforms', 'Hospitality', 'Home', 'Fragrance', 'Households']
 
 export function NewArrivals() {
   const [activeTab, setActiveTab] = useState('All')
   const gridRef = useRef<HTMLDivElement>(null)
+  const [products, setProducts] = useState<any[]>([])
+  const [config, setConfig] = useState<any>({ whatsapp: '+971 XX XXX XXXX' })
+
+  useEffect(() => {
+    setConfig(contentStore.getSiteConfig())
+  }, [])
+
+  useEffect(() => {
+    const allProducts = brandStore.getProducts()
+    const filtered = allProducts.filter((p) => {
+      if (activeTab === 'All') return p.is_new || p.featured
+      return p.division && p.division.slug.toLowerCase() === activeTab.toLowerCase()
+    }).slice(0, 8)
+    setProducts(filtered)
+  }, [activeTab])
 
   const handleTabChange = (cat: string) => {
     setActiveTab(cat)
@@ -25,12 +42,7 @@ export function NewArrivals() {
     }, 50)
   }
 
-  const products = MOCK_PRODUCTS.filter((p) => {
-    if (activeTab === 'All') return p.is_new || p.featured
-    return p.division_slug.toLowerCase() === activeTab.toLowerCase()
-  }).slice(0, 8) // Limit to 8 for a perfectly aligned 4-column grid (2 rows of 4)
-
-  const whatsappBase = SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')
+  const whatsappBase = config.whatsapp ? config.whatsapp.replace(/[^0-9]/g, '') : ''
 
   return (
     <section className="bg-[var(--bg)] py-20" data-cursor="view">
@@ -48,12 +60,16 @@ export function NewArrivals() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-5">
+          <div className="hidden sm:flex flex-wrap items-center justify-center lg:justify-end gap-5">
             <Link
               href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
-              className="inline-flex items-center gap-2 border border-gold  px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold hover:text-gold whitespace-nowrap hover:text-white "
+              className="group inline-flex items-center gap-2 border border-gold  px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold hover:text-gold whitespace-nowrap hover:text-white"
             >
-              Request Bulk Quote <ArrowUpRight className="h-4 w-4" />
+              Request Bulk Quote
+              <span className="relative flex h-4 w-4 items-center justify-center">
+                <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+              </span>
             </Link>
             <a
               href={`https://wa.me/${whatsappBase}?text=${encodeURIComponent('Hi WCC Garments, I need a quote for your new arrivals. Please share MOQ, lead times, and available customization options.')}`}
@@ -70,7 +86,7 @@ export function NewArrivals() {
         </div>
 
         {/* Filter Tabs - Swipable on mobile, centered on desktop */}
-        <div className="mt-16 w-full">
+        <div className="hidden sm:block mt-16 w-full">
           <div className="flex w-full overflow-x-auto pb-4 lg:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="inline-flex min-w-max items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-surface)] p-2">
               {CATEGORIES.map((cat) => (
@@ -105,9 +121,9 @@ export function NewArrivals() {
                 // Adapt MOCK_PRODUCTS fields to match ProductCard expects
                 const formattedProduct = {
                   ...product,
-                  division: { name: product.division, slug: product.division_slug },
-                  category: { name: product.category }
-                }
+                  division: { name: product.division?.name || '', slug: product.division?.slug || '' },
+                  category: { name: product.category?.name || '' }
+                };
 
                 return (
                   <ProductCard
@@ -119,6 +135,31 @@ export function NewArrivals() {
               })}
             </AnimatePresence>
           </div>
+
+          {/* View All text link */}
+          {products.length > 0 && (
+            <div className="mt-10 flex justify-center">
+              <Link
+                href={
+                  activeTab === 'All'          ? '/products' :
+                  activeTab === 'Garments'     ? '/products/garments' :
+                  activeTab === 'Uniforms'     ? '/products/uniforms' :
+                  activeTab === 'Hospitality'  ? '/products/hospitality' :
+                  activeTab === 'Home'         ? '/products/home' :
+                  activeTab === 'Fragrance'    ? '/products/fragrance' :
+                  activeTab === 'Households'   ? '/products/households' :
+                  '/products'
+                }
+                className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-muted)] transition-colors duration-200 hover:text-gold"
+              >
+                View All {activeTab === 'All' ? 'Products' : activeTab}
+                <span className="relative flex h-4 w-4 items-center justify-center">
+                  <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                  <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                </span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </section>

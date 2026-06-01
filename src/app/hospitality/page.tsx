@@ -65,8 +65,8 @@ export default function HospitalityPage() {
       {/* Hero */}
       <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=90"
-          alt="Luxury hotel hospitality"
+          src="/nurses-uniform.png"
+          alt="Group of female nurses highlighting hospital staff uniforms"
           fill
           className="object-cover"
           priority
@@ -153,7 +153,7 @@ export default function HospitalityPage() {
                     <div className="mt-4 flex flex-wrap gap-2">
                       <Link
                         href={`/contact?source=hospitality-page&intent=request-quote&businessType=${encodeURIComponent('Hotel / Hospitality')}&division=hospitality&category=${encodeURIComponent(cat.name)}`}
-                        className="inline-flex items-center gap-1 border border-gold bg-gold px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-black transition-colors hover:bg-gold-light"
+                        className="inline-flex items-center gap-1 border border-gold bg-gold px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-colors hover:bg-gold-light"
                       >
                         Request Quote <ArrowUpRight className="h-3 w-3" />
                       </Link>

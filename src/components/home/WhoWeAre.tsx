@@ -1,35 +1,102 @@
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import Image from 'next/image'
-import { motion, useInView } from 'framer-motion'
-import { CounterStat } from '@/components/ui/CounterStat'
-import { ShieldCheck, Award, Globe, ArrowUpRight } from 'lucide-react'
-import Link from 'next/link'
+import { useRef } from "react";
+import Image from "next/image";
+import { motion, useInView } from "framer-motion";
+import { CounterStat } from "@/components/ui/CounterStat";
+import { ShieldCheck, ArrowUpRight, ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+import { useState, useEffect } from "react";
+import { contentStore } from "@/lib/content-store";
+
+const DEFAULT_WHO_WE_ARE = {
+  heritageLabel: "Corporate Heritage",
+  heading: "WCC FASHIONS",
+  subHeading: "Established 2001",
+  paragraphs: [
+    "Western Clothing Company (WCC Fashions LLC) is a premier UAE-based industrial fashion manufacturing group.",
+    "Operating out of our advanced Dubai manufacturing infrastructure, we deliver end-to-end commercial solutions—from precision pattern CAD and fabric sourcing to full-scale container export across 50+ nations worldwide.",
+    "Our multi-division capabilities bridge high-end fashion garments, heavy-duty industrial workwear, luxury hotel linens, and authentic Arabian fragrances under strict ISO quality benchmarks.",
+  ],
+  mainImage: "/images/about wcc.png",
+  floatingBadgeTitle: "Certified Standards",
+  floatingBadgeDesc: "ISO 9001:2015 / OEM Export Grade",
+  stats: [
+    {
+      value: 25,
+      suffix: "+",
+      label: "Years Expertise",
+      desc: "Unrivaled manufacturing history and procurement experience since our Dubai inception.",
+    },
+    {
+      value: 50,
+      suffix: "+",
+      label: "Export Nations",
+      desc: "Active global distribution networks spanning GCC, Africa, Europe, and the Americas.",
+    },
+    {
+      value: 10,
+      suffix: "K+",
+      label: "Monthly Capacity",
+      desc: "Industrial-scale output supporting massive tenders and commercial supply chains.",
+    },
+  ],
+};
 
 export function WhoWeAre() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [data, setData] = useState(DEFAULT_WHO_WE_ARE);
+
+  useEffect(() => {
+    setData(contentStore.getSectionData("who-we-are", DEFAULT_WHO_WE_ARE));
+  }, []);
 
   return (
-    <section className="relative overflow-hidden bg-[var(--bg)] py-20" ref={ref} data-cursor="view">
+    <section
+      className="relative overflow-hidden bg-[var(--bg)] py-20 md:py-28 border-t border-[var(--border)]"
+      ref={ref}
+      data-cursor="view"
+    >
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        {/* Margined Section Number */}
-        <div className=" flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-          <span className='text-[11px] font-semibold uppercase tracking-[0.4em] text-gold'>Corporate Identity</span>
+        {/* Section Header Indicator */}
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.45em] text-gold">
+            {data.heritageLabel}
+          </span>
         </div>
 
-        <div className="grid gap-16 lg:grid-cols-12 lg:items-center">
+        <div className="grid gap-12 lg:gap-20 lg:grid-cols-12 lg:items-start">
           {/* Mobile heading first, desktop hidden until right side */}
           <div className="lg:hidden">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
+              transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: [0.76, 0, 0.24, 1],
+              }}
             >
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-[var(--text)]">
-                Wcc since <span className="text-gold">2001</span>
+              <h2 className="font-display text-4xl sm:text-5xl font-semibold leading-tight tracking-tight text-[var(--text)] uppercase">
+                {data.heading
+                  .split(" ")
+                  .map((word: string, i: number, arr: string[]) => (
+                    <span
+                      key={i}
+                      className={
+                        i === arr.length - 1 ? "text-gold font-light" : ""
+                      }
+                    >
+                      {word}
+                      {i < arr.length - 1 ? " " : ""}
+                    </span>
+                  ))}
               </h2>
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--text-muted)] block mt-2">
+                {data.subHeading}
+              </span>
             </motion.div>
           </div>
 
@@ -40,22 +107,22 @@ export function WhoWeAre() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-[var(--border)] shadow-2xl">
+            <div className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden rounded-none border border-[var(--border)] shadow-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1000&q=90"
+                src={data.mainImage}
                 alt="WCC Industrial Garment Floor"
                 fill
-                className="object-cover contrast-110 filter"
+                className="object-cover contrast-110 filter rounded-none"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-none" />
 
-              {/* Internal Image Overlay Copy */}
-              <div className="absolute top-8 left-8 z-10 max-w-[85%] rounded-xl border border-white/10 bg-black/60 p-6 backdrop-blur-md text-white">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
+              {/* Internal Image Overlay Copy — bottom-left on mobile, top-left on desktop */}
+              <div className="absolute bottom-4 left-4 top-auto right-auto sm:bottom-auto sm:right-auto sm:top-4 sm:left-4 z-10 max-w-[50%] rounded-none border border-white/10 bg-black/60 px-2 pb-2 backdrop-blur-md text-white">
+                <span className="font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-gold leading-none">
                   Dubai Operations Hub
                 </span>
-                <h3 className="mt-1 font-display text-xl sm:text-2xl font-bold tracking-tight text-white">
+                <h3 className=" font-display text-xs sm:text-sm font-semibold tracking-wide text-white uppercase leading-snug">
                   Industrial Precision at Scale
                 </h3>
               </div>
@@ -63,20 +130,20 @@ export function WhoWeAre() {
 
             {/* Overlapping Floating Glass Badge */}
             <motion.div
-              className="absolute -bottom-6 -right-6 hidden sm:flex items-center gap-4 rounded-2xl border border-white/10 bg-[#0A0A0A]/95 p-6 shadow-2xl backdrop-blur-xl lg:-right-10"
+              className="absolute -bottom-6 -right-6 hidden sm:flex items-center gap-4 rounded-none border border-white/10 bg-[#0A0A0A]/95 p-6 shadow-2xl backdrop-blur-xl lg:-right-10"
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-gold/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-none border border-gold/40 bg-gold/10">
                 <ShieldCheck className="h-6 w-6 text-gold" />
               </div>
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-gold">
-                  Certified Standards
+                <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-gold block font-bold">
+                  {data.floatingBadgeTitle}
                 </span>
-                <p className="font-body text-xs font-bold text-white">
-                  ISO 9001:2015 / OEM Export Grade
+                <p className="font-sans text-xs font-semibold text-white tracking-wide mt-1 animate-pulse">
+                  {data.floatingBadgeDesc}
                 </p>
               </div>
             </motion.div>
@@ -87,66 +154,80 @@ export function WhoWeAre() {
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
+              transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: [0.76, 0, 0.24, 1],
+              }}
             >
-              <h2 className="hidden lg:block font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-[var(--text)]">
-                Wcc since <span className="text-gold">2010</span>
+              <h2 className="hidden lg:block font-display text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-[var(--text)] uppercase">
+                {data.heading
+                  .split(" ")
+                  .map((word: string, i: number, arr: string[]) => (
+                    <span
+                      key={i}
+                      className={
+                        i === arr.length - 1 ? "text-gold font-light" : ""
+                      }
+                    >
+                      {word}
+                      {i < arr.length - 1 ? " " : ""}
+                    </span>
+                  ))}
               </h2>
+              <span className="hidden lg:block font-mono text-[9px] uppercase tracking-[0.35em] text-[var(--text-muted)] mt-2">
+                {data.subHeading}
+              </span>
 
-              <div className="mt-8 space-y-6 text-sm font-normal leading-relaxed text-[var(--text-muted)] sm:text-base font-body">
-                <p className="text-lg font-semibold text-[var(--text)]">
-                  Western Clothing Company (WCC Garments LLC) is a premier UAE-based industrial fashion manufacturing group.
+              {/* Enhanced Typography for Editorial Copy */}
+              <div className="mt-8 space-y-6 text-[15px] font-light leading-relaxed text-neutral-600 dark:text-neutral-300 font-sans tracking-wide">
+                <p className="text-lg font-medium text-[var(--text)] leading-snug">
+                  {data.paragraphs[0]}
                 </p>
-                <p className='text-sm lg:text-base'>
-                  Operating out of our advanced Dubai manufacturing infrastructure, we deliver end-to-end commercial solutions—from precision pattern CAD and fabric sourcing to full-scale container export across 50+ nations worldwide.
-                </p>
-                <p className='text-sm lg:text-base'>
-                  Our multi-division capabilities bridge high-end fashion garments, heavy-duty industrial workwear, luxury hotel linens, and authentic Arabian fragrances under strict ISO quality benchmarks.
-                </p>
+                <p className="text-sm sm:text-base">{data.paragraphs[1]}</p>
+                <p className="text-sm sm:text-base">{data.paragraphs[2]}</p>
               </div>
 
               <div className="mt-10 flex items-center gap-6">
                 <Link
                   href="/about"
-                  className="btn-gold font-mono text-xs font-bold tracking-[0.2em]"
+                  className="group btn-gold font-mono text-xs font-bold tracking-[0.2em] rounded-none flex items-center justify-center gap-2 w-full lg:w-auto"
                 >
                   Explore Corporate Heritage
-                  <ArrowUpRight className="h-4 w-4" />
+                  <span className="relative flex h-4 w-4 items-center justify-center">
+                    <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                    <ArrowRight className="absolute h-4 w-4 text-white opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                  </span>
                 </Link>
               </div>
             </motion.div>
 
             {/* 3 Authority Stats Grid */}
             <motion.div
-              className="mt-10 grid grid-cols-1 gap-8 border-t border-[var(--border)] pt-12 sm:grid-cols-3"
+              className="mt-12 grid grid-cols-1 gap-8 border-t border-[var(--border)] pt-12 sm:grid-cols-3"
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
-                <CounterStat end={25} suffix="+" label="Years Expertise" />
-                <p className="mt-2 font-body text-xs text-[var(--text-muted)]">
-                  Unrivaled manufacturing history and procurement experience since our Dubai inception.
-                </p>
-              </div>
-
-              <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
-                <CounterStat end={50} suffix="+" label="Export Nations" />
-                <p className="mt-2 font-body text-xs text-[var(--text-muted)]">
-                  Active global distribution networks spanning GCC, Africa, Europe, and the Americas.
-                </p>
-              </div>
-
-              <div className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]">
-                <CounterStat end={10} suffix="K+" label="Monthly Capacity" />
-                <p className="mt-2 font-body text-xs text-[var(--text-muted)]">
-                  Industrial-scale output supporting massive tenders and commercial supply chains.
-                </p>
-              </div>
+              {data.stats.map((s, idx) => (
+                <div
+                  key={idx}
+                  className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]"
+                >
+                  <CounterStat
+                    end={s.value}
+                    suffix={s.suffix}
+                    label={s.label}
+                  />
+                  <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
+                    {s.desc}
+                  </p>
+                </div>
+              ))}
             </motion.div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

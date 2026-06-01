@@ -49,14 +49,14 @@ export function CounterStat({
 
   return (
     <div ref={ref} className={className}>
-      {/* Clean Modern Sans-Serif Number */}
-      <div className="font-body text-4xl font-light tracking-tight text-[var(--text)] md:text-5xl lg:text-6xl">
+      {/* Clean Premium Editorial Display Number */}
+      <div className="font-display text-4xl font-bold tracking-tight text-[var(--text)] md:text-5xl lg:text-6xl">
         {prefix}
         {count.toLocaleString()}
         {suffix}
       </div>
       {/* Premium Mono Uppercase Gold Label */}
-      <div className="mt-2 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
+      <div className="mt-2 font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">
         {label}
       </div>
     </div>

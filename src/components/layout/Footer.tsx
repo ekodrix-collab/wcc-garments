@@ -7,9 +7,17 @@ import { ArrowUpRight, Phone, Mail, MapPin } from 'lucide-react'
 import { SITE_CONFIG, DIVISIONS, NAV_LINKS } from '@/lib/constants'
 import NewsletterSubscribe from '../home/NewsletterSubscribe'
 
+import { useState, useEffect } from 'react'
+import { contentStore } from '@/lib/content-store'
+
 export function Footer() {
   const pathname = usePathname()
+  const [config, setConfig] = useState(SITE_CONFIG)
   const isAdmin = pathname.startsWith('/admin')
+
+  useEffect(() => {
+    setConfig(contentStore.getSiteConfig())
+  }, [])
 
   if (isAdmin) return null
 
@@ -56,29 +64,29 @@ export function Footer() {
                 />
               </div>
               <div>
-                <h3 className="font-display text-xl font-bold tracking-tight text-[var(--text)]">
-                  WCC <span className="font-light text-gold">—</span> GARMENTS
+                <h3 className="font-display text-xl font-bold tracking-tight text-[var(--text)] uppercase">
+                  {config.name}
                 </h3>
                 <p className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.35em] text-[var(--text-muted)]">
-                  Western Clothing Co.
+                  {config.fullName}
                 </p>
               </div>
             </Link>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-[var(--text-muted)]">
-              {SITE_CONFIG.description}
+              {config.description}
             </p>
             <div className="mt-6 flex flex-col gap-3">
-              <a href={`tel:${SITE_CONFIG.phone}`} className="flex items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-gold">
+              <a href={`tel:${config.phone}`} className="flex items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-gold">
                 <Phone className="h-3.5 w-3.5" />
-                {SITE_CONFIG.phone}
+                {config.phone}
               </a>
-              <a href={`mailto:${SITE_CONFIG.email}`} className="flex items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-gold">
+              <a href={`mailto:${config.email}`} className="flex items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-gold">
                 <Mail className="h-3.5 w-3.5" />
-                {SITE_CONFIG.email}
+                {config.email}
               </a>
               <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
                 <MapPin className="h-3.5 w-3.5" />
-                {SITE_CONFIG.address}
+                {config.address}
               </div>
             </div>
           </div>
@@ -112,10 +120,9 @@ export function Footer() {
               {DIVISIONS.map((div) => (
                 <li key={div.slug}>
                   <Link
-                    href={`/products?division=${div.slug}`}
+                    href={`/products/${div.slug}`}
                     className="group flex items-center gap-2 text-sm text-[var(--text)] transition-colors hover:text-gold"
                   >
-                    <span className="text-xs">{div.icon}</span>
                     {div.name}
                   </Link>
                 </li>
@@ -132,7 +139,7 @@ export function Footer() {
               Looking for wholesale garments, uniforms, or hospitality textiles? Get in touch with our team.
             </p>
             <a
-              href={`https://wa.me/${SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')}`}
+              href={`https://wa.me/${config.whatsapp.replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-6 flex h-12 items-center justify-center gap-2 rounded border border-[var(--border)] bg-[var(--bg)] font-mono text-xs uppercase tracking-wider transition-colors hover:border-gold hover:text-gold"
@@ -147,7 +154,7 @@ export function Footer() {
       <div className="border-t border-[var(--border)]">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-6 px-6 py-8 md:flex-row lg:px-12">
           <p className="text-xs text-[var(--text-muted)]">
-            © {new Date().getFullYear()} WCC Garments LLC. All rights reserved.
+            © {new Date().getFullYear()} {config.fullName}. All rights reserved.
           </p>
           <p className="text-[10px] text-[var(--text-muted)] font-mono tracking-widest text-gold text-center">
             MANUFACTURED AT INDUSTRIAL SCALE. DELIVERED WITH PRECISION.

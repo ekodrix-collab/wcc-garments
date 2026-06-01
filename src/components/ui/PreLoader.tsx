@@ -7,11 +7,12 @@ export function PreLoader() {
   const [progress, setProgress] = useState(0)
   const [isFading, setIsFading] = useState(false)
   const [isDone, setIsDone] = useState(false)
+  const [logoLoaded, setLogoLoaded] = useState(false)
 
   useEffect(() => {
     setMounted(true)
     
-    // Check session storage
+    // Check session storage to prevent repeated loader plays on page transition
     if (sessionStorage.getItem('wcc-has-seen-intro')) {
       setIsDone(true)
       document.body.classList.add('preloader-done')
@@ -19,6 +20,11 @@ export function PreLoader() {
     }
 
     document.body.style.overflow = 'hidden'
+
+    // Trigger logo load animation smoothly
+    const logoTimer = setTimeout(() => {
+      setLogoLoaded(true)
+    }, 150)
 
     // Start progress counter
     const startTime = performance.now()
@@ -30,7 +36,7 @@ export function PreLoader() {
       const elapsed = now - startTime
       const percent = Math.min(elapsed / duration, 1)
       
-      // easeInOutCubic
+      // easeInOutCubic for butter-smooth cinematic acceleration/deceleration
       const ease = percent < 0.5 
         ? 4 * percent * percent * percent 
         : 1 - Math.pow(-2 * percent + 2, 3) / 2
@@ -47,14 +53,15 @@ export function PreLoader() {
             setIsDone(true)
             document.body.classList.add('preloader-done')
             document.body.style.overflow = ''
-          }, 800) // fade transition duration
-        }, 300) // pause at 100%
+          }, 800) // smooth fade duration
+        }, 300) // brief pause at 100%
       }
     }
 
     rafId = requestAnimationFrame(updateProgress)
 
     return () => {
+      clearTimeout(logoTimer)
       cancelAnimationFrame(rafId)
       document.body.style.overflow = ''
     }
@@ -73,48 +80,101 @@ export function PreLoader() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#050505',
+        backgroundColor: '#060606',
         opacity: isFading ? 0 : 1,
-        transform: isFading ? 'translateY(-100vh)' : 'translateY(0)',
-        transition: 'opacity 0.8s cubic-bezier(0.76, 0, 0.24, 1), transform 0.8s cubic-bezier(0.76, 0, 0.24, 1)',
+        transform: isFading ? 'scale(1.05)' : 'scale(1)',
+        filter: isFading ? 'blur(10px)' : 'none',
+        transition: 'opacity 0.9s cubic-bezier(0.76, 0, 0.24, 1), transform 0.9s cubic-bezier(0.76, 0, 0.24, 1), filter 0.9s cubic-bezier(0.76, 0, 0.24, 1)',
       }}
     >
-      {/* Pulse Logo */}
+      {/* Cinematic Ambient Backdrop Glow — Brand Royal Blue */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '260px',
+          height: '260px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+
+      {/* Cinematic Floating Logo Frame */}
       <div
         style={{
           position: 'relative',
-          marginBottom: '24px',
-          width: '112px',
-          height: '112px',
-          animation: 'preloader-pulse 2s infinite ease-in-out',
+          zIndex: 10,
+          marginBottom: '28px',
+          width: '100px',
+          height: '100px',
+          opacity: logoLoaded ? 1 : 0,
+          transform: logoLoaded ? 'scale(1) rotate(0deg)' : 'scale(0.85) rotate(-6deg)',
+          filter: logoLoaded ? 'blur(0px)' : 'blur(8px)',
+          transition: 'all 1.1s cubic-bezier(0.25, 1, 0.5, 1)',
         }}
       >
-        <img src="/images/wcc-logo.png" alt="WCC Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        <img
+          src="/images/wcc-logo.png"
+          alt="WCC Fashions Logo"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            filter: 'drop-shadow(0 15px 30px rgba(59,130,246,0.25))',
+          }}
+        />
       </div>
 
-      {/* Brand Text */}
-      <div style={{ textAlign: 'center', color: 'white', fontFamily: 'sans-serif' }}>
-        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-          WCC <span style={{ fontWeight: 300, color: '#3B82F6' }}>GARMENTS</span>
+      {/* Editorial Cinematic Brand Text */}
+      <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', color: 'white', fontFamily: 'sans-serif' }}>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: '22px',
+            fontWeight: 700,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            opacity: logoLoaded ? 1 : 0,
+            transform: logoLoaded ? 'translateY(0)' : 'translateY(10px)',
+            transition: 'all 1s cubic-bezier(0.25, 1, 0.5, 1) 0.15s',
+          }}
+        >
+          WCC <span style={{ fontWeight: 400, color: '#3B82F6' }}>FASHIONS</span>
         </h1>
-        <p style={{ margin: '6px 0 0 0', fontSize: '10px', fontWeight: 700, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>
-          Western Clothing Co. · Est. 2010
+        <p
+          style={{
+            margin: '8px 0 0 0',
+            fontSize: '9px',
+            fontWeight: 600,
+            letterSpacing: '0.45em',
+            textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.35)',
+            fontFamily: 'monospace',
+            opacity: logoLoaded ? 1 : 0,
+            transform: logoLoaded ? 'translateY(0)' : 'translateY(8px)',
+            transition: 'all 1s cubic-bezier(0.25, 1, 0.5, 1) 0.25s',
+          }}
+        >
+          Western Clothing Co. · Est. 2001
         </p>
       </div>
 
-      {/* Progress Bar Container */}
+      {/* Modern High-End progress indicator line */}
       <div
         style={{
-          marginTop: '48px',
-          width: '240px',
-          height: '2px',
-          backgroundColor: 'rgba(255,255,255,0.1)',
-          borderRadius: '999px',
-          overflow: 'hidden',
           position: 'relative',
+          zIndex: 10,
+          marginTop: '44px',
+          width: '200px',
+          height: '1px',
+          backgroundColor: 'rgba(255,255,255,0.08)',
+          overflow: 'hidden',
         }}
       >
-        {/* Progress Fill */}
         <div
           style={{
             position: 'absolute',
@@ -122,19 +182,11 @@ export function PreLoader() {
             left: 0,
             height: '100%',
             width: `${progress}%`,
-            background: '#3B82F6',
-            transition: 'width 0.1s ease-out',
+            background: 'linear-gradient(to right, transparent, #3B82F6)',
+            transition: 'width 0.15s cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         />
       </div>
-
-      {/* CSS Animation Rule */}
-      <style>{`
-        @keyframes preloader-pulse {
-          0%, 100% { transform: scale(0.95); opacity: 0.8; filter: drop-shadow(0 0 10px rgba(59,130,246,0.1)); }
-          50% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 30px rgba(59,130,246,0.4)); }
-        }
-      `}</style>
     </div>
   )
 }

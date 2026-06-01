@@ -4,16 +4,20 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, FolderOpen, Film, Inbox, Megaphone, LogOut, Menu, X, ShieldCheck } from 'lucide-react'
+import { LayoutDashboard, Package, FolderOpen, Film, Inbox, Megaphone, LogOut, Menu, X, ShieldCheck, Mail, Award, Layers } from 'lucide-react'
 import { useAdmin } from '@/context/AdminContext'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useThemeContext } from '@/context/ThemeContext'
 
 const ADMIN_LINKS = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, badge: '' },
+  { name: 'Website Content', href: '/admin/sections', icon: Layers, badge: '' },
   { name: 'Products', href: '/admin/products', icon: Package, badge: '14' },
+  { name: 'Brands', href: '/admin/brands', icon: Award, badge: '' },
   { name: 'Categories', href: '/admin/categories', icon: FolderOpen, badge: '10' },
   { name: 'Media & Assets', href: '/admin/media', icon: Film, badge: '6' },
   { name: 'Enquiries', href: '/admin/enquiries', icon: Inbox, badge: '3 New' },
+  { name: 'Newsletter', href: '/admin/newsletter', icon: Mail, badge: '' },
   { name: 'Broadcast', href: '/admin/broadcast', icon: Megaphone, badge: 'Live' },
 ]
 
@@ -21,18 +25,19 @@ export function AdminSidebar() {
   const pathname = usePathname()
   const { logout } = useAdmin()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { isDark } = useThemeContext()
 
   const SidebarContent = () => (
-    <div className="flex h-full flex-col justify-between bg-[#0D0D0D] text-white">
+    <div className={`flex h-full flex-col justify-between transition-colors duration-300 ${isDark ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
       <div>
         {/* Brand Header */}
-        <div className="flex items-center justify-between border-b border-white/10 p-6">
+        <div className={`flex items-center justify-between border-b p-6 ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
           <Link href="/admin" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
             <div className="flex h-10 w-10 items-center justify-center border border-gold bg-gold/10">
               <ShieldCheck className="h-5 w-5 text-gold" />
             </div>
             <div>
-              <h2 className="font-display text-lg font-bold tracking-tight text-white">
+              <h2 className={`font-display text-lg font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 WCC <span className="text-gold">Admin</span>
               </h2>
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-gold/70">Enterprise OS</p>
@@ -40,7 +45,7 @@ export function AdminSidebar() {
           </Link>
           <button
             onClick={() => setMobileOpen(false)}
-            className="rounded p-1 text-white/50 hover:bg-white/10 hover:text-white lg:hidden"
+            className={`rounded p-1 lg:hidden ${isDark ? 'text-white/50 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
           >
             <X className="h-5 w-5" />
           </button>
@@ -48,7 +53,7 @@ export function AdminSidebar() {
 
         {/* Navigation Links */}
         <nav className="p-4 space-y-1.5">
-          <span className="px-3 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
+          <span className={`px-3 font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${isDark ? 'text-white/30' : 'text-gray-400'}`}>
             Navigation Core
           </span>
           <div className="mt-2 space-y-1">
@@ -62,19 +67,25 @@ export function AdminSidebar() {
                   onClick={() => setMobileOpen(false)}
                   className={`group relative flex items-center justify-between rounded-lg px-3.5 py-3 font-mono text-xs font-semibold tracking-wider transition-all duration-300 ${
                     isActive
-                      ? 'bg-gold/15 text-gold border-l-2 border-gold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]'
-                      : 'text-white/60 hover:bg-white/5 hover:text-white'
+                      ? isDark
+                        ? 'bg-gold/15 text-gold border-l-2 border-gold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]'
+                        : 'bg-gold/10 text-gold border-l-2 border-gold font-bold shadow-sm'
+                      : isDark
+                        ? 'text-white/60 hover:bg-white/5 hover:text-white'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className={`h-4 w-4 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-gold' : 'text-white/40'}`} />
+                    <Icon className={`h-4 w-4 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-gold' : isDark ? 'text-white/40' : 'text-gray-400'}`} />
                     <span>{link.name}</span>
                   </div>
                   {link.badge && (
                     <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
                       link.badge.includes('New') || link.badge.includes('Live')
                         ? 'bg-gold text-black animate-pulse'
-                        : 'bg-white/10 text-white/70'
+                        : isDark
+                          ? 'bg-white/10 text-white/70'
+                          : 'bg-gray-100 text-gray-600 border border-gray-200'
                     }`}>
                       {link.badge}
                     </span>
@@ -87,11 +98,15 @@ export function AdminSidebar() {
       </div>
 
       {/* Bottom Profile / Quick Access */}
-      <div className="border-t border-white/10 p-4 space-y-3 bg-black/40">
+      <div className={`border-t p-4 space-y-3 ${isDark ? 'border-white/10 bg-black/40' : 'border-gray-200 bg-gray-50'}`}>
         <Link
           href="/"
           target="_blank"
-          className="group flex items-center justify-between rounded-lg border border-white/10 p-3 text-xs text-white/60 transition-all hover:border-gold hover:bg-gold/5 hover:text-white"
+          className={`group flex items-center justify-between rounded-lg border p-3 text-xs transition-all ${
+            isDark 
+              ? 'border-white/10 text-white/60 hover:border-gold hover:bg-gold/5 hover:text-white' 
+              : 'border-gray-200 text-gray-600 hover:border-gold hover:bg-gold/5 hover:text-gray-900 bg-white'
+          }`}
         >
           <div className="flex items-center gap-2 font-mono">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -112,25 +127,33 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile Top Navigation Bar */}
-      <div className="flex h-16 items-center justify-between border-b border-white/10 bg-[#0D0D0D] px-6 lg:hidden fixed top-0 left-0 right-0 z-50">
+      <div className={`flex h-16 items-center justify-between border-b px-6 lg:hidden fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        isDark ? 'border-white/10 bg-[#0D0D0D]' : 'border-gray-200 bg-white shadow-sm'
+      }`}>
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center border border-gold bg-gold/10">
             <ShieldCheck className="h-4 w-4 text-gold" />
           </div>
-          <h2 className="font-display text-md font-bold text-white">
+          <h2 className={`font-display text-md font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
             WCC <span className="text-gold">Admin</span>
           </h2>
         </div>
         <button
           onClick={() => setMobileOpen(true)}
-          className="rounded-lg border border-white/10 p-2 text-white/70 hover:bg-white/10 hover:text-white"
+          className={`rounded-lg border p-2 transition-all ${
+            isDark 
+              ? 'border-white/10 text-white/70 hover:bg-white/10 hover:text-white' 
+              : 'border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+          }`}
         >
           <Menu className="h-6 w-6" />
         </button>
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden w-72 flex-shrink-0 border-r border-white/10 bg-[#0D0D0D] lg:block min-h-screen">
+      <aside className={`hidden w-72 flex-shrink-0 border-r lg:block min-h-screen transition-colors duration-300 ${
+        isDark ? 'border-r-white/5 bg-[#0D0D0D]' : 'border-r-gray-200 bg-white'
+      }`}>
         <SidebarContent />
       </aside>
 

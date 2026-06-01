@@ -74,7 +74,7 @@ export default function ProductsHubPage() {
 
       <div className="min-h-screen bg-[var(--bg)]">
         {/* ── Hero ── */}
-        <header className="border-b border-[var(--border)] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.09),transparent_40%),var(--bg-surface)] pt-28 pb-14 md:pt-36 md:pb-16">
+        <header className="bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.09),transparent_40%),var(--bg-surface)] py-28 md:py-28">
           <div className="mx-auto max-w-[1560px] px-6 lg:px-12">
             {/* Breadcrumb */}
             <nav
@@ -92,10 +92,10 @@ export default function ProductsHubPage() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold/90">
                 Global Product Catalogue
               </p>
-              <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] text-[var(--text)] md:text-5xl lg:text-6xl">
+              <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] text-[var(--text)] md:text-4xl lg:text-5xl">
                 Precision-Made Products
                 <br />
-                <span className="text-[var(--text-muted)]">for Modern Enterprises</span>
+                <span className="text-gold">for Modern Enterprises</span>
               </h1>
               <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] md:text-base">
                 Explore our complete portfolio across six product divisions — built for large-scale B2B buyers in
@@ -112,10 +112,10 @@ export default function ProductsHubPage() {
                 { label: 'Years Active', value: SITE_CONFIG.years },
               ].map((stat) => (
                 <div key={stat.label} className="px-5 py-3">
-                  <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                  <p className="text-[9px] uppercase tracking-[0.16em]  text-[var(--text-muted)]">
                     {stat.label}
                   </p>
-                  <p className="mt-0.5 text-base font-semibold text-[var(--text)]">{stat.value}</p>
+                  <p className="mt-0.5 text-base font-semibold text-center text-[var(--text)]">{stat.value}</p>
                 </div>
               ))}
             </div>
@@ -123,14 +123,14 @@ export default function ProductsHubPage() {
         </header>
 
         {/* ── Division Grid ── */}
-        <section className="mx-auto max-w-[1560px] px-6 py-14 lg:px-12 lg:py-20">
+        <section className="mx-auto max-w-[1560px] px-6 lg:px-12">
           <div className="mb-10 flex items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold/80">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold/80 mb-5">
                 Browse by Division
               </p>
               <h2 className="mt-2 font-display text-2xl font-semibold text-[var(--text)] md:text-3xl">
-                Select a Product Category
+                Select a Product <span className='text-gold'>Category</span> 
               </h2>
             </div>
             <p className="hidden text-xs uppercase tracking-[0.14em] text-[var(--text-muted)] md:block">
@@ -153,8 +153,8 @@ export default function ProductsHubPage() {
         </section>
 
         {/* ── B2B Trust Strip ── */}
-        <section className="border-t border-[var(--border)] bg-[var(--bg-surface)]">
-          <div className="mx-auto max-w-[1560px] px-6 py-10 lg:px-12">
+        <section className="py-10">
+          <div className="mx-auto max-w-[1560px] px-6 py-10 lg:px-12 bg-[var(--bg-surface)] ">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { label: 'Quote-Based Pricing', desc: 'No public pricing. MOQ-tiered quotes provided within 24 hrs.' },

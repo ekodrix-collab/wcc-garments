@@ -1,247 +1,444 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus, FolderOpen, MoreVertical, Layers, CheckCircle2, TrendingUp, Sparkles, Filter, ShieldCheck, X } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DIVISIONS } from '@/lib/constants'
 
-interface CategoryItem {
+// ── Types ──────────────────────────────────────────────────────────────────────
+type ItemStatus = 'active' | 'coming-soon' | 'hidden'
+type SectionKey = 'all' | 'garments' | 'households' | 'divisions'
+
+interface SubCatItem {
   id: string
   name: string
   slug: string
-  division: string
-  count: number
-  status: 'Active' | 'Locked'
-  description: string
+  status: ItemStatus
+  displayOrder: number
+}
+interface CatItem {
+  id: string
+  divisionSlug: string
+  divisionName: string
+  name: string
+  slug: string
+  status: ItemStatus
+  displayOrder: number
+  subCategories: SubCatItem[]
 }
 
-const INITIAL_CATEGORIES: CategoryItem[] = [
-  { id: 'CAT-01', name: 'Formal & Executive Wear', slug: 'formal-executive-wear', division: 'Garments', count: 8, status: 'Active', description: 'Premium bespoke formal shirting and suiting for corporate export.' },
-  { id: 'CAT-02', name: 'Industrial & Heavy Duty', slug: 'industrial-heavy-duty', division: 'Uniforms', count: 12, status: 'Active', description: 'High-durability coveralls, flame-retardant workwear, and safety gear.' },
-  { id: 'CAT-03', name: 'Hospitality & Culinary Linens', slug: 'hospitality-culinary-linens', division: 'Hospitality', count: 15, status: 'Active', description: 'Luxury hotel bedsheets, bathrobes, chef jackets, and aprons.' },
-  { id: 'CAT-04', name: 'Healthcare Scubs & Coats', slug: 'healthcare-scrubs', division: 'Uniforms', count: 9, status: 'Active', description: 'Anti-microbial medical scrubs, lab coats, and patient attire.' },
-  { id: 'CAT-05', name: 'Home Furnishings & Drapery', slug: 'home-furnishings', division: 'Home', count: 6, status: 'Active', description: 'Curated home linen, curtains, table runners, and upholstery fabrics.' },
-  { id: 'CAT-06', name: 'Oud & Niche Attars', slug: 'oud-niche-attars', division: 'Fragrance', count: 5, status: 'Active', description: 'Precious pure oud oils, niche perfumes, and private label bottling.' },
-  { id: 'CAT-07', name: 'Bulk Household Essentials', slug: 'bulk-households', division: 'Households', count: 7, status: 'Active', description: 'Commercial cleaning supplies, microfiber towels, and bulk detergents.' },
-]
+const STATUS_STYLES: Record<ItemStatus, string> = {
+  active:         'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  'coming-soon':  'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  hidden:         'bg-neutral-700/30 text-neutral-400 border-neutral-600/30',
+}
+const STATUS_LABELS: Record<ItemStatus, string> = {
+  active: 'Active', 'coming-soon': 'Coming Soon', hidden: 'Hidden',
+}
+
+// ── Seed from DIVISIONS constant ───────────────────────────────────────────────
+function seedCategories(): CatItem[] {
+  const result: CatItem[] = []
+  for (const div of DIVISIONS) {
+    for (const cat of (div.categories ?? [])) {
+      result.push({
+        id: cat.id,
+        divisionSlug: div.slug,
+        divisionName: div.name,
+        name: cat.name,
+        slug: cat.slug,
+        status: cat.status as ItemStatus,
+        displayOrder: cat.displayOrder,
+        subCategories: (cat.subCategories ?? []).map((s) => ({
+          id: s.id, name: s.name, slug: s.slug,
+          status: s.status as ItemStatus, displayOrder: s.displayOrder,
+        })),
+      })
+    }
+  }
+  return result
+}
+
+// ── Section mapping ────────────────────────────────────────────────────────────
+const SECTION_SLUGS: Record<Exclude<SectionKey, 'all'>, string[]> = {
+  garments:   ['garments'],
+  households: ['households'],
+  divisions:  ['uniforms', 'hospitality', 'fragrance', 'home'],
+}
+
+// ── Empty form state ───────────────────────────────────────────────────────────
+const EMPTY_CAT = { divisionSlug: 'garments', name: '', slug: '', status: 'active' as ItemStatus }
+const EMPTY_SUB = { name: '', slug: '', status: 'active' as ItemStatus }
 
 export default function AdminCategoriesPage() {
-  const [categories, setCategories] = useState<CategoryItem[]>(INITIAL_CATEGORIES)
-  const [selectedDivision, setSelectedDivision] = useState<string>('all')
-  const [newModalOpen, setNewModalOpen] = useState(false)
-  const [newCat, setNewCat] = useState({ name: '', slug: '', division: 'Garments', description: '' })
+  const [categories, setCategories] = useState<CatItem[]>(seedCategories)
+  const [section, setSection] = useState<SectionKey>('all')
+  const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newCat.name || !newCat.slug) return
-    const created: CategoryItem = {
-      id: `CAT-${String(categories.length + 1).padStart(2, '0')}`,
-      name: newCat.name,
-      slug: newCat.slug.toLowerCase().replace(/\s+/g, '-'),
-      division: newCat.division,
-      count: 0,
-      status: 'Active',
-      description: newCat.description || 'New taxonomy classification node.'
+  // Category modal
+  const [catModal, setCatModal] = useState<'add' | 'edit' | null>(null)
+  const [editingCat, setEditingCat] = useState<CatItem | null>(null)
+  const [catForm, setCatForm] = useState(EMPTY_CAT)
+
+  // Sub-category modal
+  const [subModal, setSubModal] = useState<'add' | 'edit' | null>(null)
+  const [subParentId, setSubParentId] = useState<string | null>(null)
+  const [editingSubId, setEditingSubId] = useState<string | null>(null)
+  const [subForm, setSubForm] = useState(EMPTY_SUB)
+
+  // ── Filtered view ────────────────────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    if (section === 'all') return categories
+    const slugs = SECTION_SLUGS[section]
+    return categories.filter((c) => slugs.includes(c.divisionSlug))
+  }, [categories, section])
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, { divisionName: string; items: CatItem[] }>()
+    for (const cat of filtered) {
+      if (!map.has(cat.divisionSlug)) map.set(cat.divisionSlug, { divisionName: cat.divisionName, items: [] })
+      map.get(cat.divisionSlug)!.items.push(cat)
     }
-    setCategories([created, ...categories])
-    setNewCat({ name: '', slug: '', division: 'Garments', description: '' })
-    setNewModalOpen(false)
+    return map
+  }, [filtered])
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+  const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const toggleExpand = (id: string) => setExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
+  const divOptions = DIVISIONS.map((d) => ({ slug: d.slug, name: d.name }))
+
+  // ── Category CRUD ────────────────────────────────────────────────────────────
+  const openAddCat = () => { setCatForm(EMPTY_CAT); setEditingCat(null); setCatModal('add') }
+  const openEditCat = (c: CatItem) => { setEditingCat(c); setCatForm({ divisionSlug: c.divisionSlug, name: c.name, slug: c.slug, status: c.status }); setCatModal('edit') }
+
+  const saveCat = () => {
+    if (!catForm.name || !catForm.slug) return
+    if (catModal === 'add') {
+      const newCat: CatItem = {
+        id: `CAT-${Date.now()}`, divisionSlug: catForm.divisionSlug,
+        divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug,
+        name: catForm.name, slug: catForm.slug, status: catForm.status,
+        displayOrder: categories.filter((c) => c.divisionSlug === catForm.divisionSlug).length + 1,
+        subCategories: [],
+      }
+      setCategories((p) => [...p, newCat])
+    } else if (catModal === 'edit' && editingCat) {
+      setCategories((p) => p.map((c) => c.id === editingCat.id ? { ...c, ...catForm, divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug } : c))
+    }
+    setCatModal(null)
   }
 
-  const filteredCategories = categories.filter(c => {
-    if (selectedDivision === 'all') return true
-    return c.division.toLowerCase() === selectedDivision.toLowerCase()
-  })
+  const deleteCat = (id: string) => {
+    if (!confirm('Remove this category? Sub-categories will also be removed.')) return
+    setCategories((p) => p.filter((c) => c.id !== id))
+  }
+
+  const toggleCatStatus = (id: string) => {
+    setCategories((p) => p.map((c) => {
+      if (c.id !== id) return c
+      const next: ItemStatus = c.status === 'active' ? 'coming-soon' : c.status === 'coming-soon' ? 'hidden' : 'active'
+      return { ...c, status: next }
+    }))
+  }
+
+  // ── Sub-category CRUD ─────────────────────────────────────────────────────────
+  const openAddSub = (parentId: string) => { setSubParentId(parentId); setEditingSubId(null); setSubForm(EMPTY_SUB); setSubModal('add') }
+  const openEditSub = (parentId: string, sub: SubCatItem) => { setSubParentId(parentId); setEditingSubId(sub.id); setSubForm({ name: sub.name, slug: sub.slug, status: sub.status }); setSubModal('edit') }
+
+  const saveSub = () => {
+    if (!subForm.name || !subForm.slug || !subParentId) return
+    setCategories((p) => p.map((c) => {
+      if (c.id !== subParentId) return c
+      if (subModal === 'add') {
+        const newSub: SubCatItem = { id: `SUB-${Date.now()}`, name: subForm.name, slug: subForm.slug, status: subForm.status, displayOrder: c.subCategories.length + 1 }
+        return { ...c, subCategories: [...c.subCategories, newSub] }
+      } else if (subModal === 'edit' && editingSubId) {
+        return { ...c, subCategories: c.subCategories.map((s) => s.id === editingSubId ? { ...s, ...subForm } : s) }
+      }
+      return c
+    }))
+    setSubModal(null)
+  }
+
+  const deleteSub = (parentId: string, subId: string) => {
+    if (!confirm('Remove this sub-category?')) return
+    setCategories((p) => p.map((c) => c.id === parentId ? { ...c, subCategories: c.subCategories.filter((s) => s.id !== subId) } : c))
+  }
+
+  const toggleSubStatus = (parentId: string, subId: string) => {
+    setCategories((p) => p.map((c) => {
+      if (c.id !== parentId) return c
+      return { ...c, subCategories: c.subCategories.map((s) => {
+        if (s.id !== subId) return s
+        const next: ItemStatus = s.status === 'active' ? 'coming-soon' : s.status === 'coming-soon' ? 'hidden' : 'active'
+        return { ...s, status: next }
+      })}
+    }))
+  }
+
+  // ── Stats ─────────────────────────────────────────────────────────────────────
+  const totalCats = categories.length
+  const totalSubs = categories.reduce((a, c) => a + c.subCategories.length, 0)
+  const activeCats = categories.filter((c) => c.status === 'active').length
+  const comingSoon = categories.filter((c) => c.status === 'coming-soon').length
+
+  // ── Form field helpers ────────────────────────────────────────────────────────
+  const inputCls = 'w-full rounded-none border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/20 focus:border-gold focus:outline-none'
+  const selectCls = 'w-full rounded-none border border-white/10 bg-black px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-none'
+  const labelCls = 'mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-white/40'
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto text-white">
-      {/* Title Bar */}
+
+      {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="font-display text-3xl font-bold tracking-tight text-white">Taxonomy Classification</h1>
-            <span className="rounded-full bg-gold/10 border border-gold/30 px-3 py-0.5 font-mono text-xs font-bold text-gold">
-              {categories.length} Nodes
-            </span>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-white uppercase">Category & Sub-Category Manager</h1>
+            <span className="bg-gold/10 border border-gold/30 px-3 py-0.5 font-mono text-xs font-bold text-gold">Live Control</span>
           </div>
-          <p className="mt-1 font-mono text-xs text-white/50">
-            Hierarchical category definitions across all 6 industrial divisions
-          </p>
+          <p className="mt-1 font-mono text-xs text-white/40">Manage all division categories and sub-categories. Changes reflect across the site and API instantly.</p>
         </div>
-
-        <button
-          onClick={() => setNewModalOpen(true)}
-          className="flex items-center gap-2.5 rounded-lg bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] self-start sm:self-auto"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Add Category Node</span>
+        <button onClick={openAddCat} className="flex items-center gap-2 bg-gold px-5 py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all shrink-0">
+          <Plus className="h-3.5 w-3.5" /> Add Category
         </button>
       </div>
 
-      {/* Division Navigation Filter */}
-      <div className="flex items-center gap-2 overflow-x-auto bg-white/5 p-3 rounded-xl border border-white/10 scrollbar-none font-mono">
-        <button
-          onClick={() => setSelectedDivision('all')}
-          className={`rounded-lg px-4 py-2 text-xs tracking-wider uppercase whitespace-nowrap transition-all ${
-            selectedDivision === 'all' ? 'bg-gold text-black shadow-md font-bold' : 'text-white/60 hover:bg-white/10 hover:text-white'
-          }`}
-        >
-          All Divisions ({categories.length})
-        </button>
-        {DIVISIONS.map((d) => {
-          const count = categories.filter(c => c.division.toLowerCase() === d.name.toLowerCase()).length
-          return (
-            <button
-              key={d.slug}
-              onClick={() => setSelectedDivision(d.name)}
-              className={`rounded-lg px-4 py-2 text-xs tracking-wider uppercase whitespace-nowrap transition-all ${
-                selectedDivision.toLowerCase() === d.name.toLowerCase() ? 'bg-gold text-black shadow-md font-bold' : 'text-white/60 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              {d.name} ({count})
-            </button>
-          )
-        })}
+      {/* ── Stats Strip ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { label: 'Total Categories', value: totalCats },
+          { label: 'Sub-Categories', value: totalSubs },
+          { label: 'Active', value: activeCats },
+          { label: 'Coming Soon', value: comingSoon },
+        ].map((s) => (
+          <div key={s.label} className="border border-white/10 bg-white/5 px-4 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-white/30">{s.label}</p>
+            <p className="mt-1 font-display text-2xl font-bold text-white">{s.value}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Bento Grid Category Nodes */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 font-mono">
-        <AnimatePresence>
-          {filteredCategories.map((cat, index) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: index * 0.05 }}
-              className="group relative flex flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl transition-all duration-300 hover:border-gold/50 hover:bg-white/10"
-            >
-              <div className="space-y-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-gold/30 bg-gold/10 group-hover:border-gold transition-colors">
-                      <FolderOpen className="h-5 w-5 text-gold transition-transform group-hover:scale-110" />
+      {/* ── Guide ── */}
+      <div className="bg-white/5 border border-white/10 p-4 flex items-start gap-3">
+        <HelpCircle className="h-5 w-5 text-gold shrink-0 mt-0.5" />
+        <div className="font-mono text-xs text-white/60 space-y-1">
+          <p className="font-bold text-white uppercase tracking-wider text-[10px]">How it works</p>
+          <p>• Click <strong className="text-gold">chevron ›</strong> on any category to expand sub-categories.</p>
+          <p>• Click <strong className="text-gold">status badge</strong> to cycle: Active → Coming Soon → Hidden.</p>
+          <p>• Click <strong className="text-gold">+ Sub</strong> inside any category to add a new sub-category.</p>
+          <p>• <strong className="text-gold">Adding future items:</strong> just click "Add Category" or "+ Sub" — set status to Coming Soon until ready.</p>
+        </div>
+      </div>
+
+      {/* ── Section Tabs ── */}
+      <div className="flex flex-wrap gap-2 border-b border-white/10 pb-4">
+        {([
+          { key: 'all', label: `All (${totalCats})` },
+          { key: 'garments', label: '👗 Garments' },
+          { key: 'households', label: '🏠 Households' },
+          { key: 'divisions', label: '🚀 Other Divisions' },
+        ] as { key: SectionKey; label: string }[]).map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setSection(tab.key)}
+            className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${section === tab.key ? 'bg-gold border-gold text-black' : 'border-white/10 text-white/50 hover:text-white'}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Category Groups ── */}
+      <div className="space-y-8">
+        {Array.from(grouped.entries()).map(([divSlug, { divisionName, items }]) => (
+          <div key={divSlug}>
+            {/* Division header */}
+            <div className="flex items-center justify-between border-l-4 border-gold pl-4 mb-4">
+              <div>
+                <h2 className="font-display text-lg font-bold uppercase text-white">{divisionName}</h2>
+                <p className="font-mono text-[10px] text-white/30">{items.length} categories · {items.reduce((a, c) => a + c.subCategories.length, 0)} sub-categories</p>
+              </div>
+              <button
+                onClick={() => { setCatForm({ ...EMPTY_CAT, divisionSlug: divSlug }); setEditingCat(null); setCatModal('add') }}
+                className="flex items-center gap-1.5 border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-[10px] font-bold text-white hover:bg-gold hover:text-black transition-all"
+              >
+                <Plus className="h-3 w-3" /> Add to {divisionName}
+              </button>
+            </div>
+
+            {/* Category cards */}
+            <div className="space-y-3">
+              {items.sort((a, b) => a.displayOrder - b.displayOrder).map((cat) => (
+                <div key={cat.id} className="border border-white/10 bg-white/[0.03] hover:border-white/20 transition-all">
+                  {/* Category row */}
+                  <div className="flex items-center gap-3 px-4 py-3">
+                    <button onClick={() => toggleExpand(cat.id)} className="text-white/40 hover:text-white transition-colors shrink-0">
+                      {expanded.has(cat.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-mono text-[9px] text-white/30">{cat.id}</span>
+                        <span className="font-body text-sm font-semibold text-white">{cat.name}</span>
+                        <span className="font-mono text-[10px] text-white/30">/products/{cat.divisionSlug}/{cat.slug}</span>
+                      </div>
+                      <p className="font-mono text-[9px] text-white/20 mt-0.5">{cat.subCategories.length} sub-categories</p>
                     </div>
-                    <div>
-                      <span className="text-[10px] text-white/40 font-bold tracking-widest uppercase">{cat.id}</span>
-                      <h3 className="font-display text-base font-bold text-white group-hover:text-gold transition-colors">{cat.name}</h3>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* Status toggle badge */}
+                      <button
+                        onClick={() => toggleCatStatus(cat.id)}
+                        title="Click to cycle status"
+                        className={`px-2.5 py-0.5 font-mono text-[8px] font-bold uppercase border transition-all cursor-pointer hover:opacity-80 ${STATUS_STYLES[cat.status]}`}
+                      >
+                        {STATUS_LABELS[cat.status]}
+                      </button>
+                      <button onClick={() => openAddSub(cat.id)} className="flex items-center gap-1 border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[9px] font-bold text-white hover:bg-gold hover:text-black transition-all">
+                        <Plus className="h-3 w-3" /> Sub
+                      </button>
+                      <button onClick={() => openEditCat(cat)} className="flex h-7 w-7 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
+                        <Edit2 className="h-3 w-3" />
+                      </button>
+                      <button onClick={() => deleteCat(cat.id)} className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
                     </div>
                   </div>
-                  <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-400 uppercase tracking-widest">
-                    {cat.status}
-                  </span>
+
+                  {/* Sub-categories expanded */}
+                  <AnimatePresence>
+                    {expanded.has(cat.id) && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden border-t border-white/[0.06]"
+                      >
+                        <div className="px-4 py-3 space-y-2 bg-white/[0.02]">
+                          <p className="font-mono text-[9px] uppercase tracking-widest text-white/20 mb-2">Sub-Categories</p>
+                          {cat.subCategories.length === 0 && (
+                            <p className="font-mono text-[10px] text-white/20 italic">No sub-categories yet. Click "+ Sub" to add one.</p>
+                          )}
+                          {cat.subCategories.sort((a, b) => a.displayOrder - b.displayOrder).map((sub) => (
+                            <div key={sub.id} className="flex items-center gap-3 pl-4 border-l border-white/10">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-mono text-[8px] text-white/20">{sub.id}</span>
+                                  <span className="font-body text-xs text-white/80">{sub.name}</span>
+                                  <span className="font-mono text-[9px] text-white/20">/.../{sub.slug}</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                  onClick={() => toggleSubStatus(cat.id, sub.id)}
+                                  className={`px-2 py-0.5 font-mono text-[8px] font-bold uppercase border cursor-pointer hover:opacity-80 transition-all ${STATUS_STYLES[sub.status]}`}
+                                >
+                                  {STATUS_LABELS[sub.status]}
+                                </button>
+                                <button onClick={() => openEditSub(cat.id, sub)} className="flex h-6 w-6 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
+                                  <Edit2 className="h-3 w-3" />
+                                </button>
+                                <button onClick={() => deleteSub(cat.id, sub.id)} className="flex h-6 w-6 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-
-                <p className="text-xs text-white/60 leading-relaxed min-h-[2.5rem]">
-                  {cat.description}
-                </p>
-              </div>
-
-              <div className="border-t border-white/10 pt-4 mt-6 flex items-center justify-between text-xs">
-                <span className="text-white/40">Division Core: <strong className="text-white">{cat.division}</strong></span>
-                <span className="font-bold text-gold bg-gold/10 px-2.5 py-1 rounded-md border border-gold/20">
-                  {cat.count} Active Products
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
-      {filteredCategories.length === 0 && (
-        <div className="p-16 text-center font-mono space-y-3 rounded-2xl border border-white/10 bg-white/5">
-          <Layers className="h-8 w-8 text-white/30 mx-auto" />
-          <p className="text-sm text-white/60 font-semibold">No category classifications configured for this division.</p>
-        </div>
-      )}
-
-      {/* Add Category Modal */}
+      {/* ── Category Modal ── */}
       <AnimatePresence>
-        {newModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-mono">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#0D0D0D] p-8 shadow-2xl space-y-6"
-            >
+        {catModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md border border-white/10 bg-[#0D0D0D] p-7 shadow-2xl space-y-5">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center border border-gold bg-gold/10 text-gold">
-                    <Plus className="h-4 w-4" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-white">Create Category Taxonomy</h3>
-                </div>
-                <button onClick={() => setNewModalOpen(false)} className="text-white/40 hover:text-white p-1 rounded-lg">
-                  <X className="h-5 w-5" />
-                </button>
+                <h3 className="font-display text-lg font-bold uppercase text-white">
+                  {catModal === 'add' ? 'Add Category' : 'Edit Category'}
+                </h3>
+                <button onClick={() => setCatModal(null)} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
               </div>
-
-              <form onSubmit={handleCreate} className="space-y-4 text-xs">
+              <div className="space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Category Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newCat.name}
-                    onChange={e => setNewCat({ ...newCat, name: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') })}
-                    placeholder="e.g. Cleanroom Apparel"
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">URL Slug *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newCat.slug}
-                    onChange={e => setNewCat({ ...newCat, slug: e.target.value })}
-                    placeholder="cleanroom-apparel"
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Parent Division *</label>
-                  <select
-                    value={newCat.division}
-                    onChange={e => setNewCat({ ...newCat, division: e.target.value })}
-                    className="w-full rounded-lg border border-white/10 bg-black px-4 py-3 text-white focus:border-gold focus:outline-none"
-                  >
-                    {DIVISIONS.map(d => (
-                      <option key={d.slug} value={d.name}>{d.name}</option>
-                    ))}
+                  <label className={labelCls}>Division</label>
+                  <select value={catForm.divisionSlug} onChange={(e) => setCatForm({ ...catForm, divisionSlug: e.target.value })} className={selectCls}>
+                    {divOptions.map((d) => <option key={d.slug} value={d.slug}>{d.name}</option>)}
                   </select>
                 </div>
-
                 <div>
-                  <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">Taxonomy Description</label>
-                  <textarea
-                    rows={3}
-                    value={newCat.description}
-                    onChange={e => setNewCat({ ...newCat, description: e.target.value })}
-                    placeholder="Classification details, export standards, and target applications..."
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/20 focus:border-gold focus:outline-none"
-                  />
+                  <label className={labelCls}>Category Name *</label>
+                  <input value={catForm.name} onChange={(e) => setCatForm({ ...catForm, name: e.target.value, slug: toSlug(e.target.value) })} placeholder="e.g. Kitchen" className={inputCls} />
                 </div>
+                <div>
+                  <label className={labelCls}>URL Slug *</label>
+                  <input value={catForm.slug} onChange={(e) => setCatForm({ ...catForm, slug: toSlug(e.target.value) })} placeholder="kitchen" className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Status</label>
+                  <select value={catForm.status} onChange={(e) => setCatForm({ ...catForm, status: e.target.value as ItemStatus })} className={selectCls}>
+                    <option value="active">Active</option>
+                    <option value="coming-soon">Coming Soon</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setCatModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
+                <button onClick={saveCat} className="flex-1 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                  {catModal === 'add' ? 'Create' : 'Save Changes'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
-                <div className="flex items-center gap-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setNewModalOpen(false)}
-                    className="flex-1 rounded-lg border border-white/10 bg-white/5 py-3 font-semibold text-white/70 hover:bg-white/10 transition-all"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 rounded-lg bg-gold py-3 font-bold text-black hover:bg-gold-light transition-all shadow-lg shadow-gold/20"
-                  >
-                    Deploy Node
-                  </button>
+      {/* ── Sub-Category Modal ── */}
+      <AnimatePresence>
+        {subModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md border border-white/10 bg-[#0D0D0D] p-7 shadow-2xl space-y-5">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <h3 className="font-display text-lg font-bold uppercase text-white">
+                  {subModal === 'add' ? 'Add Sub-Category' : 'Edit Sub-Category'}
+                </h3>
+                <button onClick={() => setSubModal(null)} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelCls}>Sub-Category Name *</label>
+                  <input value={subForm.name} onChange={(e) => setSubForm({ ...subForm, name: e.target.value, slug: toSlug(e.target.value) })} placeholder="e.g. Cutlery" className={inputCls} />
                 </div>
-              </form>
+                <div>
+                  <label className={labelCls}>URL Slug *</label>
+                  <input value={subForm.slug} onChange={(e) => setSubForm({ ...subForm, slug: toSlug(e.target.value) })} placeholder="cutlery" className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Status</label>
+                  <select value={subForm.status} onChange={(e) => setSubForm({ ...subForm, status: e.target.value as ItemStatus })} className={selectCls}>
+                    <option value="active">Active</option>
+                    <option value="coming-soon">Coming Soon</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setSubModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
+                <button onClick={saveSub} className="flex-1 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                  {subModal === 'add' ? 'Create' : 'Save Changes'}
+                </button>
+              </div>
             </motion.div>
           </div>
         )}
