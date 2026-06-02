@@ -183,6 +183,75 @@ export default function GarmentsHubClient() {
     router.push('/products/garments', { scroll: false })
   }
 
+  const renderAllProductsButton = (className = '') => (
+    <Link
+      href="/products/garments/all"
+      className={`group relative inline-flex items-center gap-2 overflow-hidden bg-[var(--text)] px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-[var(--bg)] transition-all hover:bg-gold hover:text-black shadow-[0_0_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] ${className}`}
+    >
+      <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
+        <div className="w-8 bg-white/20" />
+      </div>
+      <Layers className="h-3.5 w-3.5" />
+      <span>All Products</span>
+    </Link>
+  )
+
+  const renderCategoryFilterBar = (className = '') => (
+    <div
+      ref={filterBarRef}
+      className={`sticky top-[72px] z-40 border-b border-[var(--border)] bg-[var(--bg)]/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)] ${className}`}
+    >
+      <div className="mx-auto max-w-[1560px] px-4 lg:px-12">
+        <div className="flex items-center gap-4 py-1">
+          <div className="min-w-0 flex-1 overflow-x-auto scrollbar-hide">
+            <div className="flex w-max items-center gap-0">
+              <button
+                onClick={() => updateFilters('all', null)}
+                className={`relative shrink-0 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${
+                  urlCategory === 'all'
+                    ? 'border-gold text-gold'
+                    : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text)]'
+                }`}
+              >
+                All Categories
+              </button>
+
+              {CATEGORIES.map((cat) => {
+                const isActive = urlCategory === cat.slug
+                const isDisabled = cat.status === 'coming-soon'
+                return (
+                  <button
+                    key={cat.slug}
+                    onClick={() => !isDisabled && updateFilters(cat.slug, null)}
+                    disabled={isDisabled}
+                    className={`relative shrink-0 flex items-center gap-2 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${
+                      isActive
+                        ? 'border-gold text-gold'
+                        : isDisabled
+                        ? 'border-transparent text-[var(--text-muted)] opacity-40 cursor-not-allowed'
+                        : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text)]'
+                    }`}
+                  >
+                    {cat.name}
+                    {isDisabled && (
+                      <span className="ml-1 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider bg-[var(--surface)] text-[var(--text-muted)]">
+                        SOON
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="hidden shrink-0 sm:flex sm:items-center sm:pl-4 sm:border-l sm:border-[var(--border)]">
+            {renderAllProductsButton()}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] py-16 transition-colors duration-300">
 
@@ -345,65 +414,7 @@ export default function GarmentsHubClient() {
       </AnimatePresence>
 
       {/* ── STICKY CATEGORY FILTER BAR ─────────────────────────────── */}
-      <div
-        ref={filterBarRef}
-        className="sticky top-[72px] z-40 border-b border-[var(--border)] bg-[var(--bg)]/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
-      >
-        <div className="mx-auto max-w-[1560px] px-4 lg:px-12">
-          <div className="flex items-center gap-0 overflow-x-auto scrollbar-hide py-1">
-            {/* ALL tab */}
-            <button
-              onClick={() => updateFilters('all', null)}
-              className={`relative shrink-0 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${urlCategory === 'all'
-                  ? 'border-gold text-gold'
-                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text)]'
-                }`}
-            >
-              All Categories
-            </button>
-
-            {/* Category tabs */}
-            {CATEGORIES.map((cat) => {
-              const isActive = urlCategory === cat.slug
-              const isDisabled = cat.status === 'coming-soon'
-              return (
-                <button
-                  key={cat.slug}
-                  onClick={() => !isDisabled && updateFilters(cat.slug, null)}
-                  disabled={isDisabled}
-                  className={`relative shrink-0 flex items-center gap-2 px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border-b-2 ${isActive
-                      ? 'border-gold text-gold'
-                      : isDisabled
-                        ? 'border-transparent text-[var(--text-muted)] opacity-40 cursor-not-allowed'
-                        : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text)]'
-                    }`}
-                >
-                  {cat.name}
-                  {isDisabled && (
-                    <span className="ml-1 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider bg-[var(--surface)] text-[var(--text-muted)]">
-                      SOON
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-
-            {/* View All Button */}
-            <div className="ml-2 pl-4 border-l border-[var(--border)] shrink-0 flex items-center">
-              <Link
-                href="/products/garments/all"
-                className="group relative inline-flex items-center gap-2 overflow-hidden bg-[var(--text)] px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-[var(--bg)] transition-all hover:bg-gold hover:text-black shadow-[0_0_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-              >
-                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
-                  <div className="w-8 bg-white/20" />
-                </div>
-                <Layers className="h-3.5 w-3.5" />
-                <span>All Products</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      {!activeBrand && urlCategory === 'all' ? null : renderCategoryFilterBar()}
 
       {/* ── CONTENT AREA ────────────────────────────────────────────── */}
       <AnimatePresence mode="wait">
@@ -500,16 +511,23 @@ export default function GarmentsHubClient() {
             {!activeBrand && (
               <section className="mx-auto max-w-[1560px] px-6 lg:px-12 py-14">
                 <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">GARMENTS CATALOG</span>
-                    <h2 className="mt-4 font-display text-4xl sm:text-5xl font-semibold text-[var(--text)]">
-                      Browse by <span className="text-gold">Category</span>
-                    </h2>
+                    <div className="mt-4 flex items-end justify-between gap-4 sm:block">
+                      <h2 className="font-display text-4xl sm:text-5xl font-semibold text-[var(--text)]">
+                        Browse by <span className="text-gold">Category</span>
+                      </h2>
+                      <div className="shrink-0 sm:hidden">
+                        {renderAllProductsButton()}
+                      </div>
+                    </div>
                   </div>
                   <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
                     {CATEGORIES.filter((c) => c.status === 'active').length} active · {CATEGORIES.filter((c) => c.status === 'coming-soon').length} coming soon
                   </p>
                 </div>
+
+                {renderCategoryFilterBar('mb-10')}
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {CATEGORIES.sort((a, b) => a.displayOrder - b.displayOrder).map((cat, index) => {
@@ -543,12 +561,12 @@ export default function GarmentsHubClient() {
                               fill
                               className={`object-cover transition-transform duration-700 ease-out ${isDisabled
                                   ? 'grayscale opacity-30'
-                                  : 'opacity-60 group-hover:scale-[1.04] group-hover:opacity-70'
-                                }`}
+                                  : 'group-hover:scale-[1.04]'
+                              }`}
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-                            <div className={`absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 ${!isDisabled ? 'group-hover:opacity-100' : ''}`} />
+                            <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                            <div className={`absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 ${!isDisabled ? 'group-hover:opacity-100' : ''}`} />
 
                             {status !== 'active' && (
                               <span className={`absolute left-4 top-4 px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10 ${cfg.style}`}>
