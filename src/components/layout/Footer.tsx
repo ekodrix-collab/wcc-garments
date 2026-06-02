@@ -13,11 +13,16 @@ import { contentStore } from '@/lib/content-store'
 export function Footer() {
   const pathname = usePathname()
   const [config, setConfig] = useState(SITE_CONFIG)
+  const [divisions, setDivisions] = useState(DIVISIONS)
   const isAdmin = pathname.startsWith('/admin')
 
   useEffect(() => {
     setConfig(contentStore.getSiteConfig())
+    setDivisions(contentStore.getDivisions())
   }, [])
+
+  const getDivisionLabel = (name: string) =>
+    name.replace(/^div[-\s]*\d+\s*[:.-]?\s*/i, '').trim()
 
   if (isAdmin) return null
 
@@ -117,13 +122,13 @@ export function Footer() {
               Our Divisions
             </h4>
             <ul className="mt-6 space-y-3">
-              {DIVISIONS.map((div) => (
+              {divisions.map((div) => (
                 <li key={div.slug}>
                   <Link
                     href={`/products/${div.slug}`}
                     className="group flex items-center gap-2 text-sm text-[var(--text)] transition-colors hover:text-gold"
                   >
-                    {div.name}
+                    {getDivisionLabel(div.name)}
                   </Link>
                 </li>
               ))}

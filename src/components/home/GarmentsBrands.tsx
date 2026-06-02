@@ -210,27 +210,27 @@ export function GarmentsBrands() {
                 </div>
 
                 {/* White bottom strip: specializing + discover */}
-                {/* CHANGED: added mx-3 mb-3 rounded-b-lg on mobile; reset at sm: */}
-                <div className="relative h-[120px] z-10 bg-white dark:bg-[var(--bg-surface)] px-5 py-5 border dark:border-[var(--border)] sm:mx-0 sm:mb-0 sm:rounded-none">
-                  <div className="flex h-full items-center justify-between gap-4">
+                {/* CHANGED: make the mobile footer more compact and let the text use the available width */}
+                <div className="relative z-10 h-auto min-h-[104px] bg-white px-4 py-4 border dark:bg-[var(--bg-surface)] dark:border-[var(--border)] sm:min-h-[120px] sm:px-5 sm:py-5 sm:rounded-none">
+                  <div className="grid h-full grid-cols-[auto,minmax(0,1fr),auto] items-center gap-3 sm:gap-4">
                     <div
-                      className={` ${brand.iconBg} p-2  border border-black rounded-full`}
+                      className={`${brand.iconBg} flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black`}
                     >
                       <Image
                         src={brand.icon}
                         alt="Shirt Logo"
-                        className="h-10 w-auto object-contain"
+                        className="h-7 w-7 object-contain"
                       />
                     </div>
-                    <div>
-                      <span className="block text-[8px] uppercase tracking-[0.3em] font-semibold mb-2 text-gold">
+                    <div className="min-w-0">
+                      <span className="mb-1 block text-[8px] font-semibold uppercase tracking-[0.3em] text-gold">
                         SPECIALIZING IN
                       </span>
-                      <span className="text-[11px] text-[#3a3a3a] dark:text-[var(--text)] leading-snug">
+                      <span className="block text-[10px] leading-snug text-[#3a3a3a] dark:text-[var(--text)] sm:text-[11px]">
                         {brand.specializing}
                       </span>
                     </div>
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-gold group-hover:bg-gold sm:h-9 sm:w-9">
                       <span className="relative flex h-4 w-4 items-center justify-center">
                         <ArrowUpRight className="absolute h-4 w-4 text-[var(--text-muted)] transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
                         <ArrowRight className="absolute h-4 w-4 text-white opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
