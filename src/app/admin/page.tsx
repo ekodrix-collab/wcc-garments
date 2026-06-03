@@ -1,22 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { Package, Inbox, Film, Users, Plus, ArrowUpRight, TrendingUp, CheckCircle2, Clock, AlertCircle, ArrowRight, RefreshCw } from 'lucide-react'
+import { api } from '@/lib/api'
 
-const STATS = [
-  { label: 'Total Products in Catalog', value: '14', change: '+18% this month', icon: Package, color: '#3B82F6' },
-  { label: 'Pending Enquiries', value: '3', change: '2 requires urgent action', icon: Inbox, color: '#3B82F6' },
-  { label: 'Digital Assets & Media', value: '6', change: '100% optimized', icon: Film, color: '#8B5CF6' },
-  { label: 'Active Global Contacts', value: '12', change: '+4 new this week', icon: Users, color: '#10B981' },
-]
-
-const RECENT_ENQUIRIES = [
-  { id: 'ENQ-2026-003', company: 'Gulf Textiles Trading', country: 'Saudi Arabia', division: 'Garments & Uniforms', status: 'new', priority: 'high', date: '15 May 2026', items: 2500, rep: 'Unassigned' },
-  { id: 'ENQ-2026-002', company: 'Lagos Fashion House', country: 'Nigeria', division: 'Garments', status: 'contacted', priority: 'normal', date: '14 May 2026', items: 1000, rep: 'Sarah K.' },
-  { id: 'ENQ-2026-001', company: 'Marriott Hotel Group', country: 'UAE', division: 'Hospitality Linen', status: 'quoted', priority: 'urgent', date: '10 May 2026', items: 5000, rep: 'Alex M.' },
-]
+// STATS and RECENT_ENQUIRIES will be dynamic
 
 const SYSTEM_LOGS = [
   { time: '10 mins ago', user: 'System', action: 'Automated Catalog Backup Completed successfully' },
@@ -27,18 +17,45 @@ const SYSTEM_LOGS = [
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'all' | 'new' | 'quoted'>('all')
   const [refreshing, setRefreshing] = useState(false)
+  
+  const [stats, setStats] = useState({ products: 0, enquiries: 0, media: 0, contacts: 0 })
+  const [recentEnquiries, setRecentEnquiries] = useState<any[]>([])
 
-  const handleRefresh = async () => {
+  useEffect(() => {
+    fetchDashboard()
+  }, [])
+
+  const fetchDashboard = async () => {
     setRefreshing(true)
-    await new Promise(r => setTimeout(r, 800))
-    setRefreshing(false)
+    try {
+      const res = await api.admin.getDashboard('')
+      if (res.success && res.data) {
+        setStats(res.data.stats || { products: 0, enquiries: 0, media: 0, contacts: 0 })
+        setRecentEnquiries(res.data.recentEnquiries || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error)
+    } finally {
+      setRefreshing(false)
+    }
   }
 
-  const filteredEnquiries = RECENT_ENQUIRIES.filter(enq => {
+  const handleRefresh = async () => {
+    await fetchDashboard()
+  }
+
+  const filteredEnquiries = recentEnquiries.filter(enq => {
     if (activeTab === 'new') return enq.status === 'new'
     if (activeTab === 'quoted') return enq.status === 'quoted'
     return true
   })
+  
+  const displayStats = [
+    { label: 'Total Products in Catalog', value: stats.products.toString(), change: 'Live inventory', icon: Package, color: '#3B82F6' },
+    { label: 'Total Enquiries', value: stats.enquiries.toString(), change: 'Active leads', icon: Inbox, color: '#3B82F6' },
+    { label: 'Digital Assets & Media', value: stats.media.toString(), change: 'CDN storage', icon: Film, color: '#8B5CF6' },
+    { label: 'Newsletter Subscribers', value: stats.contacts.toString(), change: 'Global network', icon: Users, color: '#10B981' },
+  ]
 
   return (
     <div className="space-y-10 max-w-[1600px] mx-auto text-white">
@@ -77,7 +94,7 @@ export default function AdminDashboard() {
 
       {/* KPI Stats Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map((stat, i) => {
+        {displayStats.map((stat, i) => {
           const Icon = stat.icon
           return (
             <motion.div
@@ -145,7 +162,7 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-3">
               <h2 className="font-display text-lg font-bold text-white uppercase">Active Enterprise Enquiries</h2>
               <span className="bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 font-mono text-[10px] font-bold text-blue-400 rounded-none">
-                {RECENT_ENQUIRIES.length} Total
+                {recentEnquiries.length} Recent
               </span>
             </div>
             {/* Filter Tabs */}
@@ -188,12 +205,12 @@ export default function AdminDashboard() {
                         </span>
                       </div>
                       <p className="font-mono text-xs text-white/60">
-                        {enq.country} • <span className="text-white/40">Division Interest:</span> <span className="text-white">{enq.division}</span>
+                        {enq.country} • <span className="text-white/40">Products:</span> <span className="text-white">{Array.isArray(enq.product_interest) ? enq.product_interest.join(', ') : (enq.products || enq.product_interest || 'N/A')}</span>
                       </p>
                       <div className="flex items-center gap-4 font-mono text-[11px] text-white/40 pt-1">
-                        <span>Est. Qty: <strong className="text-white">{enq.items.toLocaleString()} units</strong></span>
+                        <span>Est. Qty: <strong className="text-white">{enq.quantity_range || enq.quantity || 'Unknown'} units</strong></span>
                         <span>•</span>
-                        <span>Rep: <strong className={enq.rep === 'Unassigned' ? 'text-amber-400 font-bold' : 'text-white'}>{enq.rep}</strong></span>
+                        <span>Rep: <strong className={(!enq.assigned_to && !enq.rep) || enq.rep === 'Unassigned' ? 'text-amber-400 font-bold' : 'text-white'}>{enq.assigned_to || enq.rep || 'Unassigned'}</strong></span>
                       </div>
                     </div>
 

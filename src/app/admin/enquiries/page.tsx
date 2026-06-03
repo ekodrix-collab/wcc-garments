@@ -19,28 +19,54 @@ interface EnquiryItem {
   rep: string
 }
 
-const INITIAL_ENQUIRIES: EnquiryItem[] = [
-  { id: 'ENQ-2026-008', company: 'Gulf Textiles Trading', country: 'Saudi Arabia', email: 'procurement@gulftextiles.com', phone: '+966 50 123 4567', products: 'Garments, Uniforms', status: 'new', priority: 'urgent', date: '17 May 2026', quantity: '10,000 - 25,000 Units', message: 'Urgently looking for high-quality cotton twill coveralls and corporate staff uniforms for upcoming tender.', rep: 'Unassigned' },
-  { id: 'ENQ-2026-007', company: 'Lagos Fashion House', country: 'Nigeria', email: 'director@lagosfashion.ng', phone: '+234 803 111 2222', products: 'Garments', status: 'contacted', priority: 'high', date: '16 May 2026', quantity: '5,000 Units', message: 'Looking for OEM manufacturing partner for our 2026 winter streetwear collection. Spec sheets attached.', rep: 'Sarah K.' },
-  { id: 'ENQ-2026-006', company: 'Marriott Hotel Group', country: 'United Arab Emirates', email: 'dubai.purchasing@marriott.com', phone: '+971 4 414 0000', products: 'Hospitality, Uniforms', status: 'quoted', priority: 'urgent', date: '15 May 2026', quantity: '50,000+ Units', message: 'Complete bedding replacement and concierge uniform overhaul for 3 properties across Dubai and Abu Dhabi.', rep: 'Alex M.' },
-  { id: 'ENQ-2026-005', company: 'Oman Royal Tender Board', country: 'Oman', email: 'tenders@mof.gov.om', phone: '+968 24 777 888', products: 'Government Uniforms', status: 'quoted', priority: 'high', date: '12 May 2026', quantity: '100,000 Units', message: 'Formal government tender inquiry for military and civil defense standard uniform fabrics.', rep: 'Alex M.' },
-  { id: 'ENQ-2026-004', company: 'Nairobi Retail Chain', country: 'Kenya', email: 'import@nairobibigbox.ke', phone: '+254 20 123 456', products: 'Households, Fragrance', status: 'converted', priority: 'normal', date: '10 May 2026', quantity: '2,500 Units', message: 'Trial order for private label room fresheners and bulk micro-fiber cleaning cloths.', rep: 'Sarah K.' },
-]
+import { api } from '@/lib/api'
+import { useEffect } from 'react'
 
 export default function AdminEnquiriesPage() {
-  const [enquiries, setEnquiries] = useState<EnquiryItem[]>(INITIAL_ENQUIRIES)
+  const [enquiries, setEnquiries] = useState<EnquiryItem[]>([])
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [activeModal, setActiveModal] = useState<EnquiryItem | null>(null)
   const [updateSuccess, setUpdateSuccess] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  const handleUpdateStatus = (id: string, newStatus: EnquiryItem['status']) => {
-    setEnquiries(prev => prev.map(e => e.id === id ? { ...e, status: newStatus } : e))
-    if (activeModal && activeModal.id === id) {
-      setActiveModal(prev => prev ? { ...prev, status: newStatus } : null)
+  useEffect(() => {
+    fetchEnquiries()
+  }, [])
+  
+  const fetchEnquiries = async () => {
+    setLoading(true)
+    try {
+      const res: any = await api.admin.getEnquiries('')
+      if (res.success && res.data) {
+        // map db response if needed, for now we assume they match
+        setEnquiries(res.data.map((e: any) => ({
+          ...e,
+          products: Array.isArray(e.product_interest) ? e.product_interest.join(', ') : (e.products || e.product_interest),
+          date: e.created_at ? new Date(e.created_at).toLocaleDateString() : e.date,
+          quantity: e.quantity_range || e.quantity,
+          rep: e.assigned_to || e.rep || 'Unassigned'
+        })))
+      }
+    } catch (error) {
+      console.error('Failed to fetch enquiries:', error)
+    } finally {
+      setLoading(false)
     }
-    setUpdateSuccess(true)
-    setTimeout(() => setUpdateSuccess(false), 2000)
+  }
+
+  const handleUpdateStatus = async (id: string, newStatus: EnquiryItem['status']) => {
+    try {
+      await api.admin.updateEnquiry('', id, { status: newStatus })
+      setEnquiries(prev => prev.map(e => e.id === id ? { ...e, status: newStatus } : e))
+      if (activeModal && activeModal.id === id) {
+        setActiveModal(prev => prev ? { ...prev, status: newStatus } : null)
+      }
+      setUpdateSuccess(true)
+      setTimeout(() => setUpdateSuccess(false), 2000)
+    } catch (error) {
+      console.error('Failed to update enquiry status:', error)
+    }
   }
 
   const filteredEnquiries = enquiries.filter(enq => {
@@ -112,6 +138,9 @@ export default function AdminEnquiriesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10 text-xs text-white/80">
+              {loading ? (
+                <tr><td colSpan={6} className="text-center py-10 font-sans text-white/50">Loading records...</td></tr>
+              ) : (
               <AnimatePresence>
                 {filteredEnquiries.map((enq) => (
                   <motion.tr
@@ -190,6 +219,7 @@ export default function AdminEnquiriesPage() {
                   </motion.tr>
                 ))}
               </AnimatePresence>
+              )}
             </tbody>
           </table>
         </div>

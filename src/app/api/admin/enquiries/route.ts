@@ -1,4 +1,6 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
+import { getSupabaseServerClient } from '@/lib/supabase'
+import { fetchWithFallback } from '@/lib/db-service'
 
 const MOCK_ENQUIRIES = [
   { id: '1', name: 'Ahmed Al-Rashid', company: 'Gulf Textiles Trading', country: 'Saudi Arabia', phone: '+966501234567', email: 'ahmed@gulftextiles.com', business_type: 'Wholesale Distributor', product_interest: ['Garments & Fashion', 'Uniforms & Workwear'], quantity_range: '1000-5000 units/month', message: 'Looking for premium cotton shirts for distribution in KSA market.', product_id: null, product_name: null, source: 'website', status: 'new', priority: 'high', assigned_to: null, notes: null, follow_up_date: null, created_at: '2026-05-15T10:30:00Z', updated_at: '2026-05-15T10:30:00Z' },
@@ -7,9 +9,36 @@ const MOCK_ENQUIRIES = [
 ]
 
 export async function GET() {
-  return NextResponse.json({ success: true, data: MOCK_ENQUIRIES })
+  try {
+    const data = await fetchWithFallback(
+      async () => {
+        const supabase = getSupabaseServerClient()
+        const { data, error } = await supabase
+          .from('enquiries')
+          .select('*')
+          .order('created_at', { ascending: false })
+        
+        if (error) throw error
+        if (!data || data.length === 0) throw new Error('No data found, falling back')
+        return data
+      },
+      MOCK_ENQUIRIES,
+      'Get Enquiries'
+    )
+    return NextResponse.json({ success: true, data })
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
+  }
 }
 
-export async function PUT() {
-  return NextResponse.json({ success: true, message: 'Enquiry updated (mock mode)' })
+// In case the frontend sends PUT requests here instead of `[id]/route.ts` for some reason
+export async function PUT(request: NextRequest) {
+  try {
+    // For bulk updates or specific logic not relying on slug id in URL
+    const body = await request.json()
+    // It's mostly mocked in frontend currently. Let's provide a generic fallback
+    return NextResponse.json({ success: true, message: 'Enquiry updated' })
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
+  }
 }

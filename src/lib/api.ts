@@ -1,6 +1,6 @@
 const BASE = typeof window !== 'undefined' ? '' : (process.env.NEXT_PUBLIC_SITE_URL || '')
 
-async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
+async function fetcher<T = any>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${BASE}${url}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -119,12 +119,82 @@ export const api = {
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify(data),
       }),
+      
+    deleteMedia: (token: string, id: string) =>
+      fetcher(`/api/admin/media/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }),
 
-    broadcast: (token: string, data: Record<string, unknown>) =>
+    getBroadcasts: (token: string) =>
       fetcher('/api/admin/broadcast', {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      
+    broadcast: (token: string, data: Record<string, unknown>) =>
+      fetcher('/api/admin/newsletter/send', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify(data),
+      }),
+
+    getDashboard: (token?: string) =>
+      fetcher('/api/admin/dashboard', {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+
+    getCategories: (token?: string) =>
+      fetcher('/api/admin/categories', {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+    createCategory: (token: string | undefined, data: Record<string, unknown>) =>
+      fetcher('/api/admin/categories', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: JSON.stringify(data),
+      }),
+    updateCategory: (token: string | undefined, id: string, data: Record<string, unknown>) =>
+      fetcher(`/api/admin/categories/${id}`, {
+        method: 'PUT',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: JSON.stringify(data),
+      }),
+    deleteCategory: (token: string | undefined, id: string) =>
+      fetcher(`/api/admin/categories/${id}`, {
+        method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+
+    getBrands: (token?: string) =>
+      fetcher('/api/admin/brands', {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+    createBrand: (token: string | undefined, data: Record<string, unknown>) =>
+      fetcher('/api/admin/brands', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: JSON.stringify(data),
+      }),
+    updateBrand: (token: string | undefined, id: string, data: Record<string, unknown>) =>
+      fetcher(`/api/admin/brands/${id}`, {
+        method: 'PUT',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: JSON.stringify(data),
+      }),
+    deleteBrand: (token: string | undefined, id: string) =>
+      fetcher(`/api/admin/brands/${id}`, {
+        method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+
+    getNewsletterSubscribers: (token?: string) =>
+      fetcher('/api/admin/newsletter', {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+    deleteNewsletterSubscriber: (token: string | undefined, id: string) =>
+      fetcher(`/api/admin/newsletter?id=${id}`, {
+        method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       }),
   },
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Plus, Search, Edit2, Trash2, Save, Loader2, Award, CheckCircle2, ShieldCheck, Upload } from 'lucide-react'
-import { brandStore } from '@/lib/brand-store'
+import { api } from '@/lib/api'
 import { Brand } from '@/types'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -14,6 +14,7 @@ export default function AdminBrandsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(true)
   
   // Form State
   const [formData, setFormData] = useState<{
@@ -38,8 +39,22 @@ export default function AdminBrandsPage() {
   })
 
   useEffect(() => {
-    setBrands(brandStore.getBrands())
+    fetchBrands()
   }, [])
+
+  const fetchBrands = async () => {
+    setLoading(true)
+    try {
+      const res = await api.admin.getBrands()
+      if (res.success && res.data) {
+        setBrands(res.data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch brands:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleFileFieldUpload = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_desktop' | 'logo_mobile') => {
     const file = e.target.files?.[0]
@@ -83,25 +98,36 @@ export default function AdminBrandsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    await new Promise(r => setTimeout(r, 800))
     
-    // Save to our catalog store helper
-    brandStore.saveBrand(formData)
-    
-    setBrands(brandStore.getBrands())
-    setSaving(false)
-    setSuccess(true)
-    
-    setTimeout(() => {
-      setIsEditModalOpen(false)
-      setSuccess(false)
-    }, 1000)
+    try {
+      if (formData.id) {
+        await api.admin.updateBrand(undefined, formData.id, formData)
+      } else {
+        await api.admin.createBrand(undefined, formData)
+      }
+      
+      await fetchBrands()
+      setSuccess(true)
+      
+      setTimeout(() => {
+        setIsEditModalOpen(false)
+        setSuccess(false)
+      }, 1000)
+    } catch (error) {
+      console.error('Failed to save brand:', error)
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const handleDelete = (id: string) => {
-    brandStore.deleteBrand(id)
-    setBrands(brandStore.getBrands())
-    setIsDeleteModalOpen(null)
+  const handleDelete = async (id: string) => {
+    try {
+      await api.admin.deleteBrand(undefined, id)
+      await fetchBrands()
+      setIsDeleteModalOpen(null)
+    } catch (error) {
+      console.error('Failed to delete brand:', error)
+    }
   }
 
   const filteredBrands = brands.filter(b => 
@@ -157,6 +183,9 @@ export default function AdminBrandsPage() {
       </div>
 
       {/* Brand Cards Grid */}
+      {loading ? (
+        <div className="py-20 flex justify-center"><Loader2 className="w-8 h-8 text-gold animate-spin" /></div>
+      ) : (
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {filteredBrands.map((brand, index) => (
           <div
@@ -202,6 +231,7 @@ export default function AdminBrandsPage() {
           </div>
         ))}
       </div>
+      )}
 
       {filteredBrands.length === 0 && (
         <div className="border border-white/10 bg-white/5 p-16 text-center text-white/50 space-y-3 font-mono">
