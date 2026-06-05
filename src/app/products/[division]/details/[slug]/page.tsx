@@ -51,7 +51,7 @@ export default function ProductDetailPage({
 
   return (
     <div className="min-h-screen bg-[var(--bg)] pt-24">
-      <div className="mx-auto max-w-[1560px] px-6 lg:px-12">
+      <div className="mx-auto max-w-[1560px] px-4 sm:px-6 lg:px-12">
         <nav
           aria-label="Breadcrumb"
           className="flex flex-wrap items-center gap-2 py-6 text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]"
@@ -74,7 +74,7 @@ export default function ProductDetailPage({
           <span className="text-[var(--text)]">{product.name}</span>
         </nav>
 
-        <div className="border border-[var(--border)] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.08),transparent_45%),var(--bg-surface)] p-5 md:p-7 lg:p-10">
+        <div className="border border-[var(--border)] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.08),transparent_45%),var(--bg-surface)] p-4 sm:p-5 md:p-7 lg:p-10">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
             <motion.section
               className="lg:col-span-6"
@@ -103,12 +103,12 @@ export default function ProductDetailPage({
               </div>
 
               {product.images.length > 1 && (
-                <div className="relative mx-auto mt-4 w-full max-w-[640px] px-8 group/carousel">
+                <div className="relative mx-auto mt-4 w-full max-w-[640px] px-0 sm:px-8 group/carousel">
                   {/* Left Arrow */}
                   {product.images.length > 5 && (
                     <button
                       onClick={() => scrollThumbnails('left')}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 flex h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
+                      className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
                       aria-label="Scroll thumbnails left"
                     >
                       <ChevronLeft className="h-4 w-4" />
@@ -118,15 +118,15 @@ export default function ProductDetailPage({
                   {/* Scrollable Container */}
                   <div
                     ref={containerRef}
-                    className={`flex gap-2.5 overflow-x-auto scrollbar-hide scroll-smooth py-1 ${
-                      product.images.length <= 5 ? 'justify-center' : 'justify-start'
+                    className={`flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth py-1 justify-start ${
+                      product.images.length <= 5 ? 'sm:justify-center' : ''
                     }`}
                   >
                     {product.images.map((img, index) => (
                       <button
                         key={`${img}-${index}`}
                         onClick={() => setActiveImage(index)}
-                        className={`relative aspect-square w-[80px] h-[80px] shrink-0 overflow-hidden border transition-all ${
+                        className={`relative aspect-square w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] shrink-0 overflow-hidden border transition-all ${
                           activeImage === index
                             ? 'border-gold shadow-[0_0_0_1px_rgba(212,175,55,0.35)]'
                             : 'border-[var(--border)] opacity-75 hover:opacity-100'
@@ -148,7 +148,7 @@ export default function ProductDetailPage({
                   {product.images.length > 5 && (
                     <button
                       onClick={() => scrollThumbnails('right')}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
+                      className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
                       aria-label="Scroll thumbnails right"
                     >
                       <ChevronRight className="h-4 w-4" />
@@ -200,7 +200,7 @@ export default function ProductDetailPage({
               </div>
 
               {Object.keys(specs).length > 0 && (
-                <div className="mt-7 border border-[var(--border)] bg-[var(--bg)]/45 p-5">
+                <div className="mt-7 border border-[var(--border)] bg-[var(--bg)]/45 p-4 sm:p-5">
                   <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
                     Specifications
                   </h2>
@@ -208,12 +208,12 @@ export default function ProductDetailPage({
                     {Object.entries(specs).map(([key, value]) => (
                       <div
                         key={key}
-                        className="flex items-start justify-between gap-5 border-b border-[var(--border)]/70 pb-3 last:border-none last:pb-0"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-5 border-b border-[var(--border)]/70 pb-3 last:border-none last:pb-0"
                       >
-                        <span className="text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                        <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
                           {key.replace(/_/g, ' ')}
                         </span>
-                        <span className="text-right text-sm text-[var(--text)]">{String(value)}</span>
+                        <span className="text-left sm:text-right text-sm text-[var(--text)] font-medium">{String(value)}</span>
                       </div>
                     ))}
                   </div>
@@ -238,28 +238,28 @@ export default function ProductDetailPage({
                 </div>
               )}
 
-              <div className="mt-8 grid gap-2.5 sm:grid-cols-3">
+              <div className="mt-8 grid gap-2 grid-cols-3">
                 <a
                   href={`tel:${SITE_CONFIG.phone}`}
-                  className={`inline-flex items-center justify-center gap-2 border border-gold bg-gold px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-gold/90 ${
+                  className={`inline-flex items-center justify-center gap-1.5 border border-gold bg-gold px-1.5 py-3 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] sm:tracking-[0.12em] transition-colors hover:bg-gold/90 ${
                     isHouseholdsDivision ? 'text-white' : 'text-black'
                   }`}
                 >
-                  <Phone className="h-4 w-4" /> Call
+                  <Phone className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Call</span>
                 </a>
                 <a
                   href={`mailto:${SITE_CONFIG.email}?subject=Enquiry: ${product.name}`}
-                  className="inline-flex items-center justify-center gap-2 border border-[var(--border)] px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text)] transition-colors hover:border-gold/60 hover:text-gold"
+                  className="inline-flex items-center justify-center gap-1.5 border border-[var(--border)] px-1.5 py-3 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] sm:tracking-[0.12em] text-[var(--text)] transition-colors hover:border-gold/60 hover:text-gold"
                 >
-                  <Mail className="h-4 w-4" /> Email
+                  <Mail className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Email</span>
                 </a>
                 <a
                   href={`https://wa.me/${SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')}?text=${whatsappText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 border border-[var(--border)] px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text)] transition-colors hover:border-gold/60 hover:text-gold"
+                  className="inline-flex items-center justify-center gap-1.5 border border-[var(--border)] px-1.5 py-3 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] sm:tracking-[0.12em] text-[var(--text)] transition-colors hover:border-gold/60 hover:text-gold"
                 >
-                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                  <MessageCircle className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">WhatsApp</span>
                 </a>
               </div>
             </motion.aside>
