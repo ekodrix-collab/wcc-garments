@@ -43,6 +43,8 @@ export function Navbar() {
 
   if (isAdmin) return null
 
+  const displayFullName = config.fullName === 'WCC Fashions' ? 'Western Clothing Co' : config.fullName
+
   return (
     <>
       <header
@@ -67,7 +69,7 @@ export function Navbar() {
                 {config.name.toUpperCase()}
               </span>
               <span className="font-poppins text-[7px] font-medium uppercase tracking-[0.40em] text-gold/80">
-                {config.fullName}
+                {displayFullName}
               </span>
             </div>
           </Link>
@@ -184,7 +186,7 @@ export function Navbar() {
                     <div className="space-y-4 font-sans text-xs">
                       {[
                         { href: '/products/garments', icon: <Factory className="h-4 w-4" />, label: 'Garments Division', desc: 'Premium corporate shirts, twill trousers, and bespoke formalwear manufactured for global B2B export.', color: 'text-gold' },
-                        { href: '/products?division=households', icon: <Package className="h-4 w-4" />, label: 'Households Supply', desc: 'Bulk microfiber cleaning cloths, commercial laundry detergents, and hospitality bar mops.', color: 'text-amber-400' },
+                        { href: '/products/households', icon: <Package className="h-4 w-4" />, label: 'Households Division', desc: 'Premium triply cookware, elegant cutlery, and artisanal wood serveware in collaboration with Aanya Homecraft.', color: 'text-amber-400' },
                       ].map((item) => (
                         <Link
                           key={item.href}
@@ -247,7 +249,7 @@ export function Navbar() {
                     </div>
                     <div className="space-y-4">
                       {[
-                        { href: getProductHref('households', 'microfiber-cleaning-cloths'), img: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=80', alt: 'Microfiber Cloths', title: 'Microfiber Cleaning Cloths', sub: 'High-density commercial grade', moq: 'MOQ: 5,000 Pcs', badge: 'Best Seller', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
+                        { href: getProductHref('households', 'triply-stainless-steel-casserole'), img: '/images/hh-1.png', alt: 'Triply Casserole', title: 'Triply Casserole', sub: 'Aanya Homecraft premium cookware', moq: 'MOQ: 100 Pcs', badge: 'New Arrival', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
                         { href: getProductHref('hospitality', 'hotel-bed-linen-collection'), img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: '400TC Combed Egyptian Cotton', moq: 'MOQ: 200 Sets', badge: 'Premium Tier', badgeColor: 'text-amber-400 bg-amber-400/10' },
                       ].map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
@@ -330,7 +332,7 @@ export function Navbar() {
               {/* Title Section inside drawer */}
               <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-4 border-b border-[var(--border)]">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[9px] font-bold text-gold uppercase tracking-[0.25em]">WCC Fashions</span>
+                  <span className="font-mono text-[9px] font-bold text-gold uppercase tracking-[0.25em]">{displayFullName}</span>
                 </div>
                 <div className="flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-wider text-[var(--text-muted)]">
                   <Globe className="h-3 w-3 text-gold" />

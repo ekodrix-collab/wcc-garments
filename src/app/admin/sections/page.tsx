@@ -93,15 +93,29 @@ const DEFAULT_GARMENTS = {
 }
 
 const DEFAULT_HOUSEHOLDS = {
-  indicator: "HIGH-DEMAND HOUSEHOLD MANUFACTURING",
-  headingStart: "Household items we ",
-  headingHighlight: "manufacture",
-  description: "Professional bulk household supplies, commercial microfibers, and custom OEM institutional items. Engineered to meet strict industrial sanitization and commercial durability standards for global export.",
+  indicator: "OUR HOUSEHOLD DIVISION",
+  headingStart: "Household & ",
+  headingHighlight: "Kitchenware",
+  description: "Explore our premium kitchenware, culinary tools, and home essentials. In collaboration with Aanya Homecraft, we offer tri-ply cookware, artisan table serveware, and smart organization solutions for modern home and commercial kitchens.",
   categories: [
-    { name: 'Industrial Microfiber', slug: 'microfiber', tagline: 'High-density commercial cleaning wipes', count: '1,000+ MOQ', image: '/images/hh-1.png' },
-    { name: 'Bulk Liquids & Sanitizers', slug: 'liquids', tagline: 'Premium wholesale chemical formulations', count: '500L+ MOQ', image: '/images/hh-2.png' },
-    { name: 'Institutional Linens', slug: 'kitchen-linens', tagline: 'Heavy-duty commercial sheets & napery', count: '250+ MOQ', image: '/images/hh-3.png' },
-    { name: 'OEM Custom Essentials', slug: 'oem-essentials', tagline: 'Bespoke household product branding options', count: '10k+ MOQ', image: '/images/hh-4.png' }
+    { name: 'Triply Cookware', slug: 'cookware', tagline: 'Professional triply cookware for healthier, faster and even cooking', count: '100+ MOQ', image: '/images/hh-1.png' },
+    { name: 'Premium Cutlery', slug: 'cutlery', tagline: 'Elegant stainless steel cutlery for refined everyday dining', count: '250+ MOQ', image: '/images/hh-2.png' },
+    { name: 'Table & Serveware', slug: 'table-top', tagline: 'Stylish serveware to elevate presentation for every meal', count: '100+ MOQ', image: '/images/hh-3.png' },
+    { name: 'Storage & Organizer', slug: 'utility', tagline: 'Smart storage and organizers to keep your kitchen clutter-free', count: '200+ MOQ', image: '/images/hh-4.png' }
+  ]
+}
+
+const DEFAULT_HOSPITALITY = {
+  indicator: "HOSPITALITY DIVISION",
+  headingStart: "Shop By ",
+  headingHighlight: "Products",
+  description: "Outfitting the world's finest hospitality with Horeca24h premium barware, commercial cookware, kitchen utensils, elegant table cutlery, and buffet serving solutions.",
+  categories: [
+    { name: 'Barware Products', slug: 'barware', tagline: 'Premium ice buckets, coolers & shaker tools', count: '100+ MOQ', image: '/images/hos-1.png' },
+    { name: 'Cookware Products', slug: 'cookware', tagline: 'Professional triply stainless steel cook pots', count: '50+ MOQ', image: '/images/hos-2.png' },
+    { name: 'Serving & Kitchen Tools', slug: 'serving-tools', tagline: 'High-end serving tongs and chef prep utensils', count: '200+ MOQ', image: '/images/hos-3.png' },
+    { name: 'Table Cutlery', slug: 'cutlery', tagline: 'Mirror polished hotel-grade cutlery sets', count: '250+ MOQ', image: '/images/hos-4.png' },
+    { name: 'Storage & Serving', slug: 'storage-serving', tagline: 'Wire buffet baskets and wood serving trays', count: '150+ MOQ', image: '/images/hos-5.png' }
   ]
 }
 
@@ -126,7 +140,7 @@ const DEFAULT_DUBAI_PIPELINE = {
   ]
 }
 
-type ActiveSection = 'global' | 'bulk' | 'hero' | 'who' | 'garment' | 'household' | 'expansion' | 'pipeline'
+type ActiveSection = 'global' | 'bulk' | 'hero' | 'who' | 'garment' | 'household' | 'hospitality' | 'expansion' | 'pipeline'
 
 export default function AdminSectionsPage() {
   const [activeTab, setActiveTab] = useState<ActiveSection>('global')
@@ -140,6 +154,7 @@ export default function AdminSectionsPage() {
   const [whoWeAre, setWhoWeAre] = useState<any>(DEFAULT_WHO_WE_ARE)
   const [garments, setGarments] = useState<any>(DEFAULT_GARMENTS)
   const [households, setHouseholds] = useState<any>(DEFAULT_HOUSEHOLDS)
+  const [hospitality, setHospitality] = useState<any>(DEFAULT_HOSPITALITY)
   const [expansion, setExpansion] = useState<any>(DEFAULT_EXPANSION)
   const [dubaiPipeline, setDubaiPipeline] = useState<any>(DEFAULT_DUBAI_PIPELINE)
 
@@ -150,7 +165,8 @@ export default function AdminSectionsPage() {
     setHero(contentStore.getSectionData('hero', DEFAULT_HERO))
     setWhoWeAre(contentStore.getSectionData('who-we-are', DEFAULT_WHO_WE_ARE))
     setGarments(contentStore.getSectionData('garments-showcase', DEFAULT_GARMENTS))
-    setHouseholds(contentStore.getSectionData('households-showcase', DEFAULT_HOUSEHOLDS))
+    setHouseholds(contentStore.getSectionData('households-showcase-v2', DEFAULT_HOUSEHOLDS))
+    setHospitality(contentStore.getSectionData('hospitality-showcase-v2', DEFAULT_HOSPITALITY))
     setExpansion(contentStore.getSectionData('strategic-expansion', DEFAULT_EXPANSION))
     setDubaiPipeline(contentStore.getSectionData('dubai-pipeline', DEFAULT_DUBAI_PIPELINE))
   }, [])
@@ -176,7 +192,8 @@ export default function AdminSectionsPage() {
     contentStore.saveSectionData('hero', hero)
     contentStore.saveSectionData('who-we-are', whoWeAre)
     contentStore.saveSectionData('garments-showcase', garments)
-    contentStore.saveSectionData('households-showcase', households)
+    contentStore.saveSectionData('households-showcase-v2', households)
+    contentStore.saveSectionData('hospitality-showcase-v2', hospitality)
     contentStore.saveSectionData('strategic-expansion', expansion)
     contentStore.saveSectionData('dubai-pipeline', dubaiPipeline)
 
@@ -308,6 +325,10 @@ export default function AdminSectionsPage() {
           <button onClick={() => setActiveTab('household')} className={tabClass('household')}>
             <Layers className="h-4 w-4 shrink-0" />
             <span>6. Household showcase</span>
+          </button>
+          <button onClick={() => setActiveTab('hospitality')} className={tabClass('hospitality')}>
+            <Layers className="h-4 w-4 shrink-0" />
+            <span>6.5 Hospitality showcase</span>
           </button>
           <button onClick={() => setActiveTab('expansion')} className={tabClass('expansion')}>
             <TrendingUp className="h-4 w-4 shrink-0" />
@@ -1220,6 +1241,146 @@ export default function AdminSectionsPage() {
                           <button
                             type="button"
                             onClick={() => document.getElementById(`household-cat-file-${cIdx}`)?.click()}
+                            className={`flex items-center justify-center gap-1 py-1.5 w-full font-mono text-[8px] font-bold border transition-colors rounded-none ${
+                              isDark 
+                                ? 'text-white/80 border-white/10 hover:border-gold' 
+                                : 'text-gray-700 border-gray-200 hover:border-gold bg-white shadow-sm'
+                            }`}
+                          >
+                            <Upload className="h-2.5 w-2.5" />
+                            <span>Upload Device File</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6.5: Hospitality Showcase */}
+          {activeTab === 'hospitality' && (
+            <div className="space-y-6 font-sans">
+              <div className={`border-b pb-4 ${themeBorder}`}>
+                <h3 className={`text-lg font-bold uppercase flex items-center gap-2 ${themeText}`}>
+                  <Layers className="h-5 w-5 text-gold" />
+                  <span>6.5 Hospitality Manufacturing Showcase</span>
+                </h3>
+                <p className={`text-xs mt-1 ${themeTextSub}`}>Configure active hospitality items, description parameters, MOQ values, and card images</p>
+              </div>
+
+              <div>
+                <label className={labelClass}>Section Upper Indicator</label>
+                <input
+                  type="text"
+                  value={hospitality.indicator}
+                  onChange={e => setHospitality({ ...hospitality, indicator: e.target.value })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={labelClass}>Heading Line Start</label>
+                  <input
+                    type="text"
+                    value={hospitality.headingStart}
+                    onChange={e => setHospitality({ ...hospitality, headingStart: e.target.value })}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Heading Line Highlight (Gold Text)</label>
+                  <input
+                    type="text"
+                    value={hospitality.headingHighlight}
+                    onChange={e => setHospitality({ ...hospitality, headingHighlight: e.target.value })}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className={labelClass}>Section Description Paragraph *</label>
+                <textarea
+                  rows={2}
+                  value={hospitality.description}
+                  onChange={e => setHospitality({ ...hospitality, description: e.target.value })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className={`pt-4 border-t space-y-4 ${themeBorderSub}`}>
+                <span className={labelClass}>Hospitality Categories Matrix (5 Portrait Cards)</span>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {hospitality.categories.map((cat: any, cIdx: number) => (
+                    <div key={cat.slug} className={`border p-4 space-y-3 rounded-none ${themeBorder} ${isDark ? 'bg-black/40' : 'bg-gray-50'}`}>
+                      <span className="text-[9px] font-mono font-bold text-gold uppercase block">Card Slot 0{cIdx + 1} ({cat.name})</span>
+                      
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className={`text-[9px] block ${themeTextSub}`}>Category name</label>
+                          <input
+                            type="text"
+                            value={cat.name}
+                            onChange={e => {
+                              const updated = [...hospitality.categories]
+                              updated[cIdx].name = e.target.value
+                              setHospitality({ ...hospitality, categories: updated })
+                            }}
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className={`text-[9px] block ${themeTextSub}`}>MOQ Value Tag</label>
+                          <input
+                            type="text"
+                            value={cat.count}
+                            onChange={e => {
+                              const updated = [...hospitality.categories]
+                              updated[cIdx].count = e.target.value
+                              setHospitality({ ...hospitality, categories: updated })
+                            }}
+                            className={inputClass}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className={`text-[9px] block ${themeTextSub}`}>Short Tagline Description</label>
+                        <input
+                          type="text"
+                          value={cat.tagline}
+                          onChange={e => {
+                            const updated = [...hospitality.categories]
+                            updated[cIdx].tagline = e.target.value
+                            setHospitality({ ...hospitality, categories: updated })
+                          }}
+                          className={inputClass}
+                        />
+                      </div>
+
+                      {/* Image Preview & Upload */}
+                      <div className="flex items-center gap-3 pt-2">
+                        <div className={`relative h-14 w-20 bg-black overflow-hidden border shrink-0 ${themeBorderSub}`}>
+                          <Image src={cat.image} alt={cat.name} fill className="object-cover" />
+                        </div>
+                        <div className="flex-1">
+                          <input
+                            id={`hospitality-cat-file-${cIdx}`}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleFileUpload(e, (base64) => {
+                              const updated = [...hospitality.categories]
+                              updated[cIdx].image = base64
+                              setHospitality({ ...hospitality, categories: updated })
+                            })}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => document.getElementById(`hospitality-cat-file-${cIdx}`)?.click()}
                             className={`flex items-center justify-center gap-1 py-1.5 w-full font-mono text-[8px] font-bold border transition-colors rounded-none ${
                               isDark 
                                 ? 'text-white/80 border-white/10 hover:border-gold' 

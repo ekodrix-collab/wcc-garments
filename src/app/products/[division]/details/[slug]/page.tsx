@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, use } from 'react'
+import { useState, use, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ChevronRight, Phone, Mail, MessageCircle } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Phone, Mail, MessageCircle } from 'lucide-react'
 
 import { ProductCard } from '@/components/products/ProductCard'
 import { DIVISIONS, MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
@@ -17,6 +17,14 @@ export default function ProductDetailPage({
   const { division: divisionSlug, slug } = use(params)
   const [activeImage, setActiveImage] = useState(0)
   const isHouseholdsDivision = divisionSlug === 'households'
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const scrollThumbnails = (direction: 'left' | 'right') => {
+    if (containerRef.current) {
+      const scrollAmount = direction === 'left' ? -200 : 200
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+    }
+  }
 
   const product = MOCK_PRODUCTS.find((item) => item.slug === slug && item.division_slug === divisionSlug)
   const divisionMeta = DIVISIONS.find((item) => item.slug === divisionSlug)
@@ -95,27 +103,57 @@ export default function ProductDetailPage({
               </div>
 
               {product.images.length > 1 && (
-                <div className="mx-auto mt-4 grid w-full max-w-[640px] grid-cols-5 gap-2 md:gap-3">
-                  {product.images.map((img, index) => (
+                <div className="relative mx-auto mt-4 w-full max-w-[640px] px-8 group/carousel">
+                  {/* Left Arrow */}
+                  {product.images.length > 5 && (
                     <button
-                      key={`${img}-${index}`}
-                      onClick={() => setActiveImage(index)}
-                      className={`relative aspect-square overflow-hidden border transition-all ${
-                        activeImage === index
-                          ? 'border-gold shadow-[0_0_0_1px_rgba(212,175,55,0.35)]'
-                          : 'border-[var(--border)] opacity-75 hover:opacity-100'
-                      }`}
-                      aria-label={`View image ${index + 1}`}
+                      onClick={() => scrollThumbnails('left')}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 flex h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
+                      aria-label="Scroll thumbnails left"
                     >
-                      <Image
-                        src={img}
-                        alt={`${product.name} thumbnail ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="120px"
-                      />
+                      <ChevronLeft className="h-4 w-4" />
                     </button>
-                  ))}
+                  )}
+
+                  {/* Scrollable Container */}
+                  <div
+                    ref={containerRef}
+                    className={`flex gap-2.5 overflow-x-auto scrollbar-hide scroll-smooth py-1 ${
+                      product.images.length <= 5 ? 'justify-center' : 'justify-start'
+                    }`}
+                  >
+                    {product.images.map((img, index) => (
+                      <button
+                        key={`${img}-${index}`}
+                        onClick={() => setActiveImage(index)}
+                        className={`relative aspect-square w-[80px] h-[80px] shrink-0 overflow-hidden border transition-all ${
+                          activeImage === index
+                            ? 'border-gold shadow-[0_0_0_1px_rgba(212,175,55,0.35)]'
+                            : 'border-[var(--border)] opacity-75 hover:opacity-100'
+                        }`}
+                        aria-label={`View image ${index + 1}`}
+                      >
+                        <Image
+                          src={img}
+                          alt={`${product.name} thumbnail ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          sizes="120px"
+                        />
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Right Arrow */}
+                  {product.images.length > 5 && (
+                    <button
+                      onClick={() => scrollThumbnails('right')}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
+                      aria-label="Scroll thumbnails right"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               )}
             </motion.section>

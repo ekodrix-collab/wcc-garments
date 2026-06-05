@@ -11,15 +11,15 @@ import { contentStore } from '@/lib/content-store'
 import { getDivisionCategoryHref } from '@/lib/category-routing'
 
 const DEFAULT_HOUSEHOLDS = {
-  indicator: "HIGH-DEMAND HOUSEHOLD MANUFACTURING",
-  headingStart: "Household items we ",
-  headingHighlight: "manufacture",
-  description: "Professional bulk household supplies, commercial microfibers, and custom OEM institutional items. Engineered to meet strict industrial sanitization and commercial durability standards for global export.",
+  indicator: "OUR HOUSEHOLD DIVISION",
+  headingStart: "Household & ",
+  headingHighlight: "Kitchenware",
+  description: "Explore our premium kitchenware, culinary tools, and home essentials. In collaboration with Aanya Homecraft, we offer tri-ply cookware, artisan table serveware, and smart organization solutions for modern home and commercial kitchens.",
   categories: [
-    { name: 'Industrial Microfiber', slug: 'microfiber', tagline: 'High-density commercial cleaning wipes', count: '1,000+ MOQ', image: '/images/hh-1.png' },
-    { name: 'Bulk Liquids & Sanitizers', slug: 'liquids', tagline: 'Premium wholesale chemical formulations', count: '500L+ MOQ', image: '/images/hh-2.png' },
-    { name: 'Institutional Linens', slug: 'kitchen-linens', tagline: 'Heavy-duty commercial sheets & napery', count: '250+ MOQ', image: '/images/hh-3.png' },
-    { name: 'OEM Custom Essentials', slug: 'oem-essentials', tagline: 'Bespoke household product branding options', count: '10k+ MOQ', image: '/images/hh-4.png' }
+    { name: 'Triply Cookware', slug: 'cookware', tagline: 'Professional triply cookware for healthier, faster and even cooking', count: '100+ MOQ', image: '/images/hh-1.png' },
+    { name: 'Premium Cutlery', slug: 'cutlery', tagline: 'Elegant stainless steel cutlery for refined everyday dining', count: '250+ MOQ', image: '/images/hh-2.png' },
+    { name: 'Table & Serveware', slug: 'table-top', tagline: 'Stylish serveware to elevate presentation for every meal', count: '100+ MOQ', image: '/images/hh-3.png' },
+    { name: 'Storage & Organizer', slug: 'utility', tagline: 'Smart storage and organizers to keep your kitchen clutter-free', count: '200+ MOQ', image: '/images/hh-4.png' }
   ]
 }
 
@@ -29,7 +29,7 @@ export function HouseholdShowcase() {
   const [data, setData] = useState(DEFAULT_HOUSEHOLDS)
 
   useEffect(() => {
-    setData(contentStore.getSectionData('households-showcase', DEFAULT_HOUSEHOLDS))
+    setData(contentStore.getSectionData('households-showcase-v2', DEFAULT_HOUSEHOLDS))
   }, [])
 
   return (

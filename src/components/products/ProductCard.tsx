@@ -73,6 +73,7 @@ export function ProductCard({ product, index = 0, coverColor = '#ffffff', divisi
           transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="absolute inset-0 h-full w-full bg-white"
         >
+          {/* Primary Image */}
           <Image
             src={product.images?.[0] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=85'}
             alt={product.name}
@@ -80,6 +81,19 @@ export function ProductCard({ product, index = 0, coverColor = '#ffffff', divisi
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
           />
+
+          {/* Secondary Image on Hover */}
+          {product.images && product.images.length > 1 && (
+            <div className="absolute inset-0 h-full w-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out">
+              <Image
+                src={product.images[1]}
+                alt={`${product.name} secondary`}
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+              />
+            </div>
+          )}
         </motion.div>
 
         {/* Cinematic Shutter Reveal Cover */}

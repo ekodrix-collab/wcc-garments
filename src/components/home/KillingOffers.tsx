@@ -38,8 +38,8 @@ const DEFAULT_EXPANSION = {
   description: "While premium garments remain our core business, we have successfully expanded our industrial capacities to serve major developments in uniforms, luxury hospitality textiles, home decor, fragrance, and household supply."
 }
 
-// Show the 4 expansion divisions (everyone except garments & households which have their own sections)
-const EXPANSION_SLUGS = ['uniforms', 'hospitality', 'fragrance', 'home']
+// Show the 4 expansion divisions (everyone except garments & home which have their own sections or have been excluded)
+const EXPANSION_SLUGS = ['uniforms', 'hospitality', 'fragrance', 'households']
 
 export function KillingOffers() {
   const ref = useRef<HTMLDivElement>(null)
