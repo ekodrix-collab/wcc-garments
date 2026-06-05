@@ -54,30 +54,30 @@ export default function ProductDetailPage({
       <div className="mx-auto max-w-[1560px] px-4 sm:px-6 lg:px-12">
         <nav
           aria-label="Breadcrumb"
-          className="flex flex-wrap items-center gap-2 py-6 text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]"
+          className="flex flex-wrap items-center gap-1.5 py-4 sm:py-6 text-[9px] sm:text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]"
         >
           <Link href="/" className="transition-colors hover:text-gold">
             Home
           </Link>
-          <ChevronRight className="h-3 w-3" />
+          <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
           <Link href="/products" className="transition-colors hover:text-gold">
             Products
           </Link>
-          <ChevronRight className="h-3 w-3" />
+          <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
           <Link
             href={`/products/${divisionSlug}`}
             className="transition-colors hover:text-gold"
           >
             {product.division}
           </Link>
-          <ChevronRight className="h-3 w-3" />
+          <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
           <span className="text-[var(--text)]">{product.name}</span>
         </nav>
 
         <div className="border border-[var(--border)] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.08),transparent_45%),var(--bg-surface)] p-4 sm:p-5 md:p-7 lg:p-10">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
             <motion.section
-              className="lg:col-span-6"
+              className="lg:col-span-6 min-w-0 w-full"
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
@@ -159,7 +159,7 @@ export default function ProductDetailPage({
             </motion.section>
 
             <motion.aside
-              className="lg:col-span-6 lg:sticky lg:top-28 lg:self-start"
+              className="lg:col-span-6 lg:sticky lg:top-28 lg:self-start min-w-0 w-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.08 }}
