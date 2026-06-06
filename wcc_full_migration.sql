@@ -200,37 +200,55 @@ ALTER TABLE public.broadcasts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.website_content ENABLE ROW LEVEL SECURITY;
 
 -- 1. Categories
+DROP POLICY IF EXISTS "Allow public read access on categories" ON public.categories;
+DROP POLICY IF EXISTS "Allow admin write access on categories" ON public.categories;
 CREATE POLICY "Allow public read access on categories" ON public.categories FOR SELECT USING (true);
 CREATE POLICY "Allow admin write access on categories" ON public.categories FOR ALL USING (auth.role() = 'service_role');
 
 -- 2. Brands
+DROP POLICY IF EXISTS "Allow public read access on brands" ON public.brands;
+DROP POLICY IF EXISTS "Allow admin write access on brands" ON public.brands;
 CREATE POLICY "Allow public read access on brands" ON public.brands FOR SELECT USING (true);
 CREATE POLICY "Allow admin write access on brands" ON public.brands FOR ALL USING (auth.role() = 'service_role');
 
 -- 3. Products
+DROP POLICY IF EXISTS "Allow public read access on products" ON public.products;
+DROP POLICY IF EXISTS "Allow admin write access on products" ON public.products;
 CREATE POLICY "Allow public read access on products" ON public.products FOR SELECT USING (true);
 CREATE POLICY "Allow admin write access on products" ON public.products FOR ALL USING (auth.role() = 'service_role');
 
 -- 4. Enquiries (Allow public inserts, admin read/write)
+DROP POLICY IF EXISTS "Allow public insert access on enquiries" ON public.enquiries;
+DROP POLICY IF EXISTS "Allow admin access on enquiries" ON public.enquiries;
 CREATE POLICY "Allow public insert access on enquiries" ON public.enquiries FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow admin access on enquiries" ON public.enquiries FOR ALL USING (auth.role() = 'service_role');
 
 -- 5. Media
+DROP POLICY IF EXISTS "Allow public read access on media" ON public.media;
+DROP POLICY IF EXISTS "Allow admin write access on media" ON public.media;
 CREATE POLICY "Allow public read access on media" ON public.media FOR SELECT USING (true);
 CREATE POLICY "Allow admin write access on media" ON public.media FOR ALL USING (auth.role() = 'service_role');
 
 -- 6. Newsletter Subscribers (Allow public inserts, admin read/write)
+DROP POLICY IF EXISTS "Allow public insert access on newsletter" ON public.newsletter_subscribers;
+DROP POLICY IF EXISTS "Allow admin access on newsletter" ON public.newsletter_subscribers;
 CREATE POLICY "Allow public insert access on newsletter" ON public.newsletter_subscribers FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow admin access on newsletter" ON public.newsletter_subscribers FOR ALL USING (auth.role() = 'service_role');
 
 -- 7. Broadcasts
+DROP POLICY IF EXISTS "Allow admin access on broadcasts" ON public.broadcasts;
 CREATE POLICY "Allow admin access on broadcasts" ON public.broadcasts FOR ALL USING (auth.role() = 'service_role');
 
 -- 8. Website Content
+DROP POLICY IF EXISTS "Allow public read access on website_content" ON public.website_content;
+DROP POLICY IF EXISTS "Allow admin write access on website_content" ON public.website_content;
 CREATE POLICY "Allow public read access on website_content" ON public.website_content FOR SELECT USING (true);
 CREATE POLICY "Allow admin write access on website_content" ON public.website_content FOR ALL USING (auth.role() = 'service_role');
 
 -- 9. Storage policies
+DROP POLICY IF EXISTS "Allow public select access on storage objects" ON storage.objects;
+DROP POLICY IF EXISTS "Allow admin insert access on storage objects" ON storage.objects;
+DROP POLICY IF EXISTS "Allow admin delete access on storage objects" ON storage.objects;
 CREATE POLICY "Allow public select access on storage objects" ON storage.objects FOR SELECT USING (bucket_id = 'wcc_media');
 CREATE POLICY "Allow admin insert access on storage objects" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'wcc_media');
 CREATE POLICY "Allow admin delete access on storage objects" ON storage.objects FOR DELETE USING (bucket_id = 'wcc_media');
