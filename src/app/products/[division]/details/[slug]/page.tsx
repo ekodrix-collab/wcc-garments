@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, use, useRef } from 'react'
+import { useState, use, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -8,6 +8,7 @@ import { ChevronRight, ChevronLeft, Phone, Mail, MessageCircle } from 'lucide-re
 
 import { ProductCard } from '@/components/products/ProductCard'
 import { DIVISIONS, MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
+import { api } from '@/lib/api'
 
 export default function ProductDetailPage({
   params,
@@ -16,6 +17,9 @@ export default function ProductDetailPage({
 }) {
   const { division: divisionSlug, slug } = use(params)
   const [activeImage, setActiveImage] = useState(0)
+  const [product, setProduct] = useState<any>(null)
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const isHouseholdsDivision = divisionSlug === 'households'
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -26,12 +30,74 @@ export default function ProductDetailPage({
     }
   }
 
-  const product = MOCK_PRODUCTS.find((item) => item.slug === slug && item.division_slug === divisionSlug)
+  useEffect(() => {
+    let active = true
+    setLoading(true)
+
+    // Fetch product details
+    api.getProduct(slug)
+      .then((res) => {
+        if (!active) return
+        if (res.success && res.data) {
+          setProduct(res.data)
+        } else {
+          const mock = MOCK_PRODUCTS.find((item) => item.slug === slug && item.division_slug === divisionSlug)
+          setProduct(mock || null)
+        }
+        setLoading(false)
+      })
+      .catch((err) => {
+        if (!active) return
+        console.error("Error loading product detail from API, using fallback:", err)
+        const mock = MOCK_PRODUCTS.find((item) => item.slug === slug && item.division_slug === divisionSlug)
+        setProduct(mock || null)
+        setLoading(false)
+      })
+
+    // Fetch related products
+    api.getProducts({ division: divisionSlug, limit: 10 })
+      .then((res) => {
+        if (!active) return
+        if (res.success && Array.isArray(res.data)) {
+          const filtered = res.data
+            .filter((p: any) => p.slug !== slug)
+            .slice(0, 4)
+          setRelatedProducts(filtered)
+        } else {
+          const mockRelated = MOCK_PRODUCTS.filter(
+            (item) => item.division_slug === divisionSlug && item.slug !== slug
+          ).slice(0, 4)
+          setRelatedProducts(mockRelated)
+        }
+      })
+      .catch((err) => {
+        if (!active) return
+        console.error("Error fetching related products from API, using fallback:", err)
+        const mockRelated = MOCK_PRODUCTS.filter(
+          (item) => item.division_slug === divisionSlug && item.slug !== slug
+        ).slice(0, 4)
+        setRelatedProducts(mockRelated)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [slug, divisionSlug])
+
   const divisionMeta = DIVISIONS.find((item) => item.slug === divisionSlug)
 
-  const relatedProducts = MOCK_PRODUCTS.filter(
-    (item) => item.division_slug === divisionSlug && item.slug !== slug
-  ).slice(0, 4)
+  if (loading) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--bg)] pt-24">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-gold/20 border-t-gold"></div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold animate-pulse">
+            Loading Product Details...
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
@@ -48,6 +114,16 @@ export default function ProductDetailPage({
 
   const specs = product.specifications || {}
   const whatsappText = encodeURIComponent(`Hi, I am interested in: ${product.name}`)
+  const images = Array.isArray(product.images) ? product.images : []
+
+  // Dynamic values that handle string (mock data) or object (database schema) shapes
+  const divisionName = typeof product.division === 'object' && product.division !== null
+    ? product.division.name
+    : product.division
+
+  const categoryName = typeof product.category === 'object' && product.category !== null
+    ? product.category.name
+    : product.category
 
   return (
     <div className="min-h-screen bg-[var(--bg)] pt-24">
@@ -68,7 +144,7 @@ export default function ProductDetailPage({
             href={`/products/${divisionSlug}`}
             className="transition-colors hover:text-gold"
           >
-            {product.division}
+            {divisionName}
           </Link>
           <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
           <span className="text-[var(--text)]">{product.name}</span>
@@ -87,7 +163,7 @@ export default function ProductDetailPage({
                 data-cursor="view"
               >
                 <Image
-                  src={product.images[activeImage] || product.images[0]}
+                  src={images[activeImage] || images[0] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80'}
                   alt={product.name}
                   fill
                   className="object-cover"
@@ -102,10 +178,10 @@ export default function ProductDetailPage({
                 )}
               </div>
 
-              {product.images.length > 1 && (
+              {images.length > 1 && (
                 <div className="relative mx-auto mt-4 w-full max-w-[640px] px-0 sm:px-8 group/carousel">
                   {/* Left Arrow */}
-                  {product.images.length > 5 && (
+                  {images.length > 5 && (
                     <button
                       onClick={() => scrollThumbnails('left')}
                       className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
@@ -119,10 +195,10 @@ export default function ProductDetailPage({
                   <div
                     ref={containerRef}
                     className={`flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth py-1 justify-start ${
-                      product.images.length <= 5 ? 'sm:justify-center' : ''
+                      images.length <= 5 ? 'sm:justify-center' : ''
                     }`}
                   >
-                    {product.images.map((img, index) => (
+                    {images.map((img, index) => (
                       <button
                         key={`${img}-${index}`}
                         onClick={() => setActiveImage(index)}
@@ -145,7 +221,7 @@ export default function ProductDetailPage({
                   </div>
 
                   {/* Right Arrow */}
-                  {product.images.length > 5 && (
+                  {images.length > 5 && (
                     <button
                       onClick={() => scrollThumbnails('right')}
                       className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 h-7 w-7 items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-sm text-[var(--text)] transition-colors hover:border-gold hover:text-gold rounded-none"
@@ -165,7 +241,7 @@ export default function ProductDetailPage({
               transition={{ duration: 0.6, delay: 0.08 }}
             >
               <span className="inline-flex border border-gold/40 bg-gold/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">
-                {product.division}
+                {divisionName}
               </span>
 
               <h1 className="mt-4 font-display text-3xl font-semibold leading-tight text-[var(--text)] md:text-4xl">
@@ -181,7 +257,7 @@ export default function ProductDetailPage({
                   <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">
                     Category
                   </p>
-                  <p className="mt-1 text-sm font-medium text-[var(--text)]">{product.category}</p>
+                  <p className="mt-1 text-sm font-medium text-[var(--text)]">{categoryName}</p>
                 </div>
                 <div className="border border-[var(--border)] bg-[var(--bg)]/60 px-4 py-3">
                   <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">MOQ</p>
@@ -226,7 +302,7 @@ export default function ProductDetailPage({
                     Suitable For
                   </h3>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {product.suitable_for.map((item) => (
+                    {product.suitable_for.map((item: string) => (
                       <span
                         key={item}
                         className="border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--text)]"
@@ -279,7 +355,7 @@ export default function ProductDetailPage({
                 href={`/products/${divisionSlug}`}
                 className="text-xs uppercase tracking-[0.14em] text-[var(--text-muted)] transition-colors hover:text-gold"
               >
-                View All {product.division}
+                View All {divisionName}
               </Link>
             </div>
 
@@ -289,8 +365,8 @@ export default function ProductDetailPage({
                   key={item.id}
                   product={{
                     ...item,
-                    division: { name: item.division, slug: item.division_slug },
-                    category: { name: item.category },
+                    division: typeof item.division === 'object' && item.division !== null ? item.division : { name: item.division, slug: item.division_slug },
+                    category: typeof item.category === 'object' && item.category !== null ? item.category : { name: item.category },
                   }}
                   index={index}
                   divisionSlug={divisionSlug}
