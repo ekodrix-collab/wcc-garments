@@ -65,14 +65,14 @@ export function ManufacturingStory() {
             className="w-12 h-12 rounded-full border border-white/10 bg-white/5 flex items-center justify-center hover:bg-gold hover:border-gold hover:text-black transition-all duration-300 active:scale-95"
             aria-label="Previous Step"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5 text-white" />
           </button>
           <button
             onClick={() => scroll('next')}
             className="w-12 h-12 rounded-full border border-white/10 bg-white/5 flex items-center justify-center hover:bg-gold hover:border-gold hover:text-black transition-all duration-300 active:scale-95"
             aria-label="Next Step"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>
@@ -107,13 +107,13 @@ export function ManufacturingStory() {
 
               {/* Header: Step Indicator & Icon */}
               <div className="relative z-10 flex items-start justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-none border border-white/10 bg-black/80 backdrop-blur-md text-gold shadow-lg">
+                <div className="flex h-11 w-11 items-center justify-center rounded-none border border-white/10 bg-black/80 backdrop-blur-md text-white shadow-lg">
                   <span className="font-mono text-base font-bold tracking-tight">
                     {scene.step}
                   </span>
                 </div>
                 <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/80 backdrop-blur-md text-gold group-hover:border-gold group-hover:bg-gold group-hover:text-black transition-all duration-500 shadow-lg">
-                  <Icon className="h-4.5 w-4.5" />
+                  <Icon className="h-4.5 w-4.5 text-white" />
                 </div>
               </div>
 

@@ -9,6 +9,7 @@ import { ArrowUpRight, ChevronDown, Building2, ShieldCheck, Factory, Briefcase, 
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { NAV_LINKS, SITE_CONFIG } from '@/lib/constants'
 import { contentStore } from '@/lib/content-store'
+import { getProductHref } from '@/lib/category-routing'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -42,6 +43,8 @@ export function Navbar() {
 
   if (isAdmin) return null
 
+  const displayFullName = config.fullName === 'WCC Fashions' ? 'Western Clothing Co' : config.fullName
+
   return (
     <>
       <header
@@ -66,7 +69,7 @@ export function Navbar() {
                 {config.name.toUpperCase()}
               </span>
               <span className="font-poppins text-[7px] font-medium uppercase tracking-[0.40em] text-gold/80">
-                {config.fullName}
+                {displayFullName}
               </span>
             </div>
           </Link>
@@ -183,7 +186,7 @@ export function Navbar() {
                     <div className="space-y-4 font-sans text-xs">
                       {[
                         { href: '/products/garments', icon: <Factory className="h-4 w-4" />, label: 'Garments Division', desc: 'Premium corporate shirts, twill trousers, and bespoke formalwear manufactured for global B2B export.', color: 'text-gold' },
-                        { href: '/products?division=households', icon: <Package className="h-4 w-4" />, label: 'Households Supply', desc: 'Bulk microfiber cleaning cloths, commercial laundry detergents, and hospitality bar mops.', color: 'text-amber-400' },
+                        { href: '/products/households', icon: <Package className="h-4 w-4" />, label: 'Households Division', desc: 'Premium triply cookware, elegant cutlery, and artisanal wood serveware in collaboration with Aanya Homecraft.', color: 'text-amber-400' },
                       ].map((item) => (
                         <Link
                           key={item.href}
@@ -211,8 +214,8 @@ export function Navbar() {
                     </div>
                     <div className="space-y-4">
                       {[
-                        { href: '/products/garments/egyptian-cotton-premium-shirts', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80', alt: 'Premium Shirt', title: 'Egyptian Cotton Shirts', sub: '300TC / Bespoke corporate fits', moq: 'MOQ: 500 Pcs', badge: 'High Demand', badgeColor: 'text-gold bg-gold/10' },
-                        { href: '/products/garments/executive-velvet-blazer', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&q=80', alt: 'Velvet Blazer', title: 'Executive Velvet Blazer', sub: 'Italian cotton velvet blazers', moq: 'MOQ: 50 Units', badge: 'Bespoke Cut', badgeColor: 'text-blue-400 bg-blue-400/10' },
+                        { href: getProductHref('garments', 'egyptian-cotton-premium-shirts'), img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80', alt: 'Premium Shirt', title: 'Egyptian Cotton Shirts', sub: '300TC / Bespoke corporate fits', moq: 'MOQ: 500 Pcs', badge: 'High Demand', badgeColor: 'text-gold bg-gold/10' },
+                        { href: getProductHref('garments', 'executive-velvet-blazer'), img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&q=80', alt: 'Velvet Blazer', title: 'Executive Velvet Blazer', sub: 'Italian cotton velvet blazers', moq: 'MOQ: 50 Units', badge: 'Bespoke Cut', badgeColor: 'text-blue-400 bg-blue-400/10' },
                       ].map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
                           {/* Pure White Background Container for Product Image */}
@@ -246,8 +249,8 @@ export function Navbar() {
                     </div>
                     <div className="space-y-4">
                       {[
-                        { href: '/products/households/microfiber-cleaning-cloths', img: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=80', alt: 'Microfiber Cloths', title: 'Microfiber Cleaning Cloths', sub: 'High-density commercial grade', moq: 'MOQ: 5,000 Pcs', badge: 'Best Seller', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
-                        { href: '/products/hospitality/hotel-bed-linen-collection', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: '400TC Combed Egyptian Cotton', moq: 'MOQ: 200 Sets', badge: 'Premium Tier', badgeColor: 'text-amber-400 bg-amber-400/10' },
+                        { href: getProductHref('households', 'triply-stainless-steel-casserole'), img: '/images/hh-1.png', alt: 'Triply Casserole', title: 'Triply Casserole', sub: 'Aanya Homecraft premium cookware', moq: 'MOQ: 100 Pcs', badge: 'New Arrival', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
+                        { href: getProductHref('hospitality', 'hotel-bed-linen-collection'), img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: '400TC Combed Egyptian Cotton', moq: 'MOQ: 200 Sets', badge: 'Premium Tier', badgeColor: 'text-amber-400 bg-amber-400/10' },
                       ].map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
                           {/* Pure White Background Container for Product Image */}
@@ -290,9 +293,9 @@ export function Navbar() {
       <AnimatePresence>
         {isMobileOpen && (
           <>
-            {/* Dark glass backdrop to focus attention, clickable to close */}
+            {/* Theme-aware glass backdrop, clickable to close */}
             <motion.div
-              className="fixed inset-0 z-[105] bg-black/40 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-[105] bg-white/45 backdrop-blur-sm dark:bg-black/40 lg:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -301,11 +304,7 @@ export function Navbar() {
 
             {/* Premium Floating Drawer (takes about 75-80% width, beautifully carded) */}
             <motion.div
-              className="fixed top-[76px] right-4 bottom-4 w-[calc(100vw-32px)] max-w-[340px] z-[110] flex flex-col rounded-3xl border border-white/[0.08] dark:border-white/[0.05] shadow-[0_25px_60px_rgba(0,0,0,0.85)] overflow-hidden lg:hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(13,13,13,0.96) 0%, rgba(5,5,5,0.98) 100%)',
-                backdropFilter: 'blur(30px)',
-              }}
+              className="fixed top-[76px] right-4 bottom-4 w-[calc(100vw-32px)] max-w-[340px] z-[110] flex flex-col overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--bg-surface)] text-[var(--text)] shadow-[0_25px_60px_rgba(0,0,0,0.18)] backdrop-blur-[30px] dark:shadow-[0_25px_60px_rgba(0,0,0,0.85)] lg:hidden"
               initial={{ x: '110%', opacity: 0, scale: 0.95 }}
               animate={{ x: 0, opacity: 1, scale: 1 }}
               exit={{ x: '110%', opacity: 0, scale: 0.95 }}
@@ -313,7 +312,14 @@ export function Navbar() {
             >
               {/* Premium texture & glows inside drawer */}
               <div
-                className="pointer-events-none absolute inset-0 z-0 opacity-[0.03]"
+                className="pointer-events-none absolute inset-0 z-0 opacity-[0.025] dark:hidden"
+                style={{
+                  backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.7) 2px, rgba(0,0,0,0.7) 3px)',
+                  backgroundSize: '100% 4px',
+                }}
+              />
+              <div
+                className="pointer-events-none absolute inset-0 z-0 hidden opacity-[0.03] dark:block"
                 style={{
                   backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.8) 2px, rgba(255,255,255,0.8) 3px)',
                   backgroundSize: '100% 4px',
@@ -324,11 +330,11 @@ export function Navbar() {
               />
 
               {/* Title Section inside drawer */}
-              <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-4 border-b border-white/[0.06]">
+              <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-4 border-b border-[var(--border)]">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[9px] font-bold text-gold uppercase tracking-[0.25em]">WCC Fashions</span>
+                  <span className="font-mono text-[9px] font-bold text-gold uppercase tracking-[0.25em]">{displayFullName}</span>
                 </div>
-                <div className="flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-wider text-white/30">
+                <div className="flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-wider text-[var(--text-muted)]">
                   <Globe className="h-3 w-3 text-gold" />
                   <span>HQ Dubai</span>
                 </div>
@@ -336,7 +342,7 @@ export function Navbar() {
 
               {/* Staggered Navigation Items */}
               <div className="relative z-10 flex-1 overflow-y-auto px-6 py-6 scrollbar-hide">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/20 mb-6">Directory</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--text-muted)] mb-6">Directory</p>
 
                 <div className="space-y-1">
                   {NAV_LINKS.map((link, i) => (
@@ -352,53 +358,53 @@ export function Navbar() {
                         className="group relative flex items-center justify-between py-3.5"
                       >
                         <div className="flex items-baseline gap-3">
-                          <span className="font-mono text-[10px] font-bold text-white/20 group-hover:text-gold transition-colors">
+                          <span className="font-mono text-[10px] font-bold text-[var(--text-muted)] opacity-60 transition-colors group-hover:text-gold group-hover:opacity-100">
                             {String(i + 1).padStart(2, '0')}
                           </span>
                           <span
                             className={`font-display text-xl font-bold tracking-tight transition-all duration-300 group-hover:text-gold ${
-                              pathname === link.href ? 'text-gold' : 'text-white'
+                              pathname === link.href ? 'text-gold' : 'text-[var(--text)]'
                             }`}
                           >
                             {link.name}
                           </span>
                         </div>
-                        <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-gold transition-all duration-300 group-hover:rotate-12" />
+                        <ArrowUpRight className="h-4 w-4 text-[var(--text-muted)] opacity-45 transition-all duration-300 group-hover:rotate-12 group-hover:text-gold group-hover:opacity-100" />
                       </Link>
-                      <div className="h-[1px] bg-white/[0.04]" />
+                      <div className="h-[1px] bg-[var(--border)]" />
                     </motion.div>
                   ))}
                 </div>
               </div>
 
               {/* Bottom Quick Contact Panel */}
-              <div className="relative z-10 p-5 bg-black/40 border-t border-white/[0.06] rounded-b-3xl">
+              <div className="relative z-10 p-5 bg-black/[0.03] border-t border-[var(--border)] rounded-b-3xl dark:bg-black/40">
                 <div className="grid grid-cols-2 gap-2.5">
                   <a
                     href={`mailto:${config.email}`}
-                    className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 transition-all duration-300 hover:border-gold/40 hover:bg-gold/5"
+                    className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-2.5 transition-all duration-300 hover:border-gold/40 hover:bg-gold/5"
                   >
                     <Mail className="h-3.5 w-3.5 text-gold shrink-0" />
                     <div className="min-w-0">
-                      <p className="font-mono text-[7px] uppercase tracking-wider text-white/40">Email</p>
-                      <p className="font-mono text-[8px] font-bold text-white truncate">{config.email}</p>
+                      <p className="font-mono text-[7px] uppercase tracking-wider text-[var(--text-muted)]">Email</p>
+                      <p className="font-mono text-[8px] font-bold text-[var(--text)] truncate">{config.email}</p>
                     </div>
                   </a>
                   <a
                     href={`https://wa.me/${config.whatsapp.replace(/[^0-9]/g, '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 transition-all duration-300 hover:border-emerald-400/40 hover:bg-emerald-400/5"
+                    className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-2.5 transition-all duration-300 hover:border-emerald-400/40 hover:bg-emerald-400/5"
                   >
                     <MessageCircle className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                     <div>
-                      <p className="font-mono text-[7px] uppercase tracking-wider text-white/40">WhatsApp</p>
-                      <p className="font-mono text-[8px] font-bold text-white">Direct Line</p>
+                      <p className="font-mono text-[7px] uppercase tracking-wider text-[var(--text-muted)]">WhatsApp</p>
+                      <p className="font-mono text-[8px] font-bold text-[var(--text)]">Direct Line</p>
                     </div>
                   </a>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between text-[8px] font-mono text-white/20 uppercase tracking-widest">
+                <div className="mt-4 flex items-center justify-between text-[8px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                   <span>© 2026 {config.fullName}</span>
                   <ThemeToggle />
                 </div>

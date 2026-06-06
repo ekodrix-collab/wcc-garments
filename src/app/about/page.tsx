@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { RevealText } from '@/components/ui/RevealText'
 import { CounterStat } from '@/components/ui/CounterStat'
 import { GlobalPresence } from '@/components/home/GlobalPresence'
-import { MapPin, Target, Lightbulb, Users, ShieldCheck, Factory, Globe2 } from 'lucide-react'
+import { MapPin, Target, Lightbulb, Users, ShieldCheck, Factory, Globe2, Layers } from 'lucide-react'
 
 const TIMELINE = [
   { year: '2001', event: 'WCC Fashions founded in Bangalore, India.' },
@@ -33,41 +33,69 @@ const VALUES = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
+    <div className="min-h-screen bg-[var(--bg)] mt-16">
       {/* Hero */}
-      <div className="border-b border-[var(--border)] pt-32 pb-16">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-              <span className="font-display text-sm font-semibold tracking-widest text-gold uppercase mb-6 block">
-                Since 2001
-              </span>
-              <h1 className="font-display text-display-md font-semibold text-[var(--text)]">
-                25+ Years of <span className="font-light italic text-gold">Manufacturing Excellence</span>
-              </h1>
-              <div className="mt-8 space-y-4 text-sm leading-relaxed text-[var(--text-muted)] max-w-lg">
-                <p>
-                  Established in 2001 in Bangalore, India, WCC Fashions (WCC Fashions LLC) has evolved into a premier multi-division industrial textile manufacturing group. With our global headquarters strategically located in Dubai, UAE, we have spent over a quarter-century perfecting the art of bulk textile production for B2B clients worldwide.
-                </p>
-                <p>
-                  We are not just a supplier; we are your manufacturing partner. Operating 7 international production facilities across 3 countries, we deliver export-grade garments, professional uniforms, luxury hospitality linens, home furnishings, and specialized fragrances.
-                </p>
-              </div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-surface)] rounded-none border border-[var(--border)] shadow-2xl group cursor-pointer">
-              <Image src="/images/aboutpage-image.png" alt="WCC Fashions Manufacturing Facility" fill className="object-cover scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out rounded-none" priority sizes="(max-width: 1024px) 100vw, 50vw" />
-            </motion.div>
-          </div>
+      <div className="relative min-h-[500px] md:min-h-[600px] lg:min-h-[70vh] w-full flex items-center overflow-hidden">
+        <Image src="/images/about-hero.jpg" alt="WCC Fashions Manufacturing Facility" fill className="object-cover object-center" priority sizes="100vw" />
+
+        {/* Subtle Dark Gradient Overlay behind text only */}
+        <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-black/95 via-black/80 to-transparent w-full md:w-[60%] lg:w-[45%] z-10" />
+
+        <div className="relative z-20 w-full mx-auto max-w-[1440px] px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="w-full md:w-[50%] lg:w-[35%]"
+          >
+            <span className="font-display text-sm font-semibold tracking-widest text-gold uppercase mb-6 block">
+              Since 2001
+            </span>
+            <h1 className="font-display text-5xl lg:textxl leading-[1.1] font-bold text-white mb-6">
+              25+ Years of <br />
+              <span className="font-bold text-gold">Manufacturing Excellence</span>
+            </h1>
+            <p className="text-sm leading-relaxed text-neutral-300 mb-10">
+              Founded in Bangalore in 2001, WCC Fashions has grown into a global textile manufacturing partner with headquarters in Dubai. We operate 7 production facilities across 3 countries, delivering export-quality garments, uniforms, hospitality linens, home furnishings, and fragrances for B2B clients worldwide.
+            </p>
+
+          </motion.div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="bg-[var(--bg-surface)] py-16 border-b border-[var(--border)]">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 lg:grid-cols-4">
-          <CounterStat end={25} suffix="+" label="Years Experience" />
-          <CounterStat end={7} label="Production Centers" />
-          <CounterStat end={6} label="Specialized Divisions" />
-          <CounterStat end={50} suffix="+" label="Countries Served" />
+      {/* Hero Stats Bar */}
+      <div className="bg-black py-10 border-b border-[var(--border)]">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Globe2 className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">50+</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Countries</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Factory className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">7</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Production<br className="hidden lg:block" />Facilities</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Layers className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">6</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Specialized<br className="hidden lg:block" />Divisions</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-left lg:justify-center">
+              <Users className="w-10 h-10 text-gold stroke-[1.5] shrink-0" />
+              <div>
+                <p className="text-3xl font-bold text-white mb-1">25+</p>
+                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">Years<br className="hidden lg:block" />Experience</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -103,7 +131,7 @@ export default function AboutPage() {
             <RevealText><h2 className="font-display text-display-sm font-semibold text-[var(--text)]">Global <span className="font-light italic text-gold">Footprint</span></h2></RevealText>
             <p className="mt-4 text-[var(--text-muted)]">7 international production and sourcing locations across 3 countries, strategically headquartered in Dubai.</p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {LOCATIONS.map((loc, i) => (
               <motion.div key={loc.country} className="border border-[var(--border)] bg-[var(--bg)] p-6" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
@@ -123,44 +151,91 @@ export default function AboutPage() {
       <GlobalPresence />
 
       {/* Timeline */}
-      <div className="py-section bg-[var(--bg)] border-t border-[var(--border)]">
+      <div className="py-section bg-[var(--bg)] border-t border-[var(--border)] overflow-hidden">
         <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="grid lg:grid-cols-3 gap-16">
-            <div className="lg:col-span-1">
-              <RevealText><h2 className="font-display text-display-sm font-semibold text-[var(--text)]">Our Journey</h2></RevealText>
-              <p className="mt-6 text-[var(--text-muted)] leading-relaxed">
-                From our origins in Bangalore in 2001 to our current status as a Dubai-headquartered global manufacturing group, our 25-year journey has been defined by continuous expansion, uncompromised quality, and strong B2B partnerships.
-              </p>
-            </div>
-            <div className="lg:col-span-2">
-              <div className="max-w-2xl">
-                {TIMELINE.map((item, i) => (
+          <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
+            <RevealText><h2 className="font-display text-display-sm font-semibold text-[var(--text)]">Our <span className='text-gold'>Journey</span></h2></RevealText>
+            <p className="mt-6 text-sm text-[var(--text-muted)] leading-relaxed">
+              From our origins in Bangalore in 2001 to our current status as a Dubai-headquartered global manufacturing group, our 25-year journey has been defined by continuous expansion, uncompromised quality, and strong B2B partnerships.
+            </p>
+          </div>
+
+          {/* Desktop/Tablet Horizontal Timeline */}
+          <div className="hidden lg:block relative w-full pb-10">
+            <div className="relative flex justify-between items-center w-full min-h-[350px]">
+              {/* Actual line that we'll draw through the middle */}
+              <div className="absolute left-0 right-0 top-1/2 h-[3px] bg-[var(--border)] -translate-y-1/2 rounded-full" />
+
+              {/* Arrow head at the end of the line */}
+              <div className="absolute right-0 top-1/2 w-4 h-4 border-t-[3px] border-r-[3px] border-[var(--border)] transform rotate-45 -translate-y-1/2 translate-x-[2px]" />
+
+              {TIMELINE.map((item, i) => {
+                const isEven = i % 2 === 0;
+                return (
                   <motion.div
                     key={item.year}
-                    className="flex gap-8 border-l-2 border-[var(--border)] py-6 pl-8 relative"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    className="relative flex flex-col items-center flex-1 group"
+                    initial={{ opacity: 0, y: isEven ? -20 : 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.05 }}
+                    transition={{ delay: i * 0.1 }}
                   >
-                    <span className="absolute -left-[5px] top-[30px] h-2 w-2 rounded-full bg-gold" />
-                    <span className="flex-shrink-0 font-display text-2xl font-bold text-gold w-20">
-                      {item.year}
-                    </span>
-                    <p className="text-sm text-[var(--text-muted)] pt-1">{item.event}</p>
+                    {isEven ? (
+                      <div className="absolute bottom-1/2 mb-3 flex flex-col items-center w-full px-2">
+                        <div className="bg-[var(--bg-surface)] border border-[var(--border)] p-4 xl:p-5 rounded-xl text-center shadow-lg group-hover:border-gold/50 transition-colors duration-300 relative w-full max-w-[190px]">
+                          <span className="font-display text-2xl xl:text-3xl font-bold text-gold block mb-2 xl:mb-3">{item.year}</span>
+                          <p className="text-[11px] xl:text-xs text-[var(--text-muted)] group-hover:text-neutral-300 transition-colors leading-relaxed">{item.event}</p>
+                        </div>
+                        <div className="h-6 xl:h-8 w-[2px] border-l-2 border-dashed border-[var(--border)] group-hover:border-gold/50 transition-colors duration-300 mt-3" />
+                      </div>
+                    ) : (
+                      <div className="absolute top-1/2 mt-3 flex flex-col items-center w-full px-2">
+                        <div className="h-6 xl:h-8 w-[2px] border-l-2 border-dashed border-[var(--border)] group-hover:border-gold/50 transition-colors duration-300 mb-3" />
+                        <div className="bg-[var(--bg-surface)] border border-[var(--border)] p-4 xl:p-5 rounded-xl text-center shadow-lg group-hover:border-gold/50 transition-colors duration-300 relative w-full max-w-[190px]">
+                          <span className="font-display text-2xl xl:text-3xl font-bold text-gold block mb-2 xl:mb-3">{item.year}</span>
+                          <p className="text-[11px] xl:text-xs text-[var(--text-muted)] group-hover:text-neutral-300 transition-colors leading-relaxed">{item.event}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* The Node on the line */}
+                    <div className="w-4 h-4 xl:w-5 xl:h-5 rounded-full bg-[var(--bg)] border-[3px] border-gold z-10 group-hover:scale-125 group-hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] group-hover:bg-gold transition-all duration-300" />
                   </motion.div>
-                ))}
-              </div>
+                )
+              })}
             </div>
           </div>
+
+          {/* Mobil Timeline */}
+          <div className="lg:hidden max-w-lg mx-auto">
+            {TIMELINE.map((item, i) => (
+              <motion.div
+                key={item.year}
+                className="flex gap-5 border-l-[3px] border-[var(--border)] pb-8 pl-6 relative last:pb-0 last:border-transparent"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <span className="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-[var(--bg)] border-[3px] border-gold" />
+                <div className="-mt-2 bg-[var(--bg-surface)] border border-[var(--border)] p-5 rounded-xl w-full hover:border-gold/50 transition-colors">
+                  <span className="font-display text-2xl font-bold text-gold block mb-2">
+                    {item.year}
+                  </span>
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">{item.event}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
         </div>
       </div>
 
       {/* Values */}
-      <div className="bg-[var(--bg-surface)] py-section border-t border-[var(--border)]">
+      <div className="bg-[var(--bg-surface)] pt-16 lg:pt-20 pb-16 lg:pb-24 border-t border-[var(--border)]">
         <div className="mx-auto max-w-[1440px] px-6 lg:px-12 text-center">
           <RevealText><h2 className="font-display text-display-sm font-semibold text-[var(--text)]">Our Core Values</h2></RevealText>
-          <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {VALUES.map((val, i) => {
               const Icon = val.icon;
               return (
@@ -171,6 +246,103 @@ export default function AboutPage() {
                 </motion.div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+
+      <div className="text-center mb-10  pt-10">
+        <span className="font-mono text-[9px] font-bold pb-5 uppercase tracking-[0.3em] text-[var(--gold)]">
+          GALLERY
+        </span>
+
+        <h2 className="font-display text-3xl md:text-4xl font-bold text-[var(--text)] mb-3">
+          Warehouse & Production <span className="text-gold">Gallery</span>
+        </h2>
+
+        <p className="text-sm text-[var(--text-muted)] max-w-2xl mx-auto">
+          A glimpse into our manufacturing excellence, warehouse operations,
+          and global production capabilities.
+        </p>
+      </div>
+
+      {/* Our Process Gallery Section */}
+      <div className=" pt-16 lg:pt-24 pb-16 lg:pb-20  overflow-hidden">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 auto-rows-[300px] md:auto-rows-[350px]">
+            <div className="col-span-1 md:col-span-2 lg:col-span-1 relative rounded-xl overflow-hidden">
+              <Image
+                src="/images/gallery/ourgalleryimage5.png"
+                alt="Premium Materials"
+                fill
+                className="object-cover"
+              />
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
+
+              <div className="absolute top-8 left-8 right-8 z-10">
+                <span className="font-display text-[11px] font-bold tracking-[0.2em] text-neutral-300 uppercase mb-4 block">
+                  OUR PROCESS
+                </span>
+
+                <h2 className="font-display text-4xl lg:text-5xl font-bold text-white leading-[1.1]">
+                  Premium
+                  <br />
+                  Materials
+                </h2>
+              </div>
+
+              <div className="absolute bottom-8 left-8 right-8 z-10">
+                <p className="text-sm text-neutral-300 leading-relaxed max-w-sm">
+                  Every piece we create follows a journey of precision, care, and purpose.
+                </p>
+              </div>
+            </div>
+
+            {/* Image 01 - Row 1, Col 2 & 3 */}
+            <motion.div
+              className="col-span-1 md:col-span-2 lg:col-span-2 relative rounded-xl overflow-hidden group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Image src="/images/gallery/ourgalleryimage.png" alt="Premium Materials" fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 p-8 w-full z-10">
+                <span className="text-neutral-300 text-xs font-semibold tracking-widest uppercase">PREMIUM MATERIALS</span>
+              </div>
+            </motion.div>
+
+            {/* Image 02 - Row 2, Col 1 & 2 */}
+            <motion.div
+              className="col-span-1 md:col-span-2 lg:col-span-2 relative rounded-xl overflow-hidden group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <Image src="/images/gallery/ourgalleryimage4.png" alt="Precise Production" fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 p-8 w-full z-10">
+                <span className="text-neutral-300 text-xs font-semibold tracking-widest uppercase">PRECISE PRODUCTION</span>
+              </div>
+            </motion.div>
+
+            {/* Image 03 - Row 2, Col 3 */}
+            <motion.div
+              className="col-span-1 relative rounded-xl overflow-hidden group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <Image src="/images/gallery/ourgalleryimage3.png" alt="Quality Assured" fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 p-8 w-full z-10">
+
+                <span className="text-neutral-300 text-xs font-semibold tracking-widest uppercase">QUALITY ASSURED</span>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>

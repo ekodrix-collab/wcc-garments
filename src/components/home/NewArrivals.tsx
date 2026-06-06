@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, MessageCircle } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, MessageCircle } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/constants'
 import { ProductCard } from '@/components/products/ProductCard'
 import { brandStore } from '@/lib/brand-store'
@@ -60,12 +60,16 @@ export function NewArrivals() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-5">
+          <div className="hidden sm:flex flex-wrap items-center justify-center lg:justify-end gap-5">
             <Link
               href="/contact?source=new-arrivals&intent=request-quote&businessType=Wholesale%20Distributor"
-              className="inline-flex items-center gap-2 border border-gold  px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold hover:text-gold whitespace-nowrap hover:text-white "
+              className="group inline-flex items-center gap-2 border border-gold  px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold hover:text-gold whitespace-nowrap hover:text-white"
             >
-              Request Bulk Quote <ArrowUpRight className="h-4 w-4" />
+              Request Bulk Quote
+              <span className="relative flex h-4 w-4 items-center justify-center">
+                <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+              </span>
             </Link>
             <a
               href={`https://wa.me/${whatsappBase}?text=${encodeURIComponent('Hi WCC Garments, I need a quote for your new arrivals. Please share MOQ, lead times, and available customization options.')}`}
@@ -82,7 +86,7 @@ export function NewArrivals() {
         </div>
 
         {/* Filter Tabs - Swipable on mobile, centered on desktop */}
-        <div className="mt-16 w-full">
+        <div className="hidden sm:block mt-16 w-full">
           <div className="flex w-full overflow-x-auto pb-4 lg:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="inline-flex min-w-max items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-surface)] p-2">
               {CATEGORIES.map((cat) => (
@@ -131,6 +135,31 @@ export function NewArrivals() {
               })}
             </AnimatePresence>
           </div>
+
+          {/* View All text link */}
+          {products.length > 0 && (
+            <div className="mt-10 flex justify-center">
+              <Link
+                href={
+                  activeTab === 'All'          ? '/products' :
+                  activeTab === 'Garments'     ? '/products/garments' :
+                  activeTab === 'Uniforms'     ? '/products/uniforms' :
+                  activeTab === 'Hospitality'  ? '/products/hospitality' :
+                  activeTab === 'Home'         ? '/products/home' :
+                  activeTab === 'Fragrance'    ? '/products/fragrance' :
+                  activeTab === 'Households'   ? '/products/households' :
+                  '/products'
+                }
+                className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-muted)] transition-colors duration-200 hover:text-gold"
+              >
+                View All {activeTab === 'All' ? 'Products' : activeTab}
+                <span className="relative flex h-4 w-4 items-center justify-center">
+                  <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                  <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                </span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </section>

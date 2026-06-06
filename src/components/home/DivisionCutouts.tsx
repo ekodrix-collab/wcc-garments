@@ -1,52 +1,98 @@
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion, useInView } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
+import { useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, useInView } from "framer-motion";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { useState, useEffect } from 'react'
-import { contentStore } from '@/lib/content-store'
+import { useState, useEffect } from "react";
+import { contentStore } from "@/lib/content-store";
 
 const DEFAULT_GARMENTS = {
   indicator: "OUR MANUFACTURING DIVISIONS",
   headingStart: "Garments we ",
   headingHighlight: "manufacture",
-  description: "High-quality garments, linens, and B2B supplies crafted with precision. While garments remain our absolute core business, we have successfully expanded our industrial capacities to serve major developments in hospitality, home decor, fragrance, and household supply.",
+  description:
+    "High-quality garments, linens, and B2B supplies crafted with precision. While garments remain our absolute core business, we have successfully expanded our industrial capacities to serve major developments in hospitality, home decor, fragrance, and household supply.",
   categories: [
-    { name: 'Formal Shirts', slug: 'formal-shirts', tagline: 'Crisp, premium tailored fits', count: '140+ Styles', image: '/images/formal-shirts.png' },
-    { name: 'Blazers & Suits', slug: 'blazers-suits', tagline: 'Executive bespoke tailoring', count: '80+ Styles', image: '/images/Blazers and suits.png' },
-    { name: 'Jeans & Denims', slug: 'jeans-denims', tagline: 'Durable premium industrial denim', count: '210+ Styles', image: '/images/jeans-denims.png' },
-    { name: 'Polo & T-Shirts', slug: 'polo-tshirts', tagline: 'High-comfort mercerized cotton', count: '320+ Styles', image: '/images/polo tshirts.png' },
-    { name: 'Trousers & Chinos', slug: 'trousers', tagline: 'Perfect fit corporate trousers', count: '110+ Styles', image: '/images/trousers.png' },
-    { name: 'Outerwear & Jackets', slug: 'jackets', tagline: 'All-weather luxury protective outerwear', count: '95+ Styles', image: '/images/jackets.png' },
-  ]
-}
+    {
+      name: "Formal Shirts",
+      slug: "formal-shirts",
+      tagline: "Crisp, premium tailored fits",
+      count: "140+ Styles",
+      image: "/images/formal-shirts.png",
+    },
+    {
+      name: "Blazers & Suits",
+      slug: "blazers-suits",
+      tagline: "Executive bespoke tailoring",
+      count: "80+ Styles",
+      image: "/images/Blazers and suits.png",
+    },
+    {
+      name: "Jeans & Denims",
+      slug: "jeans-denims",
+      tagline: "Durable premium industrial denim",
+      count: "210+ Styles",
+      image: "/images/jeans-denims.png",
+    },
+    {
+      name: "Polo & T-Shirts",
+      slug: "polo-tshirts",
+      tagline: "High-comfort mercerized cotton",
+      count: "320+ Styles",
+      image: "/images/polo tshirts.png",
+    },
+    {
+      name: "Trousers & Chinos",
+      slug: "trousers",
+      tagline: "Perfect fit corporate trousers",
+      count: "110+ Styles",
+      image: "/images/trousers.png",
+    },
+    {
+      name: "Outerwear & Jackets",
+      slug: "jackets",
+      tagline: "All-weather luxury protective outerwear",
+      count: "95+ Styles",
+      image: "/images/jackets.png",
+    },
+  ],
+};
 
 export function DivisionCutouts() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [data, setData] = useState(DEFAULT_GARMENTS)
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [data, setData] = useState(DEFAULT_GARMENTS);
 
   useEffect(() => {
-    setData(contentStore.getSectionData('garments-showcase', DEFAULT_GARMENTS))
-    
-    // Connect with backend images
+    setData(contentStore.getSectionData("garments-showcase", DEFAULT_GARMENTS));
+
+    // Connect with backend data and images
     import('@/lib/api').then(({ api }) => {
       api.getCategories('garments').then((res) => {
         if (res.success && res.data) {
           setData(prev => {
             const updatedCategories = prev.categories.map((c: any) => {
               const backendCat = res.data.find((b: any) => b.slug === c.slug)
-              return { ...c, image: backendCat?.image || c.image }
+              if (backendCat) {
+                return {
+                  ...c,
+                  name: backendCat.name || c.name,
+                  tagline: backendCat.tagline || c.tagline,
+                  count: backendCat.count || c.count,
+                  image: backendCat.image || c.image
+                }
+              }
+              return c
             })
             return { ...prev, categories: updatedCategories }
           })
         }
       }).catch(console.error)
     })
-  }, [])
+  }, []);
 
   return (
     <section className="bg-[var(--bg)] py-16 md:py-24" ref={ref}>
@@ -70,7 +116,8 @@ export function DivisionCutouts() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
           >
-            {data.headingStart}<span className='text-gold'>{data.headingHighlight}</span>
+            {data.headingStart}
+            <span className="text-gold">{data.headingHighlight}</span>
           </motion.h2>
           <motion.p
             className="mt-4 text-sm sm:text-base leading-relaxed text-gray-500 max-w-3xl"
@@ -128,7 +175,10 @@ export function DivisionCutouts() {
                       </span>
                     </div>
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
-                      <ArrowUpRight className="h-4 w-4 text-[var(--text-muted)] transition-colors group-hover:text-white" />
+                      <span className="relative flex h-4 w-4 items-center justify-center">
+                        <ArrowUpRight className="absolute h-4 w-4 text-[var(--text-muted)] transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                        <ArrowRight className="absolute h-4 w-4 text-white opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                      </span>
                     </div>
                   </div>
                   {/* Gold accent line */}
@@ -140,5 +190,5 @@ export function DivisionCutouts() {
         </div>
       </div>
     </section>
-  )
+  );
 }

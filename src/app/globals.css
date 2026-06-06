@@ -17,7 +17,7 @@
   --bg: #ffffff;
   --bg-surface: #FCFAF6;
   --bg-subtle: #EFECE6;
-  --text: #0A0A0A;
+  --text: #000000;
   --text-muted: rgba(10, 10, 10, 0.55);
   --border: rgba(10, 10, 10, 0.12);
   --gold: #3B82F6;
@@ -206,7 +206,7 @@ body {
   gap: 0.5rem;
   padding: 0.875rem 2rem;
   border: 1px solid var(--gold);
-  color: var(--gold);
+  color: var(--text);
   font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 600;

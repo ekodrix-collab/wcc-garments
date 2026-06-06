@@ -4,21 +4,22 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, ArrowRight } from 'lucide-react'
 
 import { useState, useEffect } from 'react'
 import { contentStore } from '@/lib/content-store'
+import { getDivisionCategoryHref } from '@/lib/category-routing'
 
 const DEFAULT_HOUSEHOLDS = {
-  indicator: "HIGH-DEMAND HOUSEHOLD MANUFACTURING",
-  headingStart: "Household items we ",
-  headingHighlight: "manufacture",
-  description: "Professional bulk household supplies, commercial microfibers, and custom OEM institutional items. Engineered to meet strict industrial sanitization and commercial durability standards for global export.",
+  indicator: "OUR HOUSEHOLD DIVISION",
+  headingStart: "Household & ",
+  headingHighlight: "Kitchenware",
+  description: "Explore our premium kitchenware, culinary tools, and home essentials. In collaboration with Aanya Homecraft, we offer tri-ply cookware, artisan table serveware, and smart organization solutions for modern home and commercial kitchens.",
   categories: [
-    { name: 'Industrial Microfiber', slug: 'microfiber', tagline: 'High-density commercial cleaning wipes', count: '1,000+ MOQ', image: '/images/hh-1.png' },
-    { name: 'Bulk Liquids & Sanitizers', slug: 'liquids', tagline: 'Premium wholesale chemical formulations', count: '500L+ MOQ', image: '/images/hh-2.png' },
-    { name: 'Institutional Linens', slug: 'kitchen-linens', tagline: 'Heavy-duty commercial sheets & napery', count: '250+ MOQ', image: '/images/hh-3.png' },
-    { name: 'OEM Custom Essentials', slug: 'oem-essentials', tagline: 'Bespoke household product branding options', count: '10k+ MOQ', image: '/images/hh-4.png' }
+    { name: 'Triply Cookware', slug: 'cookware', tagline: 'Professional triply cookware for healthier, faster and even cooking', count: '100+ MOQ', image: '/images/hh-1.png' },
+    { name: 'Premium Cutlery', slug: 'cutlery', tagline: 'Elegant stainless steel cutlery for refined everyday dining', count: '250+ MOQ', image: '/images/hh-2.png' },
+    { name: 'Table & Serveware', slug: 'table-top', tagline: 'Stylish serveware to elevate presentation for every meal', count: '100+ MOQ', image: '/images/hh-3.png' },
+    { name: 'Storage & Organizer', slug: 'utility', tagline: 'Smart storage and organizers to keep your kitchen clutter-free', count: '200+ MOQ', image: '/images/hh-4.png' }
   ]
 }
 
@@ -28,16 +29,25 @@ export function HouseholdShowcase() {
   const [data, setData] = useState(DEFAULT_HOUSEHOLDS)
 
   useEffect(() => {
-    setData(contentStore.getSectionData('households-showcase', DEFAULT_HOUSEHOLDS))
+    setData(contentStore.getSectionData('households-showcase-v2', DEFAULT_HOUSEHOLDS))
     
-    // Connect with backend images
+    // Connect with backend data and images
     import('@/lib/api').then(({ api }) => {
       api.getCategories('households').then((res) => {
         if (res.success && res.data) {
           setData(prev => {
             const updatedCategories = prev.categories.map((c: any) => {
               const backendCat = res.data.find((b: any) => b.slug === c.slug)
-              return { ...c, image: backendCat?.image || c.image }
+              if (backendCat) {
+                return {
+                  ...c,
+                  name: backendCat.name || c.name,
+                  tagline: backendCat.tagline || c.tagline,
+                  count: backendCat.count || c.count,
+                  image: backendCat.image || c.image
+                }
+              }
+              return c
             })
             return { ...prev, categories: updatedCategories }
           })
@@ -95,7 +105,7 @@ export function HouseholdShowcase() {
               }}
             >
               <Link
-                href={`/products?category=${category.slug}`}
+                href={getDivisionCategoryHref('households', category.slug || category.name)}
                 className="group relative block overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-none transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
                 data-cursor="view"
               >
@@ -126,7 +136,10 @@ export function HouseholdShowcase() {
                       </span>
                     </div>
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
-                      <ArrowUpRight className="h-4 w-4 text-[var(--text-muted)] transition-colors group-hover:text-white" />
+                      <span className="relative flex h-4 w-4 items-center justify-center">
+                        <ArrowUpRight className="absolute h-4 w-4 text-[var(--text-muted)] transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                        <ArrowRight className="absolute h-4 w-4 text-white opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                      </span>
                     </div>
                   </div>
                   {/* Gold hover sweep line */}

@@ -42,10 +42,10 @@ export const contentStore = {
 
   // ── DIVISIONS ───────────────────────────────────────────────────────────────
   getDivisions() {
-    return this.getSectionData('divisions', DIVISIONS)
+    return this.getSectionData('divisions-v3', DIVISIONS)
   },
 
   saveDivisions(data: typeof DIVISIONS) {
-    this.saveSectionData('divisions', data)
+    this.saveSectionData('divisions-v3', data)
   }
 }
