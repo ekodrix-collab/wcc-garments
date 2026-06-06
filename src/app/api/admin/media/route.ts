@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getSupabaseServerClient } from '@/lib/supabase'
+import { getSupabaseServerClient, proxyImageUrl } from '@/lib/supabase'
 import { fetchWithFallback } from '@/lib/db-service'
 
 export async function GET() {
@@ -13,7 +13,10 @@ export async function GET() {
           .order('created_at', { ascending: false })
         
         if (error) throw error
-        return data || []
+        return (data || []).map((m: any) => ({
+          ...m,
+          url: proxyImageUrl(m.url),
+        }))
       },
       [],
       'Get Media'

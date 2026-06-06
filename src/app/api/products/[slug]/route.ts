@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { MOCK_PRODUCTS } from '@/lib/constants'
-import { getSupabaseServerClient } from '@/lib/supabase'
+import { getSupabaseServerClient, proxyImageUrl } from '@/lib/supabase'
 import { fetchWithFallback } from '@/lib/db-service'
 
 export async function GET(
@@ -24,15 +24,26 @@ export async function GET(
         }
 
         const product = data
+        
+        // Asynchronously trigger view count increment
+        (async () => {
+          try {
+            await supabase.rpc('increment_product_views', { product_slug: slug })
+          } catch (err) {
+            console.error('Failed to increment views via RPC:', err)
+          }
+        })()
+
         return {
           ...product,
+          images: Array.isArray(product.images) ? product.images.map(proxyImageUrl) : [],
           division_id: product.id,
           category_id: null,
           description: product.short_description,
           video_url: null,
           published: true,
-          view_count: Math.floor(Math.random() * 500),
-          enquiry_count: Math.floor(Math.random() * 50),
+          view_count: product.view_count || 0,
+          enquiry_count: product.enquiry_count || 0,
           division: {
             id: product.id,
             name: product.division,

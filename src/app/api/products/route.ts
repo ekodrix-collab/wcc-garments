@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { MOCK_PRODUCTS } from '@/lib/constants'
-import { getSupabaseServerClient } from '@/lib/supabase'
+import { getSupabaseServerClient, proxyImageUrl } from '@/lib/supabase'
 import { fetchWithFallback } from '@/lib/db-service'
 
 export async function GET(request: NextRequest) {
@@ -40,13 +40,14 @@ export async function GET(request: NextRequest) {
 
         const formattedData = data.map((p) => ({
           ...p,
+          images: Array.isArray(p.images) ? p.images.map(proxyImageUrl) : [],
           division_id: p.id,
           category_id: null,
           description: p.short_description,
           video_url: null,
           published: true,
-          view_count: Math.floor(Math.random() * 500),
-          enquiry_count: Math.floor(Math.random() * 50),
+          view_count: p.view_count || 0,
+          enquiry_count: p.enquiry_count || 0,
           division: {
             id: p.id,
             name: p.division,
