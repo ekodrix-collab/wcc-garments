@@ -198,7 +198,7 @@ export default function ProductDetailPage({
                       images.length <= 5 ? 'sm:justify-center' : ''
                     }`}
                   >
-                    {images.map((img, index) => (
+                    {images.map((img: string, index: number) => (
                       <button
                         key={`${img}-${index}`}
                         onClick={() => setActiveImage(index)}
