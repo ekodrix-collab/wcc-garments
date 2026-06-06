@@ -1,13 +1,11 @@
 'use client'
 
 import { useRef } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowUpRight, ArrowRight } from 'lucide-react'
-
-import { useState, useEffect } from 'react'
-import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
+import { ResponsivePicture } from '@/components/ui/ResponsivePicture'
 import { getDivisionCategoryHref } from '@/lib/category-routing'
 
 const DEFAULT_HOSPITALITY = {
@@ -27,16 +25,12 @@ const DEFAULT_HOSPITALITY = {
 export function HospitalityShowcase() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [data, setData] = useState(DEFAULT_HOSPITALITY)
-
-  useEffect(() => {
-    setData(contentStore.getSectionData('hospitality-showcase-v2', DEFAULT_HOSPITALITY))
-  }, [])
+  const { data } = useWebsiteContent('hospitality-showcase-v2', DEFAULT_HOSPITALITY)
 
   return (
     <section className="bg-[var(--bg)] py-16 md:py-24 border-t border-[var(--border)]" ref={ref}>
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        
+
         {/* Section Header */}
         <div className="mb-16 max-w-4xl">
           <motion.div
@@ -68,7 +62,7 @@ export function HospitalityShowcase() {
           </motion.p>
         </div>
 
-        {/* 5-Column High-End Portrait Grid */}
+        {/* 5-Column Portrait Grid */}
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {data.categories.map((category: any, index: number) => (
             <motion.div
@@ -86,24 +80,20 @@ export function HospitalityShowcase() {
                 className="group relative block overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-none transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
                 data-cursor="view"
               >
-                {/* 3:4 Vertical Aspect Ratio, No border radius */}
+                {/* 3:4 portrait aspect */}
                 <div className="relative overflow-hidden aspect-[3/4] rounded-none">
-                  <Image
+                  <ResponsivePicture
                     src={category.image}
                     alt={category.name}
                     fill
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
                   />
-                  
-                  {/* Glassmorphic/Text Overlay over center-bottom of image */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  
-                  {/* Subtle white inset border inside card on hover */}
                   <div className="absolute inset-3 border border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none" />
                 </div>
 
-                {/* Card Details Bottom */}
+                {/* Card Details */}
                 <div className="p-5 bg-[var(--bg-surface)]">
                   <div className="flex flex-col justify-between h-full min-h-[96px]">
                     <div>
@@ -114,7 +104,7 @@ export function HospitalityShowcase() {
                         {category.tagline}
                       </p>
                     </div>
-                    
+
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--border)]">
                       <span className="font-mono text-[9px] font-bold text-gold uppercase tracking-wider bg-gold/5 border border-gold/10 px-2 py-0.5 rounded-full">
                         {category.count}
@@ -127,7 +117,7 @@ export function HospitalityShowcase() {
                       </div>
                     </div>
                   </div>
-                  {/* Gold hover sweep line */}
+                  {/* Gold sweep */}
                   <div className="mt-4 h-[2px] w-0 bg-gold transition-all duration-500 group-hover:w-full" />
                 </div>
               </Link>

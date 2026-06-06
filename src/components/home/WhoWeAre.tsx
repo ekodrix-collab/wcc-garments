@@ -1,14 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { CounterStat } from "@/components/ui/CounterStat";
 import { ShieldCheck, ArrowUpRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
-
 import { useState, useEffect } from "react";
-import { contentStore } from "@/lib/content-store";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
+import { ResponsivePicture } from "@/components/ui/ResponsivePicture";
 
 const DEFAULT_WHO_WE_ARE = {
   heritageLabel: "Corporate Heritage",
@@ -47,11 +46,7 @@ const DEFAULT_WHO_WE_ARE = {
 export function WhoWeAre() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [data, setData] = useState(DEFAULT_WHO_WE_ARE);
-
-  useEffect(() => {
-    setData(contentStore.getSectionData("who-we-are", DEFAULT_WHO_WE_ARE));
-  }, []);
+  const { data } = useWebsiteContent("who-we-are", DEFAULT_WHO_WE_ARE);
 
   return (
     <section
@@ -68,31 +63,20 @@ export function WhoWeAre() {
         </div>
 
         <div className="grid gap-12 lg:gap-20 lg:grid-cols-12 lg:items-start">
-          {/* Mobile heading first, desktop hidden until right side */}
+          {/* Mobile heading */}
           <div className="lg:hidden">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.8,
-                delay: 0.2,
-                ease: [0.76, 0, 0.24, 1],
-              }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
               <h2 className="font-display text-4xl sm:text-5xl font-semibold leading-tight tracking-tight text-[var(--text)] uppercase">
-                {data.heading
-                  .split(" ")
-                  .map((word: string, i: number, arr: string[]) => (
-                    <span
-                      key={i}
-                      className={
-                        i === arr.length - 1 ? "text-gold font-light" : ""
-                      }
-                    >
-                      {word}
-                      {i < arr.length - 1 ? " " : ""}
-                    </span>
-                  ))}
+                {data.heading.split(" ").map((word: string, i: number, arr: string[]) => (
+                  <span key={i} className={i === arr.length - 1 ? "text-gold font-light" : ""}>
+                    {word}
+                    {i < arr.length - 1 ? " " : ""}
+                  </span>
+                ))}
               </h2>
               <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--text-muted)] block mt-2">
                 {data.subHeading}
@@ -100,7 +84,7 @@ export function WhoWeAre() {
             </motion.div>
           </div>
 
-          {/* Left Side — Stunning High-End Editorial Image with Floating Badge (5 Cols) */}
+          {/* Left Side — Editorial Image */}
           <motion.div
             className="relative lg:col-span-5 order-1 lg:order-1"
             initial={{ opacity: 0, x: -40 }}
@@ -108,7 +92,7 @@ export function WhoWeAre() {
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
             <div className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden rounded-none border border-[var(--border)] shadow-2xl">
-              <Image
+              <ResponsivePicture
                 src={data.mainImage}
                 alt="WCC Industrial Garment Floor"
                 fill
@@ -117,18 +101,18 @@ export function WhoWeAre() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-none" />
 
-              {/* Internal Image Overlay Copy — bottom-left on mobile, top-left on desktop */}
+              {/* Overlay Copy */}
               <div className="absolute bottom-4 left-4 top-auto right-auto sm:bottom-auto sm:right-auto sm:top-4 sm:left-4 z-10 max-w-[50%] rounded-none border border-white/10 bg-black/60 px-2 pb-2 backdrop-blur-md text-white">
                 <span className="font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-gold leading-none">
                   Dubai Operations Hub
                 </span>
-                <h3 className=" font-display text-xs sm:text-sm font-semibold tracking-wide text-white uppercase leading-snug">
+                <h3 className="font-display text-xs sm:text-sm font-semibold tracking-wide text-white uppercase leading-snug">
                   Industrial Precision at Scale
                 </h3>
               </div>
             </div>
 
-            {/* Overlapping Floating Glass Badge */}
+            {/* Floating Glass Badge */}
             <motion.div
               className="absolute -bottom-6 -right-6 hidden sm:flex items-center gap-4 rounded-none border border-white/10 bg-[#0A0A0A]/95 p-6 shadow-2xl backdrop-blur-xl lg:-right-10"
               initial={{ opacity: 0, y: 30 }}
@@ -149,37 +133,25 @@ export function WhoWeAre() {
             </motion.div>
           </motion.div>
 
-          {/* Right Side — Editorial Copy & 3 Authority Stats (7 Cols) */}
+          {/* Right Side — Editorial Copy & Stats */}
           <div className="lg:col-span-7 lg:pl-8 xl:pl-16 order-2 lg:order-2">
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{
-                duration: 0.8,
-                delay: 0.2,
-                ease: [0.76, 0, 0.24, 1],
-              }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
             >
               <h2 className="hidden lg:block font-display text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-[var(--text)] uppercase">
-                {data.heading
-                  .split(" ")
-                  .map((word: string, i: number, arr: string[]) => (
-                    <span
-                      key={i}
-                      className={
-                        i === arr.length - 1 ? "text-gold font-light" : ""
-                      }
-                    >
-                      {word}
-                      {i < arr.length - 1 ? " " : ""}
-                    </span>
-                  ))}
+                {data.heading.split(" ").map((word: string, i: number, arr: string[]) => (
+                  <span key={i} className={i === arr.length - 1 ? "text-gold font-light" : ""}>
+                    {word}
+                    {i < arr.length - 1 ? " " : ""}
+                  </span>
+                ))}
               </h2>
               <span className="hidden lg:block font-mono text-[9px] uppercase tracking-[0.35em] text-[var(--text-muted)] mt-2">
                 {data.subHeading}
               </span>
 
-              {/* Enhanced Typography for Editorial Copy */}
               <div className="mt-8 space-y-6 text-[15px] font-light leading-relaxed text-neutral-600 dark:text-neutral-300 font-sans tracking-wide">
                 <p className="text-lg font-medium text-[var(--text)] leading-snug">
                   {data.paragraphs[0]}
@@ -209,16 +181,12 @@ export function WhoWeAre() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              {data.stats.map((s, idx) => (
+              {data.stats.map((s: any, idx: number) => (
                 <div
                   key={idx}
                   className="border-l-2 border-gold pl-6 transition-colors hover:border-[var(--text)]"
                 >
-                  <CounterStat
-                    end={s.value}
-                    suffix={s.suffix}
-                    label={s.label}
-                  />
+                  <CounterStat end={s.value} suffix={s.suffix} label={s.label} />
                   <p className="mt-2.5 font-sans text-xs font-light text-[var(--text-muted)] leading-relaxed tracking-wide">
                     {s.desc}
                   </p>

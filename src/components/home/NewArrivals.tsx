@@ -7,7 +7,7 @@ import { ArrowRight, ArrowUpRight, MessageCircle } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/constants'
 import { ProductCard } from '@/components/products/ProductCard'
 import { brandStore } from '@/lib/brand-store'
-import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
 
 const CATEGORIES = ['All', 'Garments', 'Uniforms', 'Hospitality', 'Home', 'Fragrance', 'Households']
 
@@ -15,11 +15,7 @@ export function NewArrivals() {
   const [activeTab, setActiveTab] = useState('All')
   const gridRef = useRef<HTMLDivElement>(null)
   const [products, setProducts] = useState<any[]>([])
-  const [config, setConfig] = useState<any>({ whatsapp: '+971 XX XXX XXXX' })
-
-  useEffect(() => {
-    setConfig(contentStore.getSiteConfig())
-  }, [])
+  const { data: config } = useWebsiteContent('site_config', { whatsapp: '+971 XX XXX XXXX' })
 
   useEffect(() => {
     const allProducts = brandStore.getProducts()

@@ -29,7 +29,7 @@ const DIVISION_IMAGES: Record<string, string> = {
 }
 
 import { useState, useEffect } from 'react'
-import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
 
 const DEFAULT_EXPANSION = {
   indicator: "OUR DIVERSIFIED FUTURE",
@@ -44,11 +44,7 @@ const EXPANSION_SLUGS = ['uniforms', 'hospitality', 'fragrance', 'households']
 export function KillingOffers() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [data, setData] = useState(DEFAULT_EXPANSION)
-
-  useEffect(() => {
-    setData(contentStore.getSectionData('strategic-expansion', DEFAULT_EXPANSION))
-  }, [])
+  const { data } = useWebsiteContent('strategic-expansion', DEFAULT_EXPANSION)
 
   const expansionDivisions = DIVISIONS.filter((d) => EXPANSION_SLUGS.includes(d.slug))
 

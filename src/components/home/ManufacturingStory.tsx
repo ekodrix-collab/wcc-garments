@@ -1,12 +1,9 @@
 'use client'
 
-import Image from 'next/image'
 import { Scissors, Layers, ShieldCheck, Truck, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRef } from 'react'
-import { motion } from 'framer-motion'
-
-import { useState, useEffect } from 'react'
-import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
+import { ResponsivePicture } from '@/components/ui/ResponsivePicture'
 
 const ICONS = [Search, Scissors, Layers, ShieldCheck, Truck]
 
@@ -26,11 +23,7 @@ const DEFAULT_DUBAI_PIPELINE = {
 
 export function ManufacturingStory() {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [data, setData] = useState(DEFAULT_DUBAI_PIPELINE)
-
-  useEffect(() => {
-    setData(contentStore.getSectionData('dubai-pipeline', DEFAULT_DUBAI_PIPELINE))
-  }, [])
+  const { data } = useWebsiteContent('dubai-pipeline', DEFAULT_DUBAI_PIPELINE)
 
   const scroll = (dir: 'prev' | 'next') => {
     if (!scrollRef.current) return
@@ -78,21 +71,21 @@ export function ManufacturingStory() {
       </div>
 
       {/* Cards Row */}
-      <div 
-        ref={scrollRef} 
+      <div
+        ref={scrollRef}
         className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {data.scenes.map((scene, idx) => {
+        {data.scenes.map((scene: any, idx: number) => {
           const Icon = ICONS[idx] || Search
           return (
             <div
               key={scene.step}
               className="group relative h-[460px] w-[calc(100vw-48px)] sm:w-[330px] flex-shrink-0 overflow-hidden border border-white/10 rounded-none bg-neutral-950 p-6 flex flex-col justify-between transition-all duration-500 hover:border-gold/40 hover:shadow-[0_20px_50px_rgba(218,165,32,0.15)] snap-start"
             >
-              {/* Card Image Background (Full Vibrant Color & Tack-Sharp Quality) */}
+              {/* Card Image Background */}
               <div className="absolute inset-0 z-0 opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1.2s] ease-out rounded-none">
-                <Image
+                <ResponsivePicture
                   src={scene.image}
                   alt={scene.title}
                   fill
@@ -101,7 +94,6 @@ export function ManufacturingStory() {
                   sizes="330px"
                   priority={idx < 3}
                 />
-                {/* Custom deep high-contrast gradient layer */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent rounded-none" />
               </div>
 
@@ -117,7 +109,7 @@ export function ManufacturingStory() {
                 </div>
               </div>
 
-              {/* Bottom Details (Always 100% readable with a premium floating backdrop) */}
+              {/* Bottom Details */}
               <div className="relative z-10 bg-black/80 backdrop-blur-xl border border-white/10 p-5 rounded-none mt-auto shadow-2xl">
                 <h3 className="font-display text-lg sm:text-xl font-bold text-white group-hover:text-gold transition-colors duration-300">
                   {scene.title}

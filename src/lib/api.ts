@@ -196,5 +196,16 @@ export const api = {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       }),
+
+    getContent: (token: string | undefined, id?: string) =>
+      fetcher(`/api/admin/content${id ? `?id=${id}` : ''}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+    updateContent: (token: string | undefined, id: string, data: Record<string, unknown>) =>
+      fetcher(`/api/admin/content?id=${id}`, {
+        method: 'PUT',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: JSON.stringify(data),
+      }),
   },
 }

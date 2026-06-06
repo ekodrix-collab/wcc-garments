@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Phone, Mail, MessageCircle, ArrowRight, Check } from 'lucide-react'
 import { EnquirySchema, type EnquiryFormData } from '@/lib/validations'
 import { BUSINESS_TYPES, PRODUCT_INTERESTS, COUNTRIES, SITE_CONFIG } from '@/lib/constants'
-import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
 import { SplitSubmitButton } from '@/components/ui/SplitSubmitButton'
 import { TypewriterEffect } from '@/components/ui/typewriter-effect'
 
@@ -41,11 +41,7 @@ export function EnquiryConsole({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
-  const [config, setConfig] = useState(SITE_CONFIG)
-
-  useEffect(() => {
-    setConfig(contentStore.getSiteConfig())
-  }, [])
+  const { data: config } = useWebsiteContent('site_config', SITE_CONFIG)
 
   const words = [
     { text: 'Secure' },
