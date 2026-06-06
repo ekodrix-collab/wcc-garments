@@ -1,20 +1,45 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Plus, Search, Edit2, Trash2, Eye, EyeOff, Filter, ArrowUpDown, Sparkles, CheckCircle2 } from 'lucide-react'
-import { MOCK_PRODUCTS, DIVISIONS } from '@/lib/constants'
+import { Plus, Search, Edit2, Trash2, Eye, EyeOff, Filter, ArrowUpDown, Sparkles, CheckCircle2, Loader2 } from 'lucide-react'
+import { DIVISIONS } from '@/lib/constants'
+import { api } from '@/lib/api'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function AdminProductsPage() {
   const [search, setSearch] = useState('')
-  const [selectedDivision, setSelectedDivision] = useState<string>('all')
-  const [productList, setProductList] = useState(MOCK_PRODUCTS)
   const [deleteModal, setDeleteModal] = useState<string | null>(null)
+  const [selectedDivision, setSelectedDivision] = useState<string>('all')
+  const [productList, setProductList] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+  
+  const fetchProducts = async () => {
+    setLoading(true)
+    try {
+      const res = await api.admin.getProducts('')
+      if (res.success && res.data) {
+        setProductList(res.data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch products:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const handleDelete = (id: string) => {
-    setProductList(prev => prev.filter(p => p.id !== id))
+  const handleDelete = async (id: string) => {
+    try {
+      await api.admin.deleteProduct('', id)
+      await fetchProducts()
+    } catch (error) {
+      console.error('Failed to delete product:', error)
+    }
     setDeleteModal(null)
   }
 
@@ -100,6 +125,9 @@ export default function AdminProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10 text-xs text-white/80">
+              {loading ? (
+                <tr><td colSpan={6} className="text-center py-10"><Loader2 className="w-6 h-6 animate-spin text-gold mx-auto" /></td></tr>
+              ) : (
               <AnimatePresence>
                 {filteredProducts.map((product) => (
                   <motion.tr
@@ -118,7 +146,7 @@ export default function AdminProductsPage() {
                           <p className="font-display text-sm font-bold text-white group-hover:text-gold transition-colors">{product.name}</p>
                           <p className="text-[10px] text-white/40 font-mono">ID: {product.slug}</p>
                           <div className="flex items-center gap-2 pt-0.5">
-                            {product.tags.slice(0, 2).map((t, i) => (
+                            {(product.tags || []).slice(0, 2).map((t: string, i: number) => (
                               <span key={i} className="bg-white/5 border border-white/10 px-1.5 py-0.2 font-mono text-[9px] text-white/60 uppercase tracking-wider rounded-none">
                                 {t}
                               </span>
@@ -182,6 +210,7 @@ export default function AdminProductsPage() {
                   </motion.tr>
                 ))}
               </AnimatePresence>
+              )}
             </tbody>
           </table>
         </div>

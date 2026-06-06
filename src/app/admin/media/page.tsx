@@ -15,22 +15,43 @@ interface MediaAsset {
   uploadedAt: string
 }
 
-const INITIAL_MEDIA: MediaAsset[] = [
-  { id: 'MED-001', title: 'Premium Cotton Twill Suiting Banner 2026', type: 'new_arrival', image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80', dimensions: '1920x1080', size: '1.2 MB', uploadedAt: '15 May 2026' },
-  { id: 'MED-002', title: 'Hospitality Sateen Bedding Linen Showcase', type: 'new_arrival', image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80', dimensions: '2048x1536', size: '2.4 MB', uploadedAt: '14 May 2026' },
-  { id: 'MED-003', title: 'Industrial Safety Coverall Bulk Clearance Banner', type: 'offer', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80', dimensions: '1200x630', size: '940 KB', uploadedAt: '12 May 2026' },
-  { id: 'MED-004', title: 'Pure Oud Attar Royal Box Bottle Macro', type: 'offer', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80', dimensions: '1080x1080', size: '1.8 MB', uploadedAt: '10 May 2026' },
-  { id: 'MED-005', title: 'Executive Polo Collection Editorial Banner', type: 'banner', image: 'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=800&q=80', dimensions: '1920x800', size: '1.5 MB', uploadedAt: '08 May 2026' },
-  { id: 'MED-006', title: 'Microfiber Bulk Household Towel Stack', type: 'product_showcase', image: 'https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=800&q=80', dimensions: '1600x1200', size: '1.1 MB', uploadedAt: '01 May 2026' },
-]
+import { api } from '@/lib/api'
+import { useEffect } from 'react'
 
 export default function AdminMediaPage() {
-  const [mediaList, setMediaList] = useState<MediaAsset[]>(INITIAL_MEDIA)
+  const [mediaList, setMediaList] = useState<MediaAsset[]>([])
   const [selectedTab, setSelectedTab] = useState<'all' | 'new_arrival' | 'offer' | 'banner'>('all')
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [deleteModal, setDeleteModal] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchMedia()
+  }, [])
+
+  const fetchMedia = async () => {
+    setLoading(true)
+    try {
+      const res = await api.admin.getMedia('')
+      if (res.success && res.data) {
+        setMediaList(res.data.map((m: any) => ({
+          id: m.id,
+          title: m.title,
+          type: m.type,
+          image: m.url,
+          dimensions: m.dimensions,
+          size: m.size,
+          uploadedAt: m.created_at ? new Date(m.created_at).toLocaleDateString() : 'Just Now'
+        })))
+      }
+    } catch (error) {
+      console.error('Failed to fetch media:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSimulateUpload = async () => {
     setUploading(true)
@@ -40,17 +61,19 @@ export default function AdminMediaPage() {
       setUploadProgress(p)
     }
 
-    const newAsset: MediaAsset = {
-      id: `MED-00${mediaList.length + 1}`,
-      title: 'Newly Synced Production Asset ' + new Date().toLocaleTimeString(),
-      type: selectedTab === 'all' ? 'new_arrival' : selectedTab,
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
-      dimensions: '2400x1600',
-      size: '2.1 MB',
-      uploadedAt: 'Just Now'
+    try {
+      const payload = {
+        title: 'Newly Synced Production Asset ' + new Date().toLocaleTimeString(),
+        type: selectedTab === 'all' ? 'new_arrival' : selectedTab,
+        url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
+        dimensions: '2400x1600',
+        size: '2.1 MB'
+      }
+      await api.admin.createMedia('', payload)
+      await fetchMedia()
+    } catch (error) {
+      console.error('Failed to create media:', error)
     }
-
-    setMediaList([newAsset, ...mediaList])
     setUploading(false)
     setUploadProgress(0)
   }
@@ -61,8 +84,13 @@ export default function AdminMediaPage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const handleDelete = (id: string) => {
-    setMediaList(prev => prev.filter(m => m.id !== id))
+  const handleDelete = async (id: string) => {
+    try {
+      await api.admin.deleteMedia('', id)
+      await fetchMedia()
+    } catch (error) {
+      console.error('Failed to delete media:', error)
+    }
     setDeleteModal(null)
   }
 
@@ -160,6 +188,9 @@ export default function AdminMediaPage() {
       </div>
 
       {/* Media Assets Bento Box Grid */}
+      {loading ? (
+        <div className="py-20 flex justify-center"><RefreshCw className="w-8 h-8 text-gold animate-spin" /></div>
+      ) : (
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 font-sans">
         <AnimatePresence>
           {filteredMedia.map((item, idx) => (
@@ -198,7 +229,7 @@ export default function AdminMediaPage() {
               {/* Asset Metadata Bar */}
               <div className="p-5 space-y-3 font-mono">
                 <div>
-                  <span className="text-[10px] text-white/40 font-bold block">{item.id} • Synced {item.uploadedAt}</span>
+                  <span className="text-[10px] text-white/40 font-bold block">{item.id.slice(0, 8)}... • Synced {item.uploadedAt}</span>
                   <p className="font-display text-sm font-bold text-white group-hover:text-gold transition-colors pt-0.5 line-clamp-1 font-sans">{item.title}</p>
                 </div>
 
@@ -231,6 +262,7 @@ export default function AdminMediaPage() {
           ))}
         </AnimatePresence>
       </div>
+      )}
 
       {filteredMedia.length === 0 && (
         <div className="p-16 text-center font-mono space-y-3 rounded-2xl border border-white/10 bg-white/5">

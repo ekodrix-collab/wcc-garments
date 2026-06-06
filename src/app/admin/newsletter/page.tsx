@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Mail, Trash2, Send, Users, CheckSquare, Square, RefreshCw, AlertCircle, CheckCircle, X } from 'lucide-react'
+import { api } from '@/lib/api'
 
 interface Subscriber {
   id: string
@@ -44,9 +45,13 @@ export default function AdminNewsletterPage() {
   const fetchSubscribers = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/admin/newsletter')
-      const data = await res.json()
-      if (data.success) setSubscribers(data.data)
+      const res = await api.admin.getNewsletterSubscribers('')
+      if (res.success && res.data) {
+        setSubscribers(res.data.map((s: any) => ({
+          ...s,
+          subscribedAt: s.subscribed_at || s.subscribedAt
+        })))
+      }
     } catch {
       console.error('Failed to fetch subscribers')
     } finally {
@@ -76,7 +81,7 @@ export default function AdminNewsletterPage() {
     if (!confirm('Remove this subscriber?')) return
     setDeletingId(id)
     try {
-      await fetch(`/api/admin/newsletter?id=${id}`, { method: 'DELETE' })
+      await api.admin.deleteNewsletterSubscriber('', id)
       setSubscribers(prev => prev.filter(s => s.id !== id))
       setSelected(prev => { const n = new Set(prev); n.delete(id); return n })
     } finally {
@@ -94,12 +99,8 @@ export default function AdminNewsletterPage() {
     setStatusMsg('')
     try {
       const recipientIds = selected.size === subscribers.length ? 'all' : Array.from(selected)
-      const res = await fetch('/api/admin/newsletter/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject, body, recipientIds }),
-      })
-      const data = await res.json()
+      const data = await api.admin.broadcast('', { subject, body, recipientIds })
+      
       if (data.success) {
         setSendStatus('success')
         setStatusMsg(data.message)

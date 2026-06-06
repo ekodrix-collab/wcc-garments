@@ -1,11 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT } from 'jose'
+import { isSupabaseConfigured, getSupabaseServerClient } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
 
-    if (email === 'admin@wccgarments.com' && password === 'wcc2026admin') {
+    let isAuthenticated = false
+    let userName = 'WCC Admin'
+    let supabaseAuthFailed = false
+
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = getSupabaseServerClient()
+        // Here we attempt to sign in using Supabase Auth
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+        if (error) {
+          console.error('Supabase auth failed:', error.message)
+          supabaseAuthFailed = true
+        } else if (data.session) {
+          isAuthenticated = true
+          userName = data.user.user_metadata?.name || 'WCC Admin'
+        }
+      } catch (err) {
+        console.error('Supabase auth error:', err)
+        supabaseAuthFailed = true
+      }
+    }
+
+    // Fallback if Supabase is not configured or Supabase auth fails (allow mock admin login as a safety net)
+    if (!isAuthenticated && (!isSupabaseConfigured() || supabaseAuthFailed)) {
+      if (email === 'admin@wccgarments.com' && password === 'wcc2026admin') {
+        isAuthenticated = true
+      }
+    }
+
+    if (isAuthenticated) {
       const secret = new TextEncoder().encode(process.env.ADMIN_JWT_SECRET || 'fallback_secret_key_for_development_only_must_be_replaced')
 
       const token = await new SignJWT({ email, role: 'super_admin' })
@@ -16,7 +49,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        data: { token, user: { email, name: 'WCC Admin', role: 'super_admin' } },
+        data: { token, user: { email, name: userName, role: 'super_admin' } },
       })
     }
 

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { api } from '@/lib/api'
 import { Send, Loader2, Megaphone, Smartphone, Mail, Users, CheckCircle2, History, AlertCircle, Copy, Check, Filter } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -14,11 +15,7 @@ interface BroadcastHistoryItem {
   status: 'Completed' | 'Processing'
 }
 
-const INITIAL_HISTORY: BroadcastHistoryItem[] = [
-  { id: 'BRD-004', subject: 'WCC 2026 Q3 Hospitality Textile Collection Catalog Launch', type: 'Email Dispatch', target: 'Hospitality Procurement Directors', sentCount: 1420, date: '12 May 2026', status: 'Completed' },
-  { id: 'BRD-003', subject: 'Urgent: Raw Cotton & Twill Bulk Allocation Discounts', type: 'WhatsApp Broadcast', target: 'Wholesale Distributors (GCC Region)', sentCount: 450, date: '05 May 2026', status: 'Completed' },
-  { id: 'BRD-002', subject: 'Ramadan Premium Oud Attar & Fragrance Gift Boxes', type: 'Email Dispatch', target: 'Niche Perfumery Boutiques', sentCount: 890, date: '15 Mar 2026', status: 'Completed' },
-]
+// INITIAL_HISTORY is dynamic
 
 const TEMPLATES = [
   { label: 'New Catalog Launch', subject: 'WCC 2026 High-Performance Uniform Collection & Specifications', body: 'Dear Partner,\n\nWe are pleased to announce the deployment of our 2026 High-Performance Uniform & Industrial Safety catalog. All garments are manufactured according to ISO 9001 standards with anti-microbial and flame-retardant options.\n\nInspect full technical datasheets on our portal.' },
@@ -33,8 +30,31 @@ export default function AdminBroadcastPage() {
   const [message, setMessage] = useState(TEMPLATES[0].body)
   const [sending, setSending] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [history, setHistory] = useState<BroadcastHistoryItem[]>(INITIAL_HISTORY)
+  const [history, setHistory] = useState<BroadcastHistoryItem[]>([])
   const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    fetchHistory()
+  }, [])
+
+  const fetchHistory = async () => {
+    try {
+      const res = await api.admin.getBroadcasts('')
+      if (res.success && res.data) {
+        setHistory(res.data.map((item: any) => ({
+          id: item.id || `BRD-${Math.floor(Math.random() * 1000)}`,
+          subject: item.subject,
+          type: 'Email Dispatch',
+          target: Array.isArray(item.sent_to) ? (item.sent_to[0] === 'all' ? 'All Contacts' : `${item.sent_to.length} Contacts`) : 'All Contacts',
+          sentCount: Array.isArray(item.sent_to) ? (item.sent_to[0] === 'all' ? 3240 : item.sent_to.length) : 3240,
+          date: item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Just Now',
+          status: 'Completed'
+        })))
+      }
+    } catch (error) {
+      console.error('Failed to fetch history:', error)
+    }
+  }
 
   const handleSelectTemplate = (index: number) => {
     setSubject(TEMPLATES[index].subject)
@@ -54,17 +74,19 @@ export default function AdminBroadcastPage() {
       setProgress(i)
     }
 
-    const newItem: BroadcastHistoryItem = {
-      id: `BRD-00${history.length + 5}`,
-      subject: subject || 'WhatsApp Immediate Update',
-      type: dispatchType,
-      target: targetGroup.split(' ')[0] + ' Partners',
-      sentCount: targetGroup.includes('3,240') ? 3240 : targetGroup.includes('Hospitality') ? 1420 : 680,
-      date: 'Just Now',
-      status: 'Completed'
+    try {
+      const res = await api.admin.broadcast('', {
+        subject: subject || 'WhatsApp Immediate Update',
+        body: message,
+        recipientIds: ['all']
+      })
+      if (res.success) {
+        await fetchHistory()
+      }
+    } catch (error) {
+      console.error('Failed to dispatch broadcast:', error)
     }
 
-    setHistory([newItem, ...history])
     setSending(false)
     setProgress(0)
   }

@@ -9,25 +9,26 @@ export async function PUT(
   try {
     const { id } = await params
     const body = await request.json()
+    const supabase = getSupabaseServerClient()
 
-    await fetchWithFallback(
+    const data = await fetchWithFallback(
       async () => {
-        const supabase = getSupabaseServerClient()
-        const { error } = await supabase
-          .from('products')
+        const { data: updatedBrand, error } = await supabase
+          .from('brands')
           .update(body)
           .eq('id', id)
-        
+          .select()
+          .single()
         if (error) throw error
-        return true
+        return updatedBrand
       },
-      true,
-      'Admin Update Product'
+      { ...body, id },
+      'Update Brand'
     )
-
-    return NextResponse.json({ success: true, message: 'Product updated' })
+    return NextResponse.json({ success: true, data, message: 'Brand updated successfully' })
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
+    console.error('Error updating brand:', error)
+    return NextResponse.json({ success: false, error: 'Failed to update brand' }, { status: 500 })
   }
 }
 
@@ -37,24 +38,23 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const supabase = getSupabaseServerClient()
 
     await fetchWithFallback(
       async () => {
-        const supabase = getSupabaseServerClient()
         const { error } = await supabase
-          .from('products')
+          .from('brands')
           .delete()
           .eq('id', id)
-        
         if (error) throw error
         return true
       },
       true,
-      'Admin Delete Product'
+      'Delete Brand'
     )
-
-    return NextResponse.json({ success: true, message: 'Product deleted' })
+    return NextResponse.json({ success: true, message: 'Brand deleted successfully' })
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
+    console.error('Error deleting brand:', error)
+    return NextResponse.json({ success: false, error: 'Failed to delete brand' }, { status: 500 })
   }
 }

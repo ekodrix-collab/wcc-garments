@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle } from 'lucide-react'
+import { useState, useMemo, useEffect } from 'react'
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { DIVISIONS } from '@/lib/constants'
+import { api } from '@/lib/api'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 type ItemStatus = 'active' | 'coming-soon' | 'hidden'
@@ -15,6 +15,7 @@ interface SubCatItem {
   slug: string
   status: ItemStatus
   displayOrder: number
+  image?: string
 }
 interface CatItem {
   id: string
@@ -25,6 +26,7 @@ interface CatItem {
   status: ItemStatus
   displayOrder: number
   subCategories: SubCatItem[]
+  image?: string
 }
 
 const STATUS_STYLES: Record<ItemStatus, string> = {
@@ -36,29 +38,6 @@ const STATUS_LABELS: Record<ItemStatus, string> = {
   active: 'Active', 'coming-soon': 'Coming Soon', hidden: 'Hidden',
 }
 
-// ── Seed from DIVISIONS constant ───────────────────────────────────────────────
-function seedCategories(): CatItem[] {
-  const result: CatItem[] = []
-  for (const div of DIVISIONS) {
-    for (const cat of (div.categories ?? [])) {
-      result.push({
-        id: cat.id,
-        divisionSlug: div.slug,
-        divisionName: div.name,
-        name: cat.name,
-        slug: cat.slug,
-        status: cat.status as ItemStatus,
-        displayOrder: cat.displayOrder,
-        subCategories: (cat.subCategories ?? []).map((s) => ({
-          id: s.id, name: s.name, slug: s.slug,
-          status: s.status as ItemStatus, displayOrder: s.displayOrder,
-        })),
-      })
-    }
-  }
-  return result
-}
-
 // ── Section mapping ────────────────────────────────────────────────────────────
 const SECTION_SLUGS: Record<Exclude<SectionKey, 'all'>, string[]> = {
   garments:   ['garments'],
@@ -67,11 +46,13 @@ const SECTION_SLUGS: Record<Exclude<SectionKey, 'all'>, string[]> = {
 }
 
 // ── Empty form state ───────────────────────────────────────────────────────────
-const EMPTY_CAT = { divisionSlug: 'garments', name: '', slug: '', status: 'active' as ItemStatus }
-const EMPTY_SUB = { name: '', slug: '', status: 'active' as ItemStatus }
+const EMPTY_CAT = { divisionSlug: 'garments', name: '', slug: '', status: 'active' as ItemStatus, image: '' }
+const EMPTY_SUB = { name: '', slug: '', status: 'active' as ItemStatus, image: '' }
 
 export default function AdminCategoriesPage() {
-  const [categories, setCategories] = useState<CatItem[]>(seedCategories)
+  const [categories, setCategories] = useState<CatItem[]>([])
+  const [divisionsData, setDivisionsData] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [section, setSection] = useState<SectionKey>('all')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
@@ -79,12 +60,52 @@ export default function AdminCategoriesPage() {
   const [catModal, setCatModal] = useState<'add' | 'edit' | null>(null)
   const [editingCat, setEditingCat] = useState<CatItem | null>(null)
   const [catForm, setCatForm] = useState(EMPTY_CAT)
+  const [saving, setSaving] = useState(false)
 
   // Sub-category modal
   const [subModal, setSubModal] = useState<'add' | 'edit' | null>(null)
   const [subParentId, setSubParentId] = useState<string | null>(null)
   const [editingSubId, setEditingSubId] = useState<string | null>(null)
   const [subForm, setSubForm] = useState(EMPTY_SUB)
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchCategories = async () => {
+    setLoading(true)
+    try {
+      const res = await api.admin.getCategories()
+      if (res.success && res.data) {
+        setDivisionsData(res.data)
+        const result: CatItem[] = []
+        for (const div of res.data) {
+          for (const cat of (div.sub_categories ?? [])) {
+            result.push({
+              id: cat.id,
+              divisionSlug: div.slug,
+              divisionName: div.name,
+              name: cat.name,
+              slug: cat.slug,
+              status: cat.status as ItemStatus,
+              displayOrder: cat.displayOrder || cat.display_order,
+              image: cat.image,
+              subCategories: (cat.subCategories || cat.sub_categories || []).map((s: any) => ({
+                id: s.id, name: s.name, slug: s.slug,
+                status: s.status as ItemStatus, displayOrder: s.displayOrder || s.display_order,
+                image: s.image
+              })),
+            })
+          }
+        }
+        setCategories(result)
+      }
+    } catch (error) {
+      console.error('Failed to fetch categories:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // ── Filtered view ────────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
@@ -105,75 +126,148 @@ export default function AdminCategoriesPage() {
   // ── Helpers ──────────────────────────────────────────────────────────────────
   const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   const toggleExpand = (id: string) => setExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
-  const divOptions = DIVISIONS.map((d) => ({ slug: d.slug, name: d.name }))
+  const divOptions = divisionsData.map((d) => ({ slug: d.slug, name: d.name }))
 
   // ── Category CRUD ────────────────────────────────────────────────────────────
   const openAddCat = () => { setCatForm(EMPTY_CAT); setEditingCat(null); setCatModal('add') }
-  const openEditCat = (c: CatItem) => { setEditingCat(c); setCatForm({ divisionSlug: c.divisionSlug, name: c.name, slug: c.slug, status: c.status }); setCatModal('edit') }
+  const openEditCat = (c: CatItem) => { setEditingCat(c); setCatForm({ divisionSlug: c.divisionSlug, name: c.name, slug: c.slug, status: c.status, image: c.image || '' }); setCatModal('edit') }
 
-  const saveCat = () => {
+  const syncDivisionToDB = async (divisionSlug: string, updatedCategories: any[]) => {
+    const div = divisionsData.find(d => d.slug === divisionSlug)
+    if (div && div.id) {
+      await api.admin.updateCategory(undefined, div.id, { sub_categories: updatedCategories })
+    }
+  }
+
+  const saveCat = async () => {
     if (!catForm.name || !catForm.slug) return
+    setSaving(true)
+    
+    let updatedList = [...categories]
     if (catModal === 'add') {
       const newCat: CatItem = {
         id: `CAT-${Date.now()}`, divisionSlug: catForm.divisionSlug,
         divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug,
-        name: catForm.name, slug: catForm.slug, status: catForm.status,
+        name: catForm.name, slug: catForm.slug, status: catForm.status, image: catForm.image,
         displayOrder: categories.filter((c) => c.divisionSlug === catForm.divisionSlug).length + 1,
         subCategories: [],
       }
-      setCategories((p) => [...p, newCat])
+      updatedList.push(newCat)
     } else if (catModal === 'edit' && editingCat) {
-      setCategories((p) => p.map((c) => c.id === editingCat.id ? { ...c, ...catForm, divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug } : c))
+      updatedList = categories.map((c) => c.id === editingCat.id ? { ...c, ...catForm, divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug } : c)
     }
+    
+    // Extract just the categories for this division to save to DB
+    const divCats = updatedList.filter(c => c.divisionSlug === catForm.divisionSlug).map(c => ({
+      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
+    }))
+    
+    await syncDivisionToDB(catForm.divisionSlug, divCats)
+    setCategories(updatedList)
+    setSaving(false)
     setCatModal(null)
   }
 
-  const deleteCat = (id: string) => {
+  const deleteCat = async (id: string, divSlug: string) => {
     if (!confirm('Remove this category? Sub-categories will also be removed.')) return
-    setCategories((p) => p.filter((c) => c.id !== id))
+    const updatedList = categories.filter((c) => c.id !== id)
+    
+    const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
+      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
+    }))
+    await syncDivisionToDB(divSlug, divCats)
+    setCategories(updatedList)
   }
 
-  const toggleCatStatus = (id: string) => {
-    setCategories((p) => p.map((c) => {
+  const toggleCatStatus = async (id: string, divSlug: string) => {
+    const updatedList = categories.map((c) => {
       if (c.id !== id) return c
       const next: ItemStatus = c.status === 'active' ? 'coming-soon' : c.status === 'coming-soon' ? 'hidden' : 'active'
       return { ...c, status: next }
+    })
+    
+    const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
+      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
     }))
+    await syncDivisionToDB(divSlug, divCats)
+    setCategories(updatedList)
   }
 
   // ── Sub-category CRUD ─────────────────────────────────────────────────────────
   const openAddSub = (parentId: string) => { setSubParentId(parentId); setEditingSubId(null); setSubForm(EMPTY_SUB); setSubModal('add') }
-  const openEditSub = (parentId: string, sub: SubCatItem) => { setSubParentId(parentId); setEditingSubId(sub.id); setSubForm({ name: sub.name, slug: sub.slug, status: sub.status }); setSubModal('edit') }
+  const openEditSub = (parentId: string, sub: SubCatItem) => { setSubParentId(parentId); setEditingSubId(sub.id); setSubForm({ name: sub.name, slug: sub.slug, status: sub.status, image: sub.image || '' }); setSubModal('edit') }
 
-  const saveSub = () => {
+  const saveSub = async () => {
     if (!subForm.name || !subForm.slug || !subParentId) return
-    setCategories((p) => p.map((c) => {
+    setSaving(true)
+    
+    let targetCat: CatItem | undefined
+    
+    const updatedList = categories.map((c) => {
       if (c.id !== subParentId) return c
+      let newCat = { ...c }
       if (subModal === 'add') {
-        const newSub: SubCatItem = { id: `SUB-${Date.now()}`, name: subForm.name, slug: subForm.slug, status: subForm.status, displayOrder: c.subCategories.length + 1 }
-        return { ...c, subCategories: [...c.subCategories, newSub] }
+        const newSub: SubCatItem = { id: `SUB-${Date.now()}`, name: subForm.name, slug: subForm.slug, status: subForm.status, displayOrder: c.subCategories.length + 1, image: subForm.image }
+        newCat = { ...c, subCategories: [...c.subCategories, newSub] }
       } else if (subModal === 'edit' && editingSubId) {
-        return { ...c, subCategories: c.subCategories.map((s) => s.id === editingSubId ? { ...s, ...subForm } : s) }
+        newCat = { ...c, subCategories: c.subCategories.map((s) => s.id === editingSubId ? { ...s, ...subForm } : s) }
       }
-      return c
-    }))
+      targetCat = newCat
+      return newCat
+    })
+    
+    if (targetCat) {
+      const divCats = updatedList.filter(c => c.divisionSlug === targetCat!.divisionSlug).map(c => ({
+        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
+      }))
+      await syncDivisionToDB(targetCat.divisionSlug, divCats)
+    }
+    
+    setCategories(updatedList)
+    setSaving(false)
     setSubModal(null)
   }
 
-  const deleteSub = (parentId: string, subId: string) => {
+  const deleteSub = async (parentId: string, subId: string) => {
     if (!confirm('Remove this sub-category?')) return
-    setCategories((p) => p.map((c) => c.id === parentId ? { ...c, subCategories: c.subCategories.filter((s) => s.id !== subId) } : c))
+    
+    let divSlug = ''
+    const updatedList = categories.map((c) => {
+      if (c.id === parentId) {
+        divSlug = c.divisionSlug
+        return { ...c, subCategories: c.subCategories.filter((s) => s.id !== subId) }
+      }
+      return c
+    })
+    
+    if (divSlug) {
+      const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
+        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
+      }))
+      await syncDivisionToDB(divSlug, divCats)
+    }
+    setCategories(updatedList)
   }
 
-  const toggleSubStatus = (parentId: string, subId: string) => {
-    setCategories((p) => p.map((c) => {
+  const toggleSubStatus = async (parentId: string, subId: string) => {
+    let divSlug = ''
+    const updatedList = categories.map((c) => {
       if (c.id !== parentId) return c
+      divSlug = c.divisionSlug
       return { ...c, subCategories: c.subCategories.map((s) => {
         if (s.id !== subId) return s
         const next: ItemStatus = s.status === 'active' ? 'coming-soon' : s.status === 'coming-soon' ? 'hidden' : 'active'
         return { ...s, status: next }
       })}
-    }))
+    })
+    
+    if (divSlug) {
+      const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
+        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
+      }))
+      await syncDivisionToDB(divSlug, divCats)
+    }
+    setCategories(updatedList)
   }
 
   // ── Stats ─────────────────────────────────────────────────────────────────────
@@ -269,7 +363,9 @@ export default function AdminCategoriesPage() {
 
             {/* Category cards */}
             <div className="space-y-3">
-              {items.sort((a, b) => a.displayOrder - b.displayOrder).map((cat) => (
+              {loading ? (
+                <div className="py-8 flex justify-center"><Loader2 className="w-5 h-5 text-gold animate-spin" /></div>
+              ) : items.sort((a, b) => a.displayOrder - b.displayOrder).map((cat) => (
                 <div key={cat.id} className="border border-white/10 bg-white/[0.03] hover:border-white/20 transition-all">
                   {/* Category row */}
                   <div className="flex items-center gap-3 px-4 py-3">
@@ -285,12 +381,12 @@ export default function AdminCategoriesPage() {
                       <p className="font-mono text-[9px] text-white/20 mt-0.5">{cat.subCategories.length} sub-categories</p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      {/* Status toggle badge */}
-                      <button
-                        onClick={() => toggleCatStatus(cat.id)}
-                        title="Click to cycle status"
-                        className={`px-2.5 py-0.5 font-mono text-[8px] font-bold uppercase border transition-all cursor-pointer hover:opacity-80 ${STATUS_STYLES[cat.status]}`}
-                      >
+                        {/* Status toggle badge */}
+                        <button
+                          onClick={() => toggleCatStatus(cat.id, cat.divisionSlug)}
+                          title="Click to cycle status"
+                          className={`px-2.5 py-0.5 font-mono text-[8px] font-bold uppercase border transition-all cursor-pointer hover:opacity-80 ${STATUS_STYLES[cat.status]}`}
+                        >
                         {STATUS_LABELS[cat.status]}
                       </button>
                       <button onClick={() => openAddSub(cat.id)} className="flex items-center gap-1 border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[9px] font-bold text-white hover:bg-gold hover:text-black transition-all">
@@ -299,9 +395,9 @@ export default function AdminCategoriesPage() {
                       <button onClick={() => openEditCat(cat)} className="flex h-7 w-7 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
                         <Edit2 className="h-3 w-3" />
                       </button>
-                      <button onClick={() => deleteCat(cat.id)} className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
-                        <Trash2 className="h-3 w-3" />
-                      </button>
+                        <button onClick={() => deleteCat(cat.id, cat.divisionSlug)} className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
                     </div>
                   </div>
 
@@ -391,10 +487,21 @@ export default function AdminCategoriesPage() {
                     <option value="hidden">Hidden</option>
                   </select>
                 </div>
+                <div>
+                  <label className={labelCls}>Category Image URL</label>
+                  <input value={catForm.image} onChange={(e) => setCatForm({ ...catForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
+                  {catForm.image && (
+                    <div className="mt-2 h-20 w-32 relative bg-black border border-white/10 rounded overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={catForm.image} alt="Preview" className="object-cover w-full h-full" />
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setCatModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
-                <button onClick={saveCat} className="flex-1 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                <button disabled={saving} onClick={saveCat} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                  {saving && <Loader2 className="w-3 h-3 animate-spin" />}
                   {catModal === 'add' ? 'Create' : 'Save Changes'}
                 </button>
               </div>
@@ -432,10 +539,21 @@ export default function AdminCategoriesPage() {
                     <option value="hidden">Hidden</option>
                   </select>
                 </div>
+                <div>
+                  <label className={labelCls}>Sub-Category Image URL</label>
+                  <input value={subForm.image} onChange={(e) => setSubForm({ ...subForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
+                  {subForm.image && (
+                    <div className="mt-2 h-20 w-32 relative bg-black border border-white/10 rounded overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={subForm.image} alt="Preview" className="object-cover w-full h-full" />
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setSubModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
-                <button onClick={saveSub} className="flex-1 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                <button disabled={saving} onClick={saveSub} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                  {saving && <Loader2 className="w-3 h-3 animate-spin" />}
                   {subModal === 'add' ? 'Create' : 'Save Changes'}
                 </button>
               </div>
