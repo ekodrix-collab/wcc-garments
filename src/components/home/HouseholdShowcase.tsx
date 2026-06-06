@@ -1,13 +1,11 @@
 'use client'
 
 import { useRef } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowUpRight, ArrowRight } from 'lucide-react'
-
-import { useState, useEffect } from 'react'
-import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
+import { ResponsivePicture } from '@/components/ui/ResponsivePicture'
 import { getDivisionCategoryHref } from '@/lib/category-routing'
 
 const DEFAULT_HOUSEHOLDS = {
@@ -26,40 +24,12 @@ const DEFAULT_HOUSEHOLDS = {
 export function HouseholdShowcase() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [data, setData] = useState(DEFAULT_HOUSEHOLDS)
-
-  useEffect(() => {
-    setData(contentStore.getSectionData('households-showcase-v2', DEFAULT_HOUSEHOLDS))
-    
-    // Connect with backend data and images
-    import('@/lib/api').then(({ api }) => {
-      api.getCategories('households').then((res) => {
-        if (res.success && res.data) {
-          setData(prev => {
-            const updatedCategories = prev.categories.map((c: any) => {
-              const backendCat = res.data.find((b: any) => b.slug === c.slug)
-              if (backendCat) {
-                return {
-                  ...c,
-                  name: backendCat.name || c.name,
-                  tagline: backendCat.tagline || c.tagline,
-                  count: backendCat.count || c.count,
-                  image: backendCat.image || c.image
-                }
-              }
-              return c
-            })
-            return { ...prev, categories: updatedCategories }
-          })
-        }
-      }).catch(console.error)
-    })
-  }, [])
+  const { data } = useWebsiteContent('households-showcase-v2', DEFAULT_HOUSEHOLDS)
 
   return (
     <section className="bg-[var(--bg)] py-16 md:py-24 border-t border-[var(--border)]" ref={ref}>
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        
+
         {/* Section Header */}
         <div className="mb-16 max-w-4xl">
           <motion.div
@@ -91,11 +61,11 @@ export function HouseholdShowcase() {
           </motion.p>
         </div>
 
-        {/* 2x2 Architectural Grid (2 top, 2 bottom) with rounded-none (no border radius) */}
+        {/* 2x2 Grid */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
           {data.categories.map((category: any, index: number) => (
             <motion.div
-              key={category.slug}
+              key={category.slug || index}
               initial={{ opacity: 0, y: 60 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{
@@ -109,9 +79,9 @@ export function HouseholdShowcase() {
                 className="group relative block overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-none transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
                 data-cursor="view"
               >
-                {/* 16:9 Cinematic Aspect, No border radius (rounded-none) */}
+                {/* 16:9 aspect */}
                 <div className="relative overflow-hidden aspect-[16/9] rounded-none">
-                  <Image
+                  <ResponsivePicture
                     src={category.image}
                     alt={category.name}
                     fill
@@ -121,7 +91,7 @@ export function HouseholdShowcase() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-85" />
                 </div>
 
-                {/* Card Details Bottom */}
+                {/* Card Details */}
                 <div className="p-5 bg-[var(--bg-surface)]">
                   <div className="flex items-start justify-between">
                     <div>
@@ -142,7 +112,7 @@ export function HouseholdShowcase() {
                       </span>
                     </div>
                   </div>
-                  {/* Gold hover sweep line */}
+                  {/* Gold sweep */}
                   <div className="mt-4 h-[2px] w-0 bg-gold transition-all duration-500 group-hover:w-full" />
                 </div>
               </Link>

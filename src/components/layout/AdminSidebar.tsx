@@ -43,12 +43,14 @@ export function AdminSidebar() {
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-gold/70">Enterprise OS</p>
             </div>
           </Link>
-          <button
-            onClick={() => setMobileOpen(false)}
-            className={`rounded p-1 lg:hidden ${isDark ? 'text-white/50 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setMobileOpen(false)}
+              className={`rounded p-1 lg:hidden ${isDark ? 'text-white/50 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation Links */}
@@ -138,16 +140,18 @@ export function AdminSidebar() {
             WCC <span className="text-gold">Admin</span>
           </h2>
         </div>
-        <button
-          onClick={() => setMobileOpen(true)}
-          className={`rounded-lg border p-2 transition-all ${
-            isDark 
-              ? 'border-white/10 text-white/70 hover:bg-white/10 hover:text-white' 
-              : 'border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-          }`}
-        >
-          <Menu className="h-6 w-6" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className={`rounded-lg border p-2 transition-all ${
+              isDark 
+                ? 'border-white/10 text-white/70 hover:bg-white/10 hover:text-white' 
+                : 'border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        </div>
       </div>
 
       {/* Desktop Sidebar */}

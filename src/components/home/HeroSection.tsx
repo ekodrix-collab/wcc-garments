@@ -39,35 +39,31 @@ const ALL_IMAGE_PATHS = Array.from(
   new Set(CAMPAIGN_SETS.flatMap((c) => [c.center, c.left, c.right])),
 );
 
-import { contentStore } from "@/lib/content-store";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
+import { resolveImageSrc } from "@/lib/image-utils";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export function HeroSection(): JSX.Element {
-  const [campaignSets, setCampaignSets] = useState(CAMPAIGN_SETS);
   const [campaignIdx, setCampaignIdx] = useState<number>(0);
   const [allLoaded, setAllLoaded] = useState<boolean>(false);
 
-  useEffect(() => {
-    const loaded = contentStore.getSectionData("hero", {
-      campaigns: CAMPAIGN_SETS,
-    });
-    if (loaded && loaded.campaigns) {
-      setCampaignSets(loaded.campaigns);
-    }
-  }, []);
+  const { data: heroData } = useWebsiteContent("hero", { campaigns: CAMPAIGN_SETS });
+  const campaignSets = heroData?.campaigns ?? CAMPAIGN_SETS;
 
   useEffect(() => {
     let count = 0;
     const allPaths = Array.from(
-      new Set(campaignSets.flatMap((c) => [c.center, c.left, c.right])),
-    );
+      new Set(campaignSets.flatMap((c: any) => [
+        resolveImageSrc(c.center), resolveImageSrc(c.left), resolveImageSrc(c.right)
+      ])).values()
+    ).filter(Boolean);
     if (allPaths.length === 0) {
       setAllLoaded(true);
       return;
     }
     allPaths.forEach((src) => {
       const img = new window.Image();
-      img.src = src;
+      img.src = src as string;
       img.onload = img.onerror = () => {
         count += 1;
         if (count >= allPaths.length) setAllLoaded(true);
@@ -231,7 +227,7 @@ export function HeroSection(): JSX.Element {
                   }}
                 >
                   <Image
-                    src={campaign.left}
+                    src={resolveImageSrc(campaign.left)}
                     alt="Campaign background"
                     fill
                     priority
@@ -268,7 +264,7 @@ export function HeroSection(): JSX.Element {
                   }}
                 >
                   <Image
-                    src={campaign.right}
+                    src={resolveImageSrc(campaign.right)}
                     alt="Campaign background detail"
                     fill
                     priority
@@ -305,7 +301,7 @@ export function HeroSection(): JSX.Element {
                   }}
                 >
                   <Image
-                    src={campaign.center}
+                    src={resolveImageSrc(campaign.center)}
                     alt={campaign.title}
                     fill
                     priority

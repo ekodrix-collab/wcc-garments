@@ -6,8 +6,8 @@ import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { useState, useEffect } from "react";
-import { contentStore } from "@/lib/content-store";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
+import { ResponsivePicture } from "@/components/ui/ResponsivePicture";
 
 const DEFAULT_GARMENTS = {
   indicator: "OUR MANUFACTURING DIVISIONS",
@@ -64,35 +64,7 @@ const DEFAULT_GARMENTS = {
 export function DivisionCutouts() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [data, setData] = useState(DEFAULT_GARMENTS);
-
-  useEffect(() => {
-    setData(contentStore.getSectionData("garments-showcase", DEFAULT_GARMENTS));
-
-    // Connect with backend data and images
-    import('@/lib/api').then(({ api }) => {
-      api.getCategories('garments').then((res) => {
-        if (res.success && res.data) {
-          setData(prev => {
-            const updatedCategories = prev.categories.map((c: any) => {
-              const backendCat = res.data.find((b: any) => b.slug === c.slug)
-              if (backendCat) {
-                return {
-                  ...c,
-                  name: backendCat.name || c.name,
-                  tagline: backendCat.tagline || c.tagline,
-                  count: backendCat.count || c.count,
-                  image: backendCat.image || c.image
-                }
-              }
-              return c
-            })
-            return { ...prev, categories: updatedCategories }
-          })
-        }
-      }).catch(console.error)
-    })
-  }, []);
+  const { data } = useWebsiteContent("garments-showcase", DEFAULT_GARMENTS);
 
   return (
     <section className="bg-[var(--bg)] py-16 md:py-24" ref={ref}>
@@ -149,7 +121,7 @@ export function DivisionCutouts() {
               >
                 {/* Image aspect-[3/4] */}
                 <div className="relative overflow-hidden aspect-[4/3] sm:aspect-[3/4] rounded-none">
-                  <Image
+                  <ResponsivePicture
                     src={category.image}
                     alt={category.name}
                     fill

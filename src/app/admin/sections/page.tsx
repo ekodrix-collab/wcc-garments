@@ -9,6 +9,10 @@ import {
 } from 'lucide-react'
 import { contentStore } from '@/lib/content-store'
 import { useThemeContext } from '@/context/ThemeContext'
+import { api } from '@/lib/api'
+import { ResponsiveImageUploader } from '@/components/admin/ResponsiveImageUploader'
+import { normalizeImage } from '@/lib/image-utils'
+export type { ResponsiveImage } from '@/lib/image-utils'
 
 // Default Static Fallbacks for Initialization
 const DEFAULT_BULK_OFFER = {
@@ -158,17 +162,36 @@ export default function AdminSectionsPage() {
   const [expansion, setExpansion] = useState<any>(DEFAULT_EXPANSION)
   const [dubaiPipeline, setDubaiPipeline] = useState<any>(DEFAULT_DUBAI_PIPELINE)
 
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
-    // Load from contentStore on mount
-    setSiteConfig(contentStore.getSiteConfig())
-    setBulkOffer(contentStore.getSectionData('bulk-offer', DEFAULT_BULK_OFFER))
-    setHero(contentStore.getSectionData('hero', DEFAULT_HERO))
-    setWhoWeAre(contentStore.getSectionData('who-we-are', DEFAULT_WHO_WE_ARE))
-    setGarments(contentStore.getSectionData('garments-showcase', DEFAULT_GARMENTS))
-    setHouseholds(contentStore.getSectionData('households-showcase-v2', DEFAULT_HOUSEHOLDS))
-    setHospitality(contentStore.getSectionData('hospitality-showcase-v2', DEFAULT_HOSPITALITY))
-    setExpansion(contentStore.getSectionData('strategic-expansion', DEFAULT_EXPANSION))
-    setDubaiPipeline(contentStore.getSectionData('dubai-pipeline', DEFAULT_DUBAI_PIPELINE))
+    const loadData = async () => {
+      try {
+        const token = localStorage.getItem('admin_token') || ''
+        const { data } = await api.admin.getContent(token)
+        
+        const getSec = (id: string, def: any) => {
+          if (!data) return def
+          const row = data.find((d: any) => d.section_id === id)
+          return row && row.content ? row.content : def
+        }
+
+        setSiteConfig(getSec('site_config', contentStore.getSiteConfig()))
+        setBulkOffer(getSec('bulk-offer', DEFAULT_BULK_OFFER))
+        setHero(getSec('hero', DEFAULT_HERO))
+        setWhoWeAre(getSec('who-we-are', DEFAULT_WHO_WE_ARE))
+        setGarments(getSec('garments-showcase', DEFAULT_GARMENTS))
+        setHouseholds(getSec('households-showcase-v2', DEFAULT_HOUSEHOLDS))
+        setHospitality(getSec('hospitality-showcase-v2', DEFAULT_HOSPITALITY))
+        setExpansion(getSec('strategic-expansion', DEFAULT_EXPANSION))
+        setDubaiPipeline(getSec('dubai-pipeline', DEFAULT_DUBAI_PIPELINE))
+      } catch (err) {
+        console.error('Failed to load content from Supabase', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
   }, [])
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, onComplete: (base64: string) => void) => {
@@ -184,22 +207,31 @@ export default function AdminSectionsPage() {
 
   const handleSave = async () => {
     setSaving(true)
-    await new Promise(r => setTimeout(r, 800))
-
-    // Save all to localStorage
-    contentStore.saveSiteConfig(siteConfig)
-    contentStore.saveSectionData('bulk-offer', bulkOffer)
-    contentStore.saveSectionData('hero', hero)
-    contentStore.saveSectionData('who-we-are', whoWeAre)
-    contentStore.saveSectionData('garments-showcase', garments)
-    contentStore.saveSectionData('households-showcase-v2', households)
-    contentStore.saveSectionData('hospitality-showcase-v2', hospitality)
-    contentStore.saveSectionData('strategic-expansion', expansion)
-    contentStore.saveSectionData('dubai-pipeline', dubaiPipeline)
-
-    setSaving(false)
-    setSuccess(true)
-    setTimeout(() => setSuccess(false), 2000)
+    try {
+      const token = localStorage.getItem('admin_token') || ''
+      await Promise.all([
+        api.admin.updateContent(token, 'site_config', siteConfig),
+        api.admin.updateContent(token, 'bulk-offer', bulkOffer),
+        api.admin.updateContent(token, 'hero', hero),
+        api.admin.updateContent(token, 'who-we-are', whoWeAre),
+        api.admin.updateContent(token, 'garments-showcase', garments),
+        api.admin.updateContent(token, 'households-showcase-v2', households),
+        api.admin.updateContent(token, 'hospitality-showcase-v2', hospitality),
+        api.admin.updateContent(token, 'strategic-expansion', expansion),
+        api.admin.updateContent(token, 'dubai-pipeline', dubaiPipeline)
+      ])
+      
+      // Also save site config to local store for components that haven't been migrated
+      contentStore.saveSiteConfig(siteConfig)
+      
+      setSuccess(true)
+      setTimeout(() => setSuccess(false), 3000)
+    } catch (err) {
+      console.error('Failed to save to Supabase', err)
+      alert('Failed to save changes. Please try again.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const { isDark, toggleTheme } = useThemeContext()
@@ -281,7 +313,7 @@ export default function AdminSectionsPage() {
             className="flex items-center gap-2.5 rounded-none bg-gold px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light shadow-md disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            <span>{saving ? 'Syncing Contents...' : 'Commit Changes'}</span>
+            <span>{saving ? 'Syncing...' : 'Sync Elementary'}</span>
           </button>
         </div>
       </div>
@@ -612,37 +644,20 @@ export default function AdminSectionsPage() {
 
               {/* Slide Images Uploads (3 Slots) */}
               <div className={`pt-6 border-t ${themeBorderSub}`}>
-                <span className={labelClass}>Promo Carousel Slide Images (Device Uploads)</span>
-                <div className="grid gap-6 sm:grid-cols-3 mt-3">
-                  {bulkOffer.slideImages.map((img: string, idx: number) => (
-                    <div key={idx} className={`border p-4 rounded-none space-y-3 ${themeBorder} ${isDark ? 'bg-black/40' : 'bg-gray-50'}`}>
-                      <span className="text-[10px] font-mono font-bold text-gold uppercase block">Slide 0{idx + 1}</span>
-                      <div className={`relative aspect-video w-full overflow-hidden bg-black border ${themeBorderSub}`}>
-                        <Image src={img} alt={`Slide ${idx + 1}`} fill className="object-cover" />
-                      </div>
-                      
-                      <div className="flex flex-col gap-2 pt-2">
-                        <input
-                          id={`bulk-slide-file-${idx}`}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleFileUpload(e, (base64) => {
-                            const updated = [...bulkOffer.slideImages]
-                            updated[idx] = base64
-                            setBulkOffer({ ...bulkOffer, slideImages: updated })
-                          })}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => document.getElementById(`bulk-slide-file-${idx}`)?.click()}
-                          className="flex items-center justify-center gap-1.5 py-2 font-mono text-[9px] font-bold text-gold border border-gold/25 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none"
-                        >
-                          <Upload className="h-3 w-3" />
-                          <span>Device Upload</span>
-                        </button>
-                      </div>
-                    </div>
+                <span className={labelClass}>Promo Carousel Slide Images</span>
+                <div className="grid gap-6 mt-3">
+                  {bulkOffer.slideImages.map((img: any, idx: number) => (
+                    <ResponsiveImageUploader
+                      key={idx}
+                      label={`Slide 0${idx + 1}`}
+                      value={img}
+                      onChange={(val) => {
+                        const updated = [...bulkOffer.slideImages]
+                        updated[idx] = val
+                        setBulkOffer({ ...bulkOffer, slideImages: updated })
+                      }}
+                      aspectRatioHint="Suggested: 16:9 for Desktop, 4:5 for Mobile"
+                    />
                   ))}
                 </div>
               </div>
@@ -696,95 +711,37 @@ export default function AdminSectionsPage() {
                   </div>
 
                   {/* 3 Images separated (Left, Center, Right) */}
-                  <div className="grid gap-4 sm:grid-cols-3 pt-3">
-                    {/* Left image */}
-                    <div className="space-y-2">
-                      <label className={labelClass}>Left Image (Emblem)</label>
-                      <div className={`relative h-28 w-full bg-black overflow-hidden border ${themeBorderSub}`}>
-                        <Image src={camp.left} alt="Left" fill className="object-cover" />
-                      </div>
-                      <input
-                        id={`hero-file-${cIdx}-left`}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, (base64) => {
-                          const updated = [...hero.campaigns]
-                          updated[cIdx].left = base64
-                          setHero({ ...hero, campaigns: updated })
-                        })}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => document.getElementById(`hero-file-${cIdx}-left`)?.click()}
-                        className={`w-full flex items-center justify-center gap-1.5 py-1.5 font-mono text-[9px] font-bold border transition-all rounded-none ${
-                          isDark 
-                            ? 'text-white/70 border-white/10 bg-white/5 hover:bg-white/10' 
-                            : 'text-gray-700 border-gray-200 bg-white hover:bg-gray-100 shadow-sm'
-                        }`}
-                      >
-                        <Upload className="h-3 w-3" />
-                        <span>Select File</span>
-                      </button>
-                    </div>
-
-                    {/* Center image */}
-                    <div className="space-y-2">
-                      <label className={labelClass}>Center Image (Signature)</label>
-                      <div className={`relative h-28 w-full bg-black overflow-hidden border ${themeBorderSub}`}>
-                        <Image src={camp.center} alt="Center" fill className="object-cover" />
-                      </div>
-                      <input
-                        id={`hero-file-${cIdx}-center`}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, (base64) => {
-                          const updated = [...hero.campaigns]
-                          updated[cIdx].center = base64
-                          setHero({ ...hero, campaigns: updated })
-                        })}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => document.getElementById(`hero-file-${cIdx}-center`)?.click()}
-                        className="w-full flex items-center justify-center gap-1.5 py-1.5 font-mono text-[9px] font-bold text-gold border border-gold/30 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none"
-                      >
-                        <Upload className="h-3 w-3" />
-                        <span>Select File</span>
-                      </button>
-                    </div>
-
-                    {/* Right image */}
-                    <div className="space-y-2">
-                      <label className={labelClass}>Right Image (Detail)</label>
-                      <div className={`relative h-28 w-full bg-black overflow-hidden border ${themeBorderSub}`}>
-                        <Image src={camp.right} alt="Right" fill className="object-cover" />
-                      </div>
-                      <input
-                        id={`hero-file-${cIdx}-right`}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, (base64) => {
-                          const updated = [...hero.campaigns]
-                          updated[cIdx].right = base64
-                          setHero({ ...hero, campaigns: updated })
-                        })}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => document.getElementById(`hero-file-${cIdx}-right`)?.click()}
-                        className={`w-full flex items-center justify-center gap-1.5 py-1.5 font-mono text-[9px] font-bold border transition-all rounded-none ${
-                          isDark 
-                            ? 'text-white/70 border-white/10 bg-white/5 hover:bg-white/10' 
-                            : 'text-gray-700 border-gray-200 bg-white hover:bg-gray-100 shadow-sm'
-                        }`}
-                      >
-                        <Upload className="h-3 w-3" />
-                        <span>Select File</span>
-                      </button>
-                    </div>
+                  <div className="grid gap-6 pt-3">
+                    <ResponsiveImageUploader
+                      label="Left Image (Emblem)"
+                      value={camp.left}
+                      onChange={(val) => {
+                        const updated = [...hero.campaigns]
+                        updated[cIdx].left = val
+                        setHero({ ...hero, campaigns: updated })
+                      }}
+                      aspectRatioHint="Suggested: 3:4 Portrait"
+                    />
+                    <ResponsiveImageUploader
+                      label="Center Image (Signature)"
+                      value={camp.center}
+                      onChange={(val) => {
+                        const updated = [...hero.campaigns]
+                        updated[cIdx].center = val
+                        setHero({ ...hero, campaigns: updated })
+                      }}
+                      aspectRatioHint="Suggested: 16:9 Landscape"
+                    />
+                    <ResponsiveImageUploader
+                      label="Right Image (Detail)"
+                      value={camp.right}
+                      onChange={(val) => {
+                        const updated = [...hero.campaigns]
+                        updated[cIdx].right = val
+                        setHero({ ...hero, campaigns: updated })
+                      }}
+                      aspectRatioHint="Suggested: 3:4 Portrait"
+                    />
                   </div>
                 </div>
               ))}
@@ -944,37 +901,15 @@ export default function AdminSectionsPage() {
               </div>
 
               {/* Main editorial Image upload */}
-              <div className={`pt-6 border-t grid gap-6 sm:grid-cols-2 items-center ${themeBorderSub}`}>
-                <div>
-                  <span className={labelClass}>Main Editorial Image (Vibrant & Sharp)</span>
-                  <div className={`relative aspect-video w-full bg-black overflow-hidden border mt-2 ${themeBorder}`}>
-                    <Image src={whoWeAre.mainImage} alt="Who We Are" fill className="object-cover" />
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <input
-                    id="who-main-file"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => handleFileUpload(e, (base64) => {
-                      setWhoWeAre({ ...whoWeAre, mainImage: base64 })
-                    })}
-                  />
-                  <h4 className={`text-xs font-bold uppercase font-mono ${themeText}`}>Upload Custom Image</h4>
-                  <p className={`text-[10px] leading-relaxed font-sans ${themeTextSub}`}>
-                    Browse your machine to upload a high-resolution factory floor or corporate design studio image to represent WCC heritage.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById('who-main-file')?.click()}
-                    className="flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold text-black bg-gold hover:bg-gold-light transition-all rounded-none"
-                  >
-                    <Upload className="h-4 w-4" />
-                    <span>Upload Image</span>
-                  </button>
-                </div>
+              <div className={`pt-6 border-t ${themeBorderSub}`}>
+                <ResponsiveImageUploader
+                  label="Main Editorial Image (Vibrant & Sharp)"
+                  value={whoWeAre.mainImage}
+                  onChange={(val) => {
+                    setWhoWeAre({ ...whoWeAre, mainImage: val })
+                  }}
+                  aspectRatioHint="Suggested: 16:9 for Desktop, 4:5 for Mobile"
+                />
               </div>
             </div>
           )}
@@ -1082,35 +1017,17 @@ export default function AdminSectionsPage() {
                       </div>
 
                       {/* Image Preview & Upload */}
-                      <div className="flex items-center gap-3 pt-2">
-                        <div className={`relative h-14 w-20 bg-black overflow-hidden border shrink-0 ${themeBorderSub}`}>
-                          <Image src={cat.image} alt={cat.name} fill className="object-cover" />
-                        </div>
-                        <div className="flex-1">
-                          <input
-                            id={`garment-cat-file-${cIdx}`}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => handleFileUpload(e, (base64) => {
-                              const updated = [...garments.categories]
-                              updated[cIdx].image = base64
-                              setGarments({ ...garments, categories: updated })
-                            })}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => document.getElementById(`garment-cat-file-${cIdx}`)?.click()}
-                            className={`flex items-center justify-center gap-1 py-1.5 w-full font-mono text-[8px] font-bold border transition-colors rounded-none ${
-                              isDark 
-                                ? 'text-white/80 border-white/10 hover:border-gold' 
-                                : 'text-gray-700 border-gray-200 hover:border-gold bg-white shadow-sm'
-                            }`}
-                          >
-                            <Upload className="h-2.5 w-2.5" />
-                            <span>Upload Device File</span>
-                          </button>
-                        </div>
+                      <div className="pt-2">
+                        <ResponsiveImageUploader
+                          label="Category Card Image"
+                          value={cat.image}
+                          onChange={(val) => {
+                            const updated = [...garments.categories]
+                            updated[cIdx].image = val
+                            setGarments({ ...garments, categories: updated })
+                          }}
+                          aspectRatioHint="Suggested: 16:9 or 3:4"
+                        />
                       </div>
                     </div>
                   ))}
@@ -1222,35 +1139,17 @@ export default function AdminSectionsPage() {
                       </div>
 
                       {/* Image Preview & Upload */}
-                      <div className="flex items-center gap-3 pt-2">
-                        <div className={`relative h-14 w-20 bg-black overflow-hidden border shrink-0 ${themeBorderSub}`}>
-                          <Image src={cat.image} alt={cat.name} fill className="object-cover" />
-                        </div>
-                        <div className="flex-1">
-                          <input
-                            id={`household-cat-file-${cIdx}`}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => handleFileUpload(e, (base64) => {
-                              const updated = [...households.categories]
-                              updated[cIdx].image = base64
-                              setHouseholds({ ...households, categories: updated })
-                            })}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => document.getElementById(`household-cat-file-${cIdx}`)?.click()}
-                            className={`flex items-center justify-center gap-1 py-1.5 w-full font-mono text-[8px] font-bold border transition-colors rounded-none ${
-                              isDark 
-                                ? 'text-white/80 border-white/10 hover:border-gold' 
-                                : 'text-gray-700 border-gray-200 hover:border-gold bg-white shadow-sm'
-                            }`}
-                          >
-                            <Upload className="h-2.5 w-2.5" />
-                            <span>Upload Device File</span>
-                          </button>
-                        </div>
+                      <div className="pt-2">
+                        <ResponsiveImageUploader
+                          label="Category Card Image"
+                          value={cat.image}
+                          onChange={(val) => {
+                            const updated = [...households.categories]
+                            updated[cIdx].image = val
+                            setHouseholds({ ...households, categories: updated })
+                          }}
+                          aspectRatioHint="Suggested: 1:1 or 4:3"
+                        />
                       </div>
                     </div>
                   ))}
@@ -1362,35 +1261,17 @@ export default function AdminSectionsPage() {
                       </div>
 
                       {/* Image Preview & Upload */}
-                      <div className="flex items-center gap-3 pt-2">
-                        <div className={`relative h-14 w-20 bg-black overflow-hidden border shrink-0 ${themeBorderSub}`}>
-                          <Image src={cat.image} alt={cat.name} fill className="object-cover" />
-                        </div>
-                        <div className="flex-1">
-                          <input
-                            id={`hospitality-cat-file-${cIdx}`}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => handleFileUpload(e, (base64) => {
-                              const updated = [...hospitality.categories]
-                              updated[cIdx].image = base64
-                              setHospitality({ ...hospitality, categories: updated })
-                            })}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => document.getElementById(`hospitality-cat-file-${cIdx}`)?.click()}
-                            className={`flex items-center justify-center gap-1 py-1.5 w-full font-mono text-[8px] font-bold border transition-colors rounded-none ${
-                              isDark 
-                                ? 'text-white/80 border-white/10 hover:border-gold' 
-                                : 'text-gray-700 border-gray-200 hover:border-gold bg-white shadow-sm'
-                            }`}
-                          >
-                            <Upload className="h-2.5 w-2.5" />
-                            <span>Upload Device File</span>
-                          </button>
-                        </div>
+                      <div className="pt-2">
+                        <ResponsiveImageUploader
+                          label="Category Card Image"
+                          value={cat.image}
+                          onChange={(val) => {
+                            const updated = [...hospitality.categories]
+                            updated[cIdx].image = val
+                            setHospitality({ ...hospitality, categories: updated })
+                          }}
+                          aspectRatioHint="Suggested: 3:4 Portrait"
+                        />
                       </div>
                     </div>
                   ))}
@@ -1558,31 +1439,17 @@ export default function AdminSectionsPage() {
                     </div>
 
                     {/* Image Preview & Device File Picker */}
-                    <div className="grid gap-4 sm:grid-cols-2 items-center pt-2">
-                      <div className={`relative aspect-video w-full bg-black overflow-hidden border ${themeBorderSub}`}>
-                        <Image src={scene.image} alt={scene.title} fill className="object-cover" />
-                      </div>
-                      <div className="space-y-2">
-                        <input
-                          id={`pipeline-scene-file-${sIdx}`}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleFileUpload(e, (base64) => {
-                            const updated = [...dubaiPipeline.scenes]
-                            updated[sIdx].image = base64
-                            setDubaiPipeline({ ...dubaiPipeline, scenes: updated })
-                          })}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => document.getElementById(`pipeline-scene-file-${sIdx}`)?.click()}
-                          className="flex items-center justify-center gap-1.5 py-2 w-full font-mono text-[9px] font-bold text-gold border border-gold/25 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none"
-                        >
-                          <Upload className="h-3.5 w-3.5" />
-                          <span>Select Device Image</span>
-                        </button>
-                      </div>
+                    <div className="pt-2">
+                      <ResponsiveImageUploader
+                        label="Pipeline Stage Image"
+                        value={scene.image}
+                        onChange={(val) => {
+                          const updated = [...dubaiPipeline.scenes]
+                          updated[sIdx].image = val
+                          setDubaiPipeline({ ...dubaiPipeline, scenes: updated })
+                        }}
+                        aspectRatioHint="Suggested: 16:9 Landscape"
+                      />
                     </div>
                   </div>
                 ))}

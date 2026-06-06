@@ -135,21 +135,21 @@ export default function AdminBrandsPage() {
     b.tagline.toLowerCase().includes(search.toLowerCase())
   )
 
-  const inputClass = "w-full rounded-xl border border-white/10 bg-black/60 px-4 py-3.5 text-xs text-white placeholder-white/20 focus:border-gold focus:outline-none focus:bg-black transition-all font-mono"
-  const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-white/50 font-mono"
+  const inputClass = "w-full rounded-xl border border-neutral-200 bg-white px-4 py-3.5 text-xs text-neutral-900 placeholder-neutral-400 dark:border-white/10 dark:bg-black/60 dark:text-white dark:placeholder-white/20 focus:border-gold focus:outline-none focus:bg-gray-50 dark:focus:bg-black transition-all font-mono"
+  const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-white/50 font-mono"
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto text-white font-mono">
+    <div className="space-y-8 max-w-[1600px] mx-auto text-neutral-900 dark:text-white font-mono">
       {/* Title Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6 font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 dark:border-white/10 pb-6 font-sans">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="font-display text-3xl font-bold tracking-tight text-white uppercase">Brands Directory</h1>
+            <h1 className="font-display text-3xl font-bold tracking-tight text-neutral-900 dark:text-white uppercase">Brands Directory</h1>
             <span className="bg-gold/10 border border-gold/30 px-3 py-0.5 font-mono text-xs font-bold text-gold rounded-none">
               {filteredBrands.length} Active
             </span>
           </div>
-          <p className="mt-1 font-mono text-xs text-white/50">
+          <p className="mt-1 font-mono text-xs text-neutral-500 dark:text-white/50">
             Configure mobile &amp; desktop brand representations and mapping parameters
           </p>
         </div>
@@ -164,20 +164,20 @@ export default function AdminBrandsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/5 p-4 border border-white/10">
-        <div className="flex items-center gap-2 text-xs font-bold text-white/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-neutral-50 dark:bg-white/5 p-4 border border-neutral-200 dark:border-white/10">
+        <div className="flex items-center gap-2 text-xs font-bold text-neutral-500 dark:text-white/60">
           <Award className="h-4 w-4 text-gold" />
           <span>WCC Enterprise Garments Catalog Labels</span>
         </div>
 
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400 dark:text-white/40" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search brands by name..."
-            className="w-full rounded-none border border-white/10 bg-black/50 py-2.5 pl-10 pr-4 font-mono text-xs text-white placeholder-white/30 focus:border-gold focus:outline-none transition-colors"
+            className="w-full rounded-none border border-neutral-200 bg-white py-2.5 pl-10 pr-4 font-mono text-xs text-neutral-900 placeholder-neutral-400 dark:border-white/10 dark:bg-black/50 dark:text-white dark:placeholder-white/30 focus:border-gold focus:outline-none transition-colors"
           />
         </div>
       </div>
@@ -190,40 +190,40 @@ export default function AdminBrandsPage() {
         {filteredBrands.map((brand, index) => (
           <div
             key={brand.id}
-            className="border border-white/10 bg-white/5 p-6 flex flex-col justify-between h-[320px] rounded-none group hover:border-gold/40 hover:bg-white/10 transition-all duration-300"
+            className="border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 p-6 flex flex-col justify-between h-[320px] rounded-none group hover:border-gold/40 hover:bg-neutral-50/50 dark:hover:bg-white/10 transition-all duration-300 shadow-sm"
           >
             <div>
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full border border-gold bg-gold/10 overflow-hidden relative flex-shrink-0">
                     <Image src={brand.logo_mobile} alt={brand.name} fill className="object-cover" sizes="40px" />
                   </div>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-white group-hover:text-gold transition-colors">{brand.name}</h3>
-                    <span className="text-[9px] font-mono text-white/40 uppercase">SLUG: {brand.slug}</span>
+                    <h3 className="font-display text-lg font-bold text-neutral-900 dark:text-white group-hover:text-gold transition-colors">{brand.name}</h3>
+                    <span className="text-[9px] font-mono text-neutral-400 dark:text-white/40 uppercase">SLUG: {brand.slug}</span>
                   </div>
                 </div>
                 
-                <span className="bg-white/5 border border-white/10 px-2 py-0.5 font-mono text-[9px] text-white/60 rounded-none">
+                <span className="bg-neutral-50 border border-neutral-200 dark:bg-white/5 dark:border-white/10 px-2 py-0.5 font-mono text-[9px] text-neutral-600 dark:text-white/60 rounded-none">
                   Order: {brand.display_order}
                 </span>
               </div>
 
-              <p className="mt-4 text-xs font-bold text-white/80 line-clamp-1">{brand.tagline}</p>
-              <p className="mt-2 text-xs leading-relaxed text-white/50 line-clamp-4 font-light">{brand.description}</p>
+              <p className="mt-4 text-xs font-bold text-neutral-800 dark:text-white/80 line-clamp-1">{brand.tagline}</p>
+              <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-white/50 line-clamp-4 font-light">{brand.description}</p>
             </div>
 
-            <div className="flex items-center gap-2 pt-4 border-t border-white/10 mt-4">
+            <div className="flex items-center gap-2 pt-4 border-t border-neutral-200 dark:border-white/10 mt-4">
               <button
                 onClick={() => handleOpenEdit(brand)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-white/70 bg-white/5 border border-white/10 hover:bg-white/10 hover:text-white transition-all rounded-none"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-neutral-700 bg-neutral-50 border border-neutral-200 hover:bg-neutral-100 hover:text-neutral-900 dark:text-white/70 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:hover:text-white transition-all rounded-none"
               >
                 <Edit2 className="h-3.5 w-3.5" />
                 <span>Modify</span>
               </button>
               <button
                 onClick={() => setIsDeleteModalOpen(brand.id)}
-                className="flex h-10 w-10 items-center justify-center text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 rounded-none transition-all"
+                className="flex h-10 w-10 items-center justify-center text-red-500 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 rounded-none transition-all"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -234,8 +234,8 @@ export default function AdminBrandsPage() {
       )}
 
       {filteredBrands.length === 0 && (
-        <div className="border border-white/10 bg-white/5 p-16 text-center text-white/50 space-y-3 font-mono">
-          <Award className="h-8 w-8 text-white/20 mx-auto" />
+        <div className="border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 p-16 text-center text-neutral-400 dark:text-white/50 space-y-3 font-mono">
+          <Award className="h-8 w-8 text-neutral-300 dark:text-white/20 mx-auto" />
           <p>No brands currently indexed in local catalog telemetries.</p>
         </div>
       )}
@@ -243,30 +243,30 @@ export default function AdminBrandsPage() {
       {/* Edit / Add Modal */}
       <AnimatePresence>
         {isEditModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono text-white">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/85 backdrop-blur-md font-mono text-neutral-900 dark:text-white">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-2xl rounded-none border border-white/10 bg-[#0E0E0E] p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-2xl rounded-none border border-neutral-200 bg-white dark:border-white/10 dark:bg-[#0E0E0E] p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
             >
-              <div className="flex items-center justify-between border-b border-white/10 pb-4 font-sans">
+              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-4 font-sans">
                 <div className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-gold" />
-                  <h3 className="font-display text-xl font-bold uppercase">
+                  <h3 className="font-display text-xl font-bold uppercase text-neutral-900 dark:text-white">
                     {formData.id ? 'Modify Label Entry' : 'Create Label Node'}
                   </h3>
                 </div>
-                <button onClick={() => setIsEditModalOpen(false)} className="text-white/40 hover:text-white">✕</button>
+                <button onClick={() => setIsEditModalOpen(false)} className="text-neutral-400 hover:text-neutral-600 dark:text-white/40 dark:hover:text-white">✕</button>
               </div>
 
               {success ? (
                 <div className="py-8 text-center space-y-4 font-sans">
-                  <div className="h-16 w-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto rounded-full">
+                  <div className="h-16 w-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 dark:text-emerald-400 flex items-center justify-center mx-auto rounded-full">
                     <CheckCircle2 className="h-8 w-8 animate-bounce" />
                   </div>
-                  <h4 className="text-lg font-bold text-white uppercase tracking-wider">Save Success</h4>
-                  <p className="text-xs text-white/50 max-w-xs mx-auto leading-relaxed">
+                  <h4 className="text-lg font-bold text-neutral-900 dark:text-white uppercase tracking-wider">Save Success</h4>
+                  <p className="text-xs text-neutral-500 dark:text-white/50 max-w-xs mx-auto leading-relaxed">
                     Brand parameters successfully registered and committed to localized network telemetry logs.
                   </p>
                 </div>
@@ -337,7 +337,7 @@ export default function AdminBrandsPage() {
                         placeholder="Desktop Banner Image URL..."
                       />
                       <div className="mt-2 flex items-center justify-between">
-                        <span className="text-[9px] text-white/30 font-mono uppercase">or select from device</span>
+                        <span className="text-[9px] text-neutral-400 dark:text-white/30 font-mono uppercase">or select from device</span>
                         <input
                           id="brand-logo-desktop-file"
                           type="file"
@@ -366,7 +366,7 @@ export default function AdminBrandsPage() {
                         placeholder="Mobile Emblem Image URL..."
                       />
                       <div className="mt-2 flex items-center justify-between">
-                        <span className="text-[9px] text-white/30 font-mono uppercase">or select from device</span>
+                        <span className="text-[9px] text-neutral-400 dark:text-white/30 font-mono uppercase">or select from device</span>
                         <input
                           id="brand-logo-mobile-file"
                           type="file"
@@ -386,7 +386,7 @@ export default function AdminBrandsPage() {
                     </div>
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2 pt-2 border-t border-white/5">
+                  <div className="grid gap-4 sm:grid-cols-2 pt-2 border-t border-neutral-100 dark:border-white/5">
                     <div>
                       <label className={labelClass}>Display Ordering Sequence</label>
                       <input
@@ -403,9 +403,9 @@ export default function AdminBrandsPage() {
                         id="featured"
                         checked={formData.featured}
                         onChange={e => setFormData({...formData, featured: e.target.checked})}
-                        className="h-4 w-4 accent-gold rounded border-white/20 bg-black"
+                        className="h-4 w-4 accent-gold rounded border-neutral-300 dark:border-white/20 bg-white dark:bg-black"
                       />
-                      <label htmlFor="featured" className="text-xs text-white/80 cursor-pointer select-none">Feature on Homepage Carousel</label>
+                      <label htmlFor="featured" className="text-xs text-neutral-700 dark:text-white/80 cursor-pointer select-none">Feature on Homepage Carousel</label>
                     </div>
                   </div>
 
@@ -421,7 +421,7 @@ export default function AdminBrandsPage() {
                     <button
                       type="button"
                       onClick={() => setIsEditModalOpen(false)}
-                      className="flex-1 flex h-12 items-center justify-center border border-white/10 text-white/60 text-xs font-bold uppercase tracking-wider hover:bg-white/5 transition-all rounded-none"
+                      className="flex-1 flex h-12 items-center justify-center border border-neutral-200 text-neutral-500 hover:bg-neutral-100 dark:border-white/10 dark:text-white/60 dark:hover:bg-white/5 transition-all rounded-none text-xs font-bold uppercase tracking-wider"
                     >
                       Cancel
                     </button>
@@ -436,26 +436,26 @@ export default function AdminBrandsPage() {
       {/* Delete Modal */}
       <AnimatePresence>
         {isDeleteModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono text-white">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/85 backdrop-blur-md font-mono text-neutral-900 dark:text-white">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md rounded-none border border-white/10 bg-[#0E0E0E] p-8 shadow-2xl text-center space-y-6"
+              className="w-full max-w-md rounded-none border border-neutral-200 bg-white dark:border-white/10 dark:bg-[#0E0E0E] p-8 shadow-2xl text-center space-y-6"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-none bg-red-500/10 border border-red-500/20 mx-auto text-red-400">
+              <div className="flex h-16 w-16 items-center justify-center rounded-none bg-red-500/10 border border-red-500/20 mx-auto text-red-500">
                 <Trash2 className="h-8 w-8" />
               </div>
               <div>
-                <h3 className="font-display text-xl font-bold text-white uppercase">Decommission Brand Label</h3>
-                <p className="mt-2 text-xs text-white/60 leading-relaxed font-sans">
+                <h3 className="font-display text-xl font-bold text-neutral-900 dark:text-white uppercase">Decommission Brand Label</h3>
+                <p className="mt-2 text-xs text-neutral-500 dark:text-white/60 leading-relaxed font-sans">
                   Are you sure you want to permanently decommission this brand label node? This action removes mapping indexes. Default products will be disassociated.
                 </p>
               </div>
               <div className="flex items-center gap-4 pt-2">
                 <button
                   onClick={() => setIsDeleteModalOpen(null)}
-                  className="flex-1 rounded-none border border-white/10 bg-white/5 py-3 text-xs font-semibold text-white/70 hover:bg-white/10 transition-all"
+                  className="flex-1 rounded-none border border-neutral-200 bg-neutral-50 py-3 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:bg-white/10 transition-all"
                 >
                   Cancel
                 </button>

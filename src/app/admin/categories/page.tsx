@@ -30,9 +30,9 @@ interface CatItem {
 }
 
 const STATUS_STYLES: Record<ItemStatus, string> = {
-  active:         'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-  'coming-soon':  'bg-amber-500/15 text-amber-400 border-amber-500/30',
-  hidden:         'bg-neutral-700/30 text-neutral-400 border-neutral-600/30',
+  active:         'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
+  'coming-soon':  'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
+  hidden:         'bg-neutral-200 text-neutral-600 dark:bg-neutral-700/30 dark:text-neutral-400 border-neutral-300 dark:border-neutral-600/30',
 }
 const STATUS_LABELS: Record<ItemStatus, string> = {
   active: 'Active', 'coming-soon': 'Coming Soon', hidden: 'Hidden',
@@ -277,21 +277,21 @@ export default function AdminCategoriesPage() {
   const comingSoon = categories.filter((c) => c.status === 'coming-soon').length
 
   // ── Form field helpers ────────────────────────────────────────────────────────
-  const inputCls = 'w-full rounded-none border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/20 focus:border-gold focus:outline-none'
-  const selectCls = 'w-full rounded-none border border-white/10 bg-black px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-none'
-  const labelCls = 'mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-white/40'
+  const inputCls = 'w-full rounded-none border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-gold focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder-white/20'
+  const selectCls = 'w-full rounded-none border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-gold focus:outline-none dark:border-white/10 dark:bg-black dark:text-white'
+  const labelCls = 'mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-white/40'
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto text-white">
+    <div className="space-y-8 max-w-[1600px] mx-auto text-neutral-900 dark:text-white">
 
       {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 dark:border-white/10 pb-6">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="font-display text-2xl font-bold tracking-tight text-white uppercase">Category & Sub-Category Manager</h1>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-neutral-900 dark:text-white uppercase">Category & Sub-Category Manager</h1>
             <span className="bg-gold/10 border border-gold/30 px-3 py-0.5 font-mono text-xs font-bold text-gold">Live Control</span>
           </div>
-          <p className="mt-1 font-mono text-xs text-white/40">Manage all division categories and sub-categories. Changes reflect across the site and API instantly.</p>
+          <p className="mt-1 font-mono text-xs text-neutral-500 dark:text-white/40">Manage all division categories and sub-categories. Changes reflect across the site and API instantly.</p>
         </div>
         <button onClick={openAddCat} className="flex items-center gap-2 bg-gold px-5 py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all shrink-0">
           <Plus className="h-3.5 w-3.5" /> Add Category
@@ -306,18 +306,18 @@ export default function AdminCategoriesPage() {
           { label: 'Active', value: activeCats },
           { label: 'Coming Soon', value: comingSoon },
         ].map((s) => (
-          <div key={s.label} className="border border-white/10 bg-white/5 px-4 py-3">
-            <p className="font-mono text-[9px] uppercase tracking-widest text-white/30">{s.label}</p>
-            <p className="mt-1 font-display text-2xl font-bold text-white">{s.value}</p>
+          <div key={s.label} className="border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 px-4 py-3 shadow-sm">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-neutral-400 dark:text-white/30">{s.label}</p>
+            <p className="mt-1 font-display text-2xl font-bold text-neutral-900 dark:text-white">{s.value}</p>
           </div>
         ))}
       </div>
 
       {/* ── Guide ── */}
-      <div className="bg-white/5 border border-white/10 p-4 flex items-start gap-3">
+      <div className="bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 p-4 flex items-start gap-3">
         <HelpCircle className="h-5 w-5 text-gold shrink-0 mt-0.5" />
-        <div className="font-mono text-xs text-white/60 space-y-1">
-          <p className="font-bold text-white uppercase tracking-wider text-[10px]">How it works</p>
+        <div className="font-mono text-xs text-neutral-600 dark:text-white/60 space-y-1">
+          <p className="font-bold text-neutral-900 dark:text-white uppercase tracking-wider text-[10px]">How it works</p>
           <p>• Click <strong className="text-gold">chevron ›</strong> on any category to expand sub-categories.</p>
           <p>• Click <strong className="text-gold">status badge</strong> to cycle: Active → Coming Soon → Hidden.</p>
           <p>• Click <strong className="text-gold">+ Sub</strong> inside any category to add a new sub-category.</p>
@@ -326,7 +326,7 @@ export default function AdminCategoriesPage() {
       </div>
 
       {/* ── Section Tabs ── */}
-      <div className="flex flex-wrap gap-2 border-b border-white/10 pb-4">
+      <div className="flex flex-wrap gap-2 border-b border-neutral-200 dark:border-white/10 pb-4">
         {([
           { key: 'all', label: `All (${totalCats})` },
           { key: 'garments', label: '👗 Garments' },
@@ -336,7 +336,7 @@ export default function AdminCategoriesPage() {
           <button
             key={tab.key}
             onClick={() => setSection(tab.key)}
-            className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${section === tab.key ? 'bg-gold border-gold text-black' : 'border-white/10 text-white/50 hover:text-white'}`}
+            className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${section === tab.key ? 'bg-gold border-gold text-black' : 'border-neutral-200 text-neutral-500 hover:text-neutral-950 dark:border-white/10 dark:text-white/50 dark:hover:text-white'}`}
           >
             {tab.label}
           </button>
@@ -350,12 +350,12 @@ export default function AdminCategoriesPage() {
             {/* Division header */}
             <div className="flex items-center justify-between border-l-4 border-gold pl-4 mb-4">
               <div>
-                <h2 className="font-display text-lg font-bold uppercase text-white">{divisionName}</h2>
-                <p className="font-mono text-[10px] text-white/30">{items.length} categories · {items.reduce((a, c) => a + c.subCategories.length, 0)} sub-categories</p>
+                <h2 className="font-display text-lg font-bold uppercase text-neutral-900 dark:text-white">{divisionName}</h2>
+                <p className="font-mono text-[10px] text-neutral-400 dark:text-white/30">{items.length} categories · {items.reduce((a, c) => a + c.subCategories.length, 0)} sub-categories</p>
               </div>
               <button
                 onClick={() => { setCatForm({ ...EMPTY_CAT, divisionSlug: divSlug }); setEditingCat(null); setCatModal('add') }}
-                className="flex items-center gap-1.5 border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-[10px] font-bold text-white hover:bg-gold hover:text-black transition-all"
+                className="flex items-center gap-1.5 border border-neutral-200 bg-white dark:border-white/15 dark:bg-white/5 px-3 py-1.5 font-mono text-[10px] font-bold text-neutral-700 dark:text-white hover:bg-gold hover:text-black dark:hover:text-black transition-all shadow-sm"
               >
                 <Plus className="h-3 w-3" /> Add to {divisionName}
               </button>
@@ -366,38 +366,38 @@ export default function AdminCategoriesPage() {
               {loading ? (
                 <div className="py-8 flex justify-center"><Loader2 className="w-5 h-5 text-gold animate-spin" /></div>
               ) : items.sort((a, b) => a.displayOrder - b.displayOrder).map((cat) => (
-                <div key={cat.id} className="border border-white/10 bg-white/[0.03] hover:border-white/20 transition-all">
+                <div key={cat.id} className="border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/[0.03] hover:border-neutral-300 dark:hover:border-white/20 transition-all shadow-sm">
                   {/* Category row */}
                   <div className="flex items-center gap-3 px-4 py-3">
-                    <button onClick={() => toggleExpand(cat.id)} className="text-white/40 hover:text-white transition-colors shrink-0">
+                    <button onClick={() => toggleExpand(cat.id)} className="text-neutral-400 hover:text-neutral-600 dark:text-white/40 dark:hover:text-white transition-colors shrink-0">
                       {expanded.has(cat.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     </button>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-[9px] text-white/30">{cat.id}</span>
-                        <span className="font-body text-sm font-semibold text-white">{cat.name}</span>
-                        <span className="font-mono text-[10px] text-white/30">/products/{cat.divisionSlug}/{cat.slug}</span>
+                        <span className="font-mono text-[9px] text-neutral-400 dark:text-white/30">{cat.id}</span>
+                        <span className="font-body text-sm font-semibold text-neutral-900 dark:text-white">{cat.name}</span>
+                        <span className="font-mono text-[10px] text-neutral-400 dark:text-white/30">/products/{cat.divisionSlug}/{cat.slug}</span>
                       </div>
-                      <p className="font-mono text-[9px] text-white/20 mt-0.5">{cat.subCategories.length} sub-categories</p>
+                      <p className="font-mono text-[9px] text-neutral-400 dark:text-white/20 mt-0.5">{cat.subCategories.length} sub-categories</p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                        {/* Status toggle badge */}
-                        <button
-                          onClick={() => toggleCatStatus(cat.id, cat.divisionSlug)}
-                          title="Click to cycle status"
-                          className={`px-2.5 py-0.5 font-mono text-[8px] font-bold uppercase border transition-all cursor-pointer hover:opacity-80 ${STATUS_STYLES[cat.status]}`}
-                        >
+                      {/* Status toggle badge */}
+                      <button
+                        onClick={() => toggleCatStatus(cat.id, cat.divisionSlug)}
+                        title="Click to cycle status"
+                        className={`px-2.5 py-0.5 font-mono text-[8px] font-bold uppercase border transition-all cursor-pointer hover:opacity-80 ${STATUS_STYLES[cat.status]}`}
+                      >
                         {STATUS_LABELS[cat.status]}
                       </button>
-                      <button onClick={() => openAddSub(cat.id)} className="flex items-center gap-1 border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[9px] font-bold text-white hover:bg-gold hover:text-black transition-all">
+                      <button onClick={() => openAddSub(cat.id)} className="flex items-center gap-1 border border-neutral-200 bg-neutral-50 dark:border-white/15 dark:bg-white/5 px-2.5 py-1 font-mono text-[9px] font-bold text-neutral-700 dark:text-white hover:bg-gold hover:text-black dark:hover:text-black transition-all">
                         <Plus className="h-3 w-3" /> Sub
                       </button>
                       <button onClick={() => openEditCat(cat)} className="flex h-7 w-7 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
                         <Edit2 className="h-3 w-3" />
                       </button>
-                        <button onClick={() => deleteCat(cat.id, cat.divisionSlug)} className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
-                          <Trash2 className="h-3 w-3" />
-                        </button>
+                      <button onClick={() => deleteCat(cat.id, cat.divisionSlug)} className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
                     </div>
                   </div>
 
@@ -409,20 +409,20 @@ export default function AdminCategoriesPage() {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="overflow-hidden border-t border-white/[0.06]"
+                        className="overflow-hidden border-t border-neutral-100 dark:border-white/[0.06]"
                       >
-                        <div className="px-4 py-3 space-y-2 bg-white/[0.02]">
-                          <p className="font-mono text-[9px] uppercase tracking-widest text-white/20 mb-2">Sub-Categories</p>
+                        <div className="px-4 py-3 space-y-2 bg-neutral-50/50 dark:bg-white/[0.02]">
+                          <p className="font-mono text-[9px] uppercase tracking-widest text-neutral-400 dark:text-white/20 mb-2">Sub-Categories</p>
                           {cat.subCategories.length === 0 && (
-                            <p className="font-mono text-[10px] text-white/20 italic">No sub-categories yet. Click "+ Sub" to add one.</p>
+                            <p className="font-mono text-[10px] text-neutral-400 dark:text-white/20 italic">No sub-categories yet. Click "+ Sub" to add one.</p>
                           )}
                           {cat.subCategories.sort((a, b) => a.displayOrder - b.displayOrder).map((sub) => (
-                            <div key={sub.id} className="flex items-center gap-3 pl-4 border-l border-white/10">
+                            <div key={sub.id} className="flex items-center gap-3 pl-4 border-l border-neutral-200 dark:border-white/10">
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="font-mono text-[8px] text-white/20">{sub.id}</span>
-                                  <span className="font-body text-xs text-white/80">{sub.name}</span>
-                                  <span className="font-mono text-[9px] text-white/20">/.../{sub.slug}</span>
+                                  <span className="font-mono text-[8px] text-neutral-400 dark:text-white/20">{sub.id}</span>
+                                  <span className="font-body text-xs text-neutral-700 dark:text-white/80">{sub.name}</span>
+                                  <span className="font-mono text-[9px] text-neutral-400 dark:text-white/20">/.../{sub.slug}</span>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 shrink-0">
@@ -435,7 +435,7 @@ export default function AdminCategoriesPage() {
                                 <button onClick={() => openEditSub(cat.id, sub)} className="flex h-6 w-6 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
                                   <Edit2 className="h-3 w-3" />
                                 </button>
-                                <button onClick={() => deleteSub(cat.id, sub.id)} className="flex h-6 w-6 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                                <button onClick={() => deleteSub(cat.id, sub.id)} className="flex h-6 w-6 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
                                   <Trash2 className="h-3 w-3" />
                                 </button>
                               </div>
@@ -455,14 +455,14 @@ export default function AdminCategoriesPage() {
       {/* ── Category Modal ── */}
       <AnimatePresence>
         {catModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-md">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md border border-white/10 bg-[#0D0D0D] p-7 shadow-2xl space-y-5">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <h3 className="font-display text-lg font-bold uppercase text-white">
+              className="w-full max-w-md border border-neutral-200 bg-white dark:border-white/10 dark:bg-[#0D0D0D] p-7 shadow-2xl space-y-5 text-neutral-900 dark:text-white">
+              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-4">
+                <h3 className="font-display text-lg font-bold uppercase text-neutral-900 dark:text-white">
                   {catModal === 'add' ? 'Add Category' : 'Edit Category'}
                 </h3>
-                <button onClick={() => setCatModal(null)} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
+                <button onClick={() => setCatModal(null)} className="text-neutral-400 hover:text-neutral-600 dark:text-white/40 dark:hover:text-white"><X className="h-5 w-5" /></button>
               </div>
               <div className="space-y-4">
                 <div>
@@ -491,7 +491,7 @@ export default function AdminCategoriesPage() {
                   <label className={labelCls}>Category Image URL</label>
                   <input value={catForm.image} onChange={(e) => setCatForm({ ...catForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
                   {catForm.image && (
-                    <div className="mt-2 h-20 w-32 relative bg-black border border-white/10 rounded overflow-hidden">
+                    <div className="mt-2 h-20 w-32 relative bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 rounded overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={catForm.image} alt="Preview" className="object-cover w-full h-full" />
                     </div>
@@ -499,7 +499,7 @@ export default function AdminCategoriesPage() {
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setCatModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
+                <button onClick={() => setCatModal(null)} className="flex-1 border border-neutral-200 text-neutral-500 hover:bg-neutral-50 dark:border-white/10 dark:text-white/60 dark:hover:bg-white/5 transition-all py-2.5 font-mono text-xs">Cancel</button>
                 <button disabled={saving} onClick={saveCat} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
                   {saving && <Loader2 className="w-3 h-3 animate-spin" />}
                   {catModal === 'add' ? 'Create' : 'Save Changes'}
@@ -513,14 +513,14 @@ export default function AdminCategoriesPage() {
       {/* ── Sub-Category Modal ── */}
       <AnimatePresence>
         {subModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-md">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md border border-white/10 bg-[#0D0D0D] p-7 shadow-2xl space-y-5">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <h3 className="font-display text-lg font-bold uppercase text-white">
+              className="w-full max-w-md border border-neutral-200 bg-white dark:border-white/10 dark:bg-[#0D0D0D] p-7 shadow-2xl space-y-5 text-neutral-900 dark:text-white">
+              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-4">
+                <h3 className="font-display text-lg font-bold uppercase text-neutral-900 dark:text-white">
                   {subModal === 'add' ? 'Add Sub-Category' : 'Edit Sub-Category'}
                 </h3>
-                <button onClick={() => setSubModal(null)} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
+                <button onClick={() => setSubModal(null)} className="text-neutral-400 hover:text-neutral-600 dark:text-white/40 dark:hover:text-white"><X className="h-5 w-5" /></button>
               </div>
               <div className="space-y-4">
                 <div>
@@ -543,7 +543,7 @@ export default function AdminCategoriesPage() {
                   <label className={labelCls}>Sub-Category Image URL</label>
                   <input value={subForm.image} onChange={(e) => setSubForm({ ...subForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
                   {subForm.image && (
-                    <div className="mt-2 h-20 w-32 relative bg-black border border-white/10 rounded overflow-hidden">
+                    <div className="mt-2 h-20 w-32 relative bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 rounded overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={subForm.image} alt="Preview" className="object-cover w-full h-full" />
                     </div>
@@ -551,7 +551,7 @@ export default function AdminCategoriesPage() {
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setSubModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
+                <button onClick={() => setSubModal(null)} className="flex-1 border border-neutral-200 text-neutral-500 hover:bg-neutral-50 dark:border-white/10 dark:text-white/60 dark:hover:bg-white/5 transition-all py-2.5 font-mono text-xs">Cancel</button>
                 <button disabled={saving} onClick={saveSub} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
                   {saving && <Loader2 className="w-3 h-3 animate-spin" />}
                   {subModal === 'add' ? 'Create' : 'Save Changes'}
