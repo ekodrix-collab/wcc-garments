@@ -12,6 +12,7 @@ export interface SubCategory {
   slug: string
   status: CategoryStatus
   displayOrder: number
+  image?: string
 }
 
 export interface Category {
@@ -21,24 +22,26 @@ export interface Category {
   slug: string
   status: CategoryStatus
   displayOrder: number
+  image?: string
   subCategories: SubCategory[]
 }
 
-// ── Build flat list from DIVISIONS data (single source of truth) ─────────────
-function buildCategories(): Category[] {
+// ── Build flat list from data (single source of truth) ─────────────
+function buildCategories(divisionsData: any[]): Category[] {
   const result: Category[] = []
 
-  for (const division of DIVISIONS) {
-    const divCategories = division.categories ?? []
+  for (const division of divisionsData) {
+    const divCategories = division.categories || division.sub_categories || []
     for (const cat of divCategories) {
-      const subs: SubCategory[] = (cat.subCategories ?? []).map((sub) => ({
+      const subs: SubCategory[] = (cat.subCategories || cat.sub_categories || []).map((sub: any) => ({
         id: sub.id,
         categoryId: cat.id,
         divisionSlug: division.slug,
         name: sub.name,
         slug: sub.slug,
         status: sub.status as CategoryStatus,
-        displayOrder: sub.displayOrder,
+        displayOrder: sub.displayOrder || sub.display_order,
+        image: sub.image,
       }))
 
       result.push({
@@ -47,7 +50,8 @@ function buildCategories(): Category[] {
         name: cat.name,
         slug: cat.slug,
         status: cat.status as CategoryStatus,
-        displayOrder: cat.displayOrder,
+        displayOrder: cat.displayOrder || cat.display_order,
+        image: cat.image,
         subCategories: subs,
       })
     }
@@ -55,6 +59,9 @@ function buildCategories(): Category[] {
 
   return result
 }
+
+import { getSupabaseServerClient } from '@/lib/supabase'
+import { fetchWithFallback } from '@/lib/db-service'
 
 // ── GET /api/categories ───────────────────────────────────────────────────────
 // Query params:
@@ -70,7 +77,21 @@ export async function GET(request: NextRequest) {
     const parentIdParam = searchParams.get('parentId')
     const flatParam     = searchParams.get('flat') === 'true'
 
-    let categories = buildCategories()
+    const divisionsData = await fetchWithFallback(
+      async () => {
+        const supabase = getSupabaseServerClient()
+        const { data: categories, error } = await supabase
+          .from('categories')
+          .select('*')
+          .order('created_at', { ascending: true })
+        if (error) throw error
+        return categories || []
+      },
+      DIVISIONS,
+      'Fetch Categories'
+    )
+
+    let categories = buildCategories(divisionsData)
 
     // Filter by division
     if (divisionParam) {
@@ -84,7 +105,7 @@ export async function GET(request: NextRequest) {
 
     // Return sub-categories of a specific parent
     if (parentIdParam) {
-      const parent = buildCategories().find((c) => c.id === parentIdParam)
+      const parent = buildCategories(divisionsData).find((c) => c.id === parentIdParam)
       if (!parent) {
         return NextResponse.json({ success: false, error: 'Category not found' }, { status: 404 })
       }

@@ -15,6 +15,7 @@ interface SubCatItem {
   slug: string
   status: ItemStatus
   displayOrder: number
+  image?: string
 }
 interface CatItem {
   id: string
@@ -25,6 +26,7 @@ interface CatItem {
   status: ItemStatus
   displayOrder: number
   subCategories: SubCatItem[]
+  image?: string
 }
 
 const STATUS_STYLES: Record<ItemStatus, string> = {
@@ -44,8 +46,8 @@ const SECTION_SLUGS: Record<Exclude<SectionKey, 'all'>, string[]> = {
 }
 
 // ── Empty form state ───────────────────────────────────────────────────────────
-const EMPTY_CAT = { divisionSlug: 'garments', name: '', slug: '', status: 'active' as ItemStatus }
-const EMPTY_SUB = { name: '', slug: '', status: 'active' as ItemStatus }
+const EMPTY_CAT = { divisionSlug: 'garments', name: '', slug: '', status: 'active' as ItemStatus, image: '' }
+const EMPTY_SUB = { name: '', slug: '', status: 'active' as ItemStatus, image: '' }
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<CatItem[]>([])
@@ -87,9 +89,11 @@ export default function AdminCategoriesPage() {
               slug: cat.slug,
               status: cat.status as ItemStatus,
               displayOrder: cat.displayOrder || cat.display_order,
+              image: cat.image,
               subCategories: (cat.subCategories || cat.sub_categories || []).map((s: any) => ({
                 id: s.id, name: s.name, slug: s.slug,
                 status: s.status as ItemStatus, displayOrder: s.displayOrder || s.display_order,
+                image: s.image
               })),
             })
           }
@@ -126,7 +130,7 @@ export default function AdminCategoriesPage() {
 
   // ── Category CRUD ────────────────────────────────────────────────────────────
   const openAddCat = () => { setCatForm(EMPTY_CAT); setEditingCat(null); setCatModal('add') }
-  const openEditCat = (c: CatItem) => { setEditingCat(c); setCatForm({ divisionSlug: c.divisionSlug, name: c.name, slug: c.slug, status: c.status }); setCatModal('edit') }
+  const openEditCat = (c: CatItem) => { setEditingCat(c); setCatForm({ divisionSlug: c.divisionSlug, name: c.name, slug: c.slug, status: c.status, image: c.image || '' }); setCatModal('edit') }
 
   const syncDivisionToDB = async (divisionSlug: string, updatedCategories: any[]) => {
     const div = divisionsData.find(d => d.slug === divisionSlug)
@@ -144,7 +148,7 @@ export default function AdminCategoriesPage() {
       const newCat: CatItem = {
         id: `CAT-${Date.now()}`, divisionSlug: catForm.divisionSlug,
         divisionName: divOptions.find((d) => d.slug === catForm.divisionSlug)?.name ?? catForm.divisionSlug,
-        name: catForm.name, slug: catForm.slug, status: catForm.status,
+        name: catForm.name, slug: catForm.slug, status: catForm.status, image: catForm.image,
         displayOrder: categories.filter((c) => c.divisionSlug === catForm.divisionSlug).length + 1,
         subCategories: [],
       }
@@ -155,7 +159,7 @@ export default function AdminCategoriesPage() {
     
     // Extract just the categories for this division to save to DB
     const divCats = updatedList.filter(c => c.divisionSlug === catForm.divisionSlug).map(c => ({
-      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories
+      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
     }))
     
     await syncDivisionToDB(catForm.divisionSlug, divCats)
@@ -169,7 +173,7 @@ export default function AdminCategoriesPage() {
     const updatedList = categories.filter((c) => c.id !== id)
     
     const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
-      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories
+      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
     }))
     await syncDivisionToDB(divSlug, divCats)
     setCategories(updatedList)
@@ -183,7 +187,7 @@ export default function AdminCategoriesPage() {
     })
     
     const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
-      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories
+      id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
     }))
     await syncDivisionToDB(divSlug, divCats)
     setCategories(updatedList)
@@ -191,7 +195,7 @@ export default function AdminCategoriesPage() {
 
   // ── Sub-category CRUD ─────────────────────────────────────────────────────────
   const openAddSub = (parentId: string) => { setSubParentId(parentId); setEditingSubId(null); setSubForm(EMPTY_SUB); setSubModal('add') }
-  const openEditSub = (parentId: string, sub: SubCatItem) => { setSubParentId(parentId); setEditingSubId(sub.id); setSubForm({ name: sub.name, slug: sub.slug, status: sub.status }); setSubModal('edit') }
+  const openEditSub = (parentId: string, sub: SubCatItem) => { setSubParentId(parentId); setEditingSubId(sub.id); setSubForm({ name: sub.name, slug: sub.slug, status: sub.status, image: sub.image || '' }); setSubModal('edit') }
 
   const saveSub = async () => {
     if (!subForm.name || !subForm.slug || !subParentId) return
@@ -203,7 +207,7 @@ export default function AdminCategoriesPage() {
       if (c.id !== subParentId) return c
       let newCat = { ...c }
       if (subModal === 'add') {
-        const newSub: SubCatItem = { id: `SUB-${Date.now()}`, name: subForm.name, slug: subForm.slug, status: subForm.status, displayOrder: c.subCategories.length + 1 }
+        const newSub: SubCatItem = { id: `SUB-${Date.now()}`, name: subForm.name, slug: subForm.slug, status: subForm.status, displayOrder: c.subCategories.length + 1, image: subForm.image }
         newCat = { ...c, subCategories: [...c.subCategories, newSub] }
       } else if (subModal === 'edit' && editingSubId) {
         newCat = { ...c, subCategories: c.subCategories.map((s) => s.id === editingSubId ? { ...s, ...subForm } : s) }
@@ -214,7 +218,7 @@ export default function AdminCategoriesPage() {
     
     if (targetCat) {
       const divCats = updatedList.filter(c => c.divisionSlug === targetCat!.divisionSlug).map(c => ({
-        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories
+        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
       }))
       await syncDivisionToDB(targetCat.divisionSlug, divCats)
     }
@@ -238,7 +242,7 @@ export default function AdminCategoriesPage() {
     
     if (divSlug) {
       const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
-        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories
+        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
       }))
       await syncDivisionToDB(divSlug, divCats)
     }
@@ -259,7 +263,7 @@ export default function AdminCategoriesPage() {
     
     if (divSlug) {
       const divCats = updatedList.filter(c => c.divisionSlug === divSlug).map(c => ({
-        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories
+        id: c.id, name: c.name, slug: c.slug, status: c.status, displayOrder: c.displayOrder, subCategories: c.subCategories, image: c.image
       }))
       await syncDivisionToDB(divSlug, divCats)
     }
@@ -483,6 +487,16 @@ export default function AdminCategoriesPage() {
                     <option value="hidden">Hidden</option>
                   </select>
                 </div>
+                <div>
+                  <label className={labelCls}>Category Image URL</label>
+                  <input value={catForm.image} onChange={(e) => setCatForm({ ...catForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
+                  {catForm.image && (
+                    <div className="mt-2 h-20 w-32 relative bg-black border border-white/10 rounded overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={catForm.image} alt="Preview" className="object-cover w-full h-full" />
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setCatModal(null)} className="flex-1 border border-white/10 py-2.5 font-mono text-xs text-white/60 hover:bg-white/5 transition-all">Cancel</button>
@@ -524,6 +538,16 @@ export default function AdminCategoriesPage() {
                     <option value="coming-soon">Coming Soon</option>
                     <option value="hidden">Hidden</option>
                   </select>
+                </div>
+                <div>
+                  <label className={labelCls}>Sub-Category Image URL</label>
+                  <input value={subForm.image} onChange={(e) => setSubForm({ ...subForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
+                  {subForm.image && (
+                    <div className="mt-2 h-20 w-32 relative bg-black border border-white/10 rounded overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={subForm.image} alt="Preview" className="object-cover w-full h-full" />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex gap-3 pt-2">

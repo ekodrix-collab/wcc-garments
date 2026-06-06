@@ -3,11 +3,12 @@ import { getSupabaseServerClient } from '@/lib/supabase'
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = getSupabaseServerClient()
-    const { error } = await supabase.from('media').delete().eq('id', params.id)
+    const { error } = await supabase.from('media').delete().eq('id', id)
     if (error) throw error
 
     return NextResponse.json({ success: true })

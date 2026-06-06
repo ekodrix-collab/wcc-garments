@@ -29,6 +29,21 @@ export function HouseholdShowcase() {
 
   useEffect(() => {
     setData(contentStore.getSectionData('households-showcase', DEFAULT_HOUSEHOLDS))
+    
+    // Connect with backend images
+    import('@/lib/api').then(({ api }) => {
+      api.getCategories('households').then((res) => {
+        if (res.success && res.data) {
+          setData(prev => {
+            const updatedCategories = prev.categories.map((c: any) => {
+              const backendCat = res.data.find((b: any) => b.slug === c.slug)
+              return { ...c, image: backendCat?.image || c.image }
+            })
+            return { ...prev, categories: updatedCategories }
+          })
+        }
+      }).catch(console.error)
+    })
   }, [])
 
   return (

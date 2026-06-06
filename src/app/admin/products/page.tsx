@@ -146,7 +146,7 @@ export default function AdminProductsPage() {
                           <p className="font-display text-sm font-bold text-white group-hover:text-gold transition-colors">{product.name}</p>
                           <p className="text-[10px] text-white/40 font-mono">ID: {product.slug}</p>
                           <div className="flex items-center gap-2 pt-0.5">
-                            {(product.tags || []).slice(0, 2).map((t, i) => (
+                            {(product.tags || []).slice(0, 2).map((t: string, i: number) => (
                               <span key={i} className="bg-white/5 border border-white/10 px-1.5 py-0.2 font-mono text-[9px] text-white/60 uppercase tracking-wider rounded-none">
                                 {t}
                               </span>
