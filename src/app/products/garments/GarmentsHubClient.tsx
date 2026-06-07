@@ -748,7 +748,7 @@ export default function GarmentsHubClient() {
             </h3>
           </div>
           <Link
-            href="/contact"
+            href={`/contact?division=garments&category=${urlCategory !== 'all' ? urlCategory : ''}&brand=${urlBrand !== 'all' ? urlBrand : ''}&source=garments_hub&intent=bulk_quotation`}
             className="btn-gold text-[10px] shrink-0"
           >
             Request a Quotation <ArrowRight className="h-4 w-4" />
@@ -771,6 +771,10 @@ function ProductsGrid({
   subheading: string
   emptyMsg: string
 }) {
+  const searchParams = useSearchParams()
+  const urlCategory = searchParams.get('category') || 'all'
+  const urlBrand = searchParams.get('brand') || 'all'
+
   return (
     <section className="mx-auto max-w-[1560px] px-6 py-12 lg:px-12 border-t border-[var(--border)]">
       <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
@@ -789,7 +793,7 @@ function ProductsGrid({
         <div className="border border-[var(--border)] bg-[var(--surface)] px-6 py-20 text-center">
           <p className="font-display text-xl text-[var(--text-muted)]">{emptyMsg}</p>
           <Link
-            href="/contact"
+            href={`/contact?division=garments&category=${urlCategory !== 'all' ? urlCategory : ''}&brand=${urlBrand !== 'all' ? urlBrand : ''}&source=garments_hub_empty_grid&intent=bulk_quotation`}
             className="mt-6 inline-flex items-center gap-2 border border-gold/30 bg-gold/10 px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-black transition-all"
           >
             Contact for Enquiry <ArrowRight className="h-3.5 w-3.5" />

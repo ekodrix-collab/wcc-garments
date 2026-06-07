@@ -40,10 +40,19 @@ export async function generateMetadata({
 
 export default async function DivisionCategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ division: string }>
+  searchParams: Promise<{ category?: string; brand?: string }>
 }) {
   const { division: divisionSlug } = await params
+  const { category, brand } = await searchParams
 
-  return <DivisionCatalogPage divisionSlug={divisionSlug} />
+  return (
+    <DivisionCatalogPage
+      divisionSlug={divisionSlug}
+      initialCategorySlug={category}
+      initialBrandSlug={brand}
+    />
+  )
 }

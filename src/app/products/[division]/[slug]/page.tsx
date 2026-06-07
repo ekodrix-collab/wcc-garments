@@ -63,10 +63,13 @@ export async function generateMetadata({
 
 export default async function DivisionCategoryOrLegacyProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ division: string; slug: string }>
+  searchParams: Promise<{ brand?: string }>
 }) {
   const { division: divisionSlug, slug } = await params
+  const { brand } = await searchParams
   const division = DIVISIONS.find((item) => item.slug === divisionSlug)
 
   if (!division) {
@@ -80,6 +83,7 @@ export default async function DivisionCategoryOrLegacyProductPage({
       <DivisionCatalogPage
         divisionSlug={divisionSlug}
         initialCategorySlug={resolvedCategorySlug}
+        initialBrandSlug={brand}
       />
     )
   }
