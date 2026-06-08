@@ -137,11 +137,22 @@ export default function GarmentsHubClient() {
   const [products, setProducts] = useState<Product[]>([])
 
   useEffect(() => {
+    // 1. Initial local load
     const all = brandStore.getProducts()
     const garments = all.filter(
       (p) => p.division_id === 'Garments' || p.division?.slug === 'garments' || p.division?.name === 'Garments'
     )
     setProducts(garments)
+
+    // 2. Fetch live data from database
+    fetch('/api/products?division=garments&limit=100')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setProducts(json.data)
+        }
+      })
+      .catch((err) => console.error('Failed to sync live garments products:', err))
   }, [])
 
   // Filter products by active category AND brand

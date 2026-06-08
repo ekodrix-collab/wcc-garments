@@ -55,10 +55,10 @@ export function ResponsivePicture({
   return (
     <picture className={fill ? 'absolute inset-0 w-full h-full' : undefined}>
       {/* Mobile source */}
-      <source media="(max-width: 768px)" srcSet={mobileSrc} />
+      <source media="(max-width: 768px)" srcSet={desktopSrc} />
       {/* Desktop source (default) */}
       <Image
-        src={desktopSrc}
+        src={mobileSrc}
         alt={alt}
         fill={fill}
         className={className}

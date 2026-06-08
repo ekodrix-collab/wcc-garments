@@ -118,19 +118,54 @@ export default function NewProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 1200))
     
-    // Save to our catalog store helper so it persists dynamically on the site
-    brandStore.saveProduct({
-      ...formData,
-      brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
-    })
+    try {
+      const specifications: Record<string, string> = {}
+      formData.specs.forEach(s => {
+        if (s.key && s.value) specifications[s.key] = s.value
+      })
 
-    setSaving(false)
-    setSuccess(true)
-    setTimeout(() => {
-      router.push('/admin/products')
-    }, 1500)
+      const productPayload = {
+        name: formData.name,
+        slug: formData.slug,
+        division: formData.division_id,
+        division_slug: formData.division_id.toLowerCase(),
+        category: formData.category_id,
+        short_description: formData.short_description,
+        moq: formData.moq,
+        lead_time: formData.lead_time,
+        images: [formData.image],
+        is_new: formData.is_new,
+        is_offer: formData.is_offer,
+        offer_label: formData.offer_label,
+        featured: formData.featured,
+        specifications,
+        tags: formData.tags,
+        brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+      }
+
+      const token = localStorage.getItem('wcc-admin-token') || ''
+      const res = await api.admin.createProduct(token, productPayload)
+
+      if (res.success) {
+        brandStore.saveProduct({
+          ...formData,
+          id: res.data.id,
+          brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+        })
+        setSuccess(true)
+        setTimeout(() => {
+          router.push('/admin/products')
+        }, 1500)
+      } else {
+        alert(res.error || 'Failed to create product in DB')
+      }
+    } catch (err: any) {
+      console.error(err)
+      alert(err.message || 'Server error creating product')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const inputClass = "w-full rounded-xl border border-neutral-200 bg-white px-4 py-3.5 text-xs text-neutral-900 placeholder-neutral-400 focus:border-gold focus:outline-none focus:bg-gray-50 dark:border-white/10 dark:bg-black/60 dark:text-white dark:placeholder-white/20 dark:focus:bg-black transition-all font-mono"

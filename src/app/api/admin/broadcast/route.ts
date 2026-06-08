@@ -10,7 +10,7 @@ export async function GET() {
         const { data, error } = await supabase
           .from('broadcasts')
           .select('*')
-          .order('created_at', { ascending: false })
+          .order('sent_at', { ascending: false })
         
         if (error) throw error
         return data || []

@@ -7,6 +7,7 @@ import {
   resolveDivisionCategorySlug,
 } from '@/lib/category-routing'
 import { DIVISIONS, MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
+import { getSupabaseServerClient } from '@/lib/supabase'
 
 export function generateStaticParams() {
   const params: Array<{ division: string; slug: string }> = []
@@ -88,13 +89,23 @@ export default async function DivisionCategoryOrLegacyProductPage({
     )
   }
 
-  const matchingProduct = MOCK_PRODUCTS.find(
-    (item) => item.slug === slug && item.division_slug === divisionSlug
-  )
+  try {
+    const supabase = getSupabaseServerClient()
+    const { data: dbProd } = await supabase
+      .from('products')
+      .select('slug')
+      .eq('slug', slug)
+      .eq('division_slug', divisionSlug)
+      .maybeSingle()
 
-  if (matchingProduct) {
-    redirect(getProductHref(divisionSlug, slug))
+    if (dbProd) {
+      redirect(getProductHref(divisionSlug, slug))
+    }
+  } catch (err) {
+    console.error("Error querying product slug from DB:", err)
   }
+
+
 
   notFound()
 }

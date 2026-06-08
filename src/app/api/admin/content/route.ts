@@ -13,7 +13,7 @@ export async function GET(request: Request) {
       const { data, error } = await supabase
         .from('website_content')
         .select('*')
-        .eq('section_id', sectionId)
+        .eq('key', sectionId)
         .single()
 
       if (error && error.code !== 'PGRST116') { // PGRST116 is not found
@@ -59,9 +59,9 @@ export async function PUT(request: Request) {
     const { data, error } = await supabase
       .from('website_content')
       .upsert({ 
-        section_id: sectionId, 
+        key: sectionId, 
         content: body 
-      }, { onConflict: 'section_id' })
+      }, { onConflict: 'key' })
       .select()
       .single()
 

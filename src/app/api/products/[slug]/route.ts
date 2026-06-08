@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { MOCK_PRODUCTS } from '@/lib/constants'
 import { getSupabaseServerClient, proxyImageUrl } from '@/lib/supabase'
-import { fetchWithFallback } from '@/lib/db-service'
 
 export async function GET(
   request: NextRequest,
@@ -10,155 +8,98 @@ export async function GET(
   try {
     const { slug } = await params
     
-    const finalData = await fetchWithFallback(
-      async () => {
-        const supabase = getSupabaseServerClient()
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('slug', slug)
-          .single()
-        
-        if (error || !data) {
-          throw new Error('Product not found in DB, falling back to dummy data')
+    let product: any = null
+
+    try {
+      const supabase = getSupabaseServerClient()
+      const dbResponse = await supabase
+        .from('products')
+        .select('*')
+        .eq('slug', slug)
+      
+      if (dbResponse.error) throw dbResponse.error
+      product = dbResponse.data && dbResponse.data.length > 0 ? dbResponse.data[0] : null;
+      
+      // Asynchronously trigger view count increment
+      (async () => {
+        try {
+          await supabase.rpc('increment_product_views', { product_slug: slug })
+        } catch (err) {
+          console.error('Failed to increment views via RPC:', err)
         }
+      })()
+    } catch (dbError: any) {
+      console.warn(`Product slug ${slug} not found or DB error:`, dbError)
+      try {
+        const fs = require('fs')
+        const path = require('path')
+        const logMsg = `[${new Date().toISOString()}] Slug: ${slug}, Error: ${dbError?.message || dbError}\nStack: ${dbError?.stack || ''}\n`
+        fs.appendFileSync('D:\\WORKS\\wcc-garments-platform\\scripts\\api-error.log', logMsg)
+      } catch (err) {
+        console.error('Failed to write log file:', err)
+      }
+      product = null
+    }
 
-        const product = data
-        
-        // Asynchronously trigger view count increment
-        (async () => {
-          try {
-            await supabase.rpc('increment_product_views', { product_slug: slug })
-          } catch (err) {
-            console.error('Failed to increment views via RPC:', err)
-          }
-        })()
-
-        return {
-          ...product,
-          images: Array.isArray(product.images) ? product.images.map(proxyImageUrl) : [],
-          division_id: product.id,
-          category_id: null,
-          description: product.short_description,
-          video_url: null,
-          published: true,
-          view_count: product.view_count || 0,
-          enquiry_count: product.enquiry_count || 0,
-          division: {
-            id: product.id,
-            name: product.division,
-            slug: product.division_slug,
-            accent_color: '#3B82F6',
-            tagline: null,
-            description: null,
-            short_description: null,
-            hero_image: null,
-            hero_video: null,
-            thumbnail: null,
-            display_order: 0,
-            active: true,
-            meta_title: null,
-            meta_description: null,
-            created_at: product.created_at,
-            updated_at: product.updated_at,
-          },
-          category: {
-            id: product.id,
-            name: product.category,
-            slug: product.category ? product.category.toLowerCase().replace(/\s+/g, '-') : '',
-            division_id: product.id,
-            description: null,
-            image: null,
-            display_order: 0,
-            active: true,
-          },
-        }
-      },
-      ((): any => {
-        // Fallback Logic
-        const product = MOCK_PRODUCTS.find((p) => p.slug === slug)
-
-        if (!product) {
-          return null
-        }
-
-        return {
-          id: product.id,
-          division_id: product.id,
-          category_id: null,
-          name: product.name,
-          slug: product.slug,
-          short_description: product.short_description,
-          description: product.short_description,
-          specifications: product.specifications,
-          moq: product.moq,
-          lead_time: product.lead_time,
-          custom_branding: true,
-          images: product.images,
-          video_url: null,
-          tags: product.tags,
-          suitable_for: product.suitable_for,
-          featured: product.featured,
-          is_new: product.is_new,
-          is_offer: product.is_offer,
-          offer_label: product.offer_label,
-          published: true,
-          view_count: Math.floor(Math.random() * 500),
-          enquiry_count: Math.floor(Math.random() * 50),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          division: {
-            id: product.id,
-            name: product.division,
-            slug: product.division_slug,
-            accent_color: '#3B82F6',
-            tagline: null,
-            description: null,
-            short_description: null,
-            hero_image: null,
-            hero_video: null,
-            thumbnail: null,
-            display_order: 0,
-            active: true,
-            meta_title: null,
-            meta_description: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-          category: {
-            id: product.id,
-            name: product.category,
-            slug: product.category.toLowerCase().replace(/\s+/g, '-'),
-            division_id: product.id,
-            description: null,
-            image: null,
-            display_order: 0,
-            active: true,
-          },
-        }
-      })(),
-      'Get Product By Slug'
-    )
-
-    if (!finalData) {
+    if (!product) {
       return NextResponse.json(
         { success: false, error: 'Product not found' },
         { status: 404 }
       )
     }
 
+    const formattedData = {
+      ...product,
+      images: Array.isArray(product.images) ? product.images.map(proxyImageUrl) : [],
+      division_id: product.id,
+      category_id: null,
+      description: product.short_description,
+      video_url: null,
+      published: true,
+      view_count: product.view_count || 0,
+      enquiry_count: product.enquiry_count || 0,
+      division: {
+        id: product.id,
+        name: product.division,
+        slug: product.division_slug,
+        accent_color: '#3B82F6',
+        tagline: null,
+        description: null,
+        short_description: null,
+        hero_image: null,
+        hero_video: null,
+        thumbnail: null,
+        display_order: 0,
+        active: true,
+        meta_title: null,
+        meta_description: null,
+        created_at: product.created_at,
+        updated_at: product.updated_at,
+      },
+      category: {
+        id: product.id,
+        name: product.category,
+        slug: product.category ? product.category.toLowerCase().replace(/\s+/g, '-') : '',
+        division_id: product.id,
+        description: null,
+        image: null,
+        display_order: 0,
+        active: true,
+      },
+    }
+
     return NextResponse.json(
-      { success: true, data: finalData },
+      { success: true, data: formattedData },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
         },
       }
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Product detail error:', error)
     return NextResponse.json(
-      { success: false, error: 'Server error' },
+      { success: false, error: error.message || 'Server error' },
       { status: 500 }
     )
   }

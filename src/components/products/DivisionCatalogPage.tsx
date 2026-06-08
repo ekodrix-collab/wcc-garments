@@ -6,6 +6,7 @@ import { ChevronRight, ArrowUpRight, ArrowRight } from 'lucide-react'
 import { DIVISIONS, MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
 import { getProductHref, resolveDivisionCategorySlug, getDivisionCategoryHref } from '@/lib/category-routing'
 import { DivisionProductsClient } from './DivisionProductsClient'
+import { getSupabaseServerClient } from '@/lib/supabase'
 
 interface DivisionCatalogPageProps {
   divisionSlug: string
@@ -13,7 +14,7 @@ interface DivisionCatalogPageProps {
   initialBrandSlug?: string | null
 }
 
-export function DivisionCatalogPage({
+export async function DivisionCatalogPage({
   divisionSlug,
   initialCategorySlug,
   initialBrandSlug,
@@ -30,17 +31,35 @@ export function DivisionCatalogPage({
     divisionSlug,
     initialCategorySlug
   )
-  const products = MOCK_PRODUCTS.filter((product) => product.division_slug === divisionSlug)
+
+  let products = []
+  try {
+    const supabase = getSupabaseServerClient()
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('division_slug', divisionSlug)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    if (data) {
+      products = data
+    }
+  } catch (err) {
+    console.error("Failed to query DB products for division catalog page:", err)
+    products = []
+  }
+
   const otherDivisions = DIVISIONS.filter((item) => item.slug !== divisionSlug)
 
   const mappedProducts = products.map((product) => ({
     id: product.id,
     name: product.name,
     slug: product.slug,
-    images: product.images,
-    division: { name: product.division, slug: product.division_slug },
+    images: Array.isArray(product.images) ? product.images : [],
+    division: { name: product.division || '', slug: product.division_slug || '' },
     category: {
-      name: product.category,
+      name: product.category || '',
       slug: resolveDivisionCategorySlug(divisionSlug, product.category) ?? undefined,
     },
     moq: product.moq,

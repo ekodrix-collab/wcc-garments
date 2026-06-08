@@ -147,7 +147,7 @@ const DEFAULT_DUBAI_PIPELINE = {
 type ActiveSection = 'global' | 'bulk' | 'hero' | 'who' | 'garment' | 'household' | 'hospitality' | 'expansion' | 'pipeline'
 
 export default function AdminSectionsPage() {
-  const [activeTab, setActiveTab] = useState<ActiveSection>('global')
+  const [activeTab, setActiveTab] = useState<ActiveSection>('hero')
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -167,12 +167,12 @@ export default function AdminSectionsPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const token = localStorage.getItem('admin_token') || ''
+        const token = localStorage.getItem('wcc-admin-token') || ''
         const { data } = await api.admin.getContent(token)
         
         const getSec = (id: string, def: any) => {
           if (!data) return def
-          const row = data.find((d: any) => d.section_id === id)
+          const row = data.find((d: any) => (d.key === id || d.section_id === id))
           return row && row.content ? row.content : def
         }
 
@@ -208,7 +208,7 @@ export default function AdminSectionsPage() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const token = localStorage.getItem('admin_token') || ''
+      const token = localStorage.getItem('wcc-admin-token') || ''
       await Promise.all([
         api.admin.updateContent(token, 'site_config', siteConfig),
         api.admin.updateContent(token, 'bulk-offer', bulkOffer),
@@ -334,41 +334,41 @@ export default function AdminSectionsPage() {
           <span className={`px-3 font-mono text-[9px] font-bold uppercase tracking-[0.2em] block mb-2 ${themeTextMuted}`}>
             Section Nav Matrix
           </span>
-          <button onClick={() => setActiveTab('global')} className={tabClass('global')}>
-            <Settings className="h-4 w-4 shrink-0" />
-            <span>1. Corporate Profile</span>
-          </button>
-          <button onClick={() => setActiveTab('bulk')} className={tabClass('bulk')}>
-            <Sliders className="h-4 w-4 shrink-0" />
-            <span>2. Bulk Offer Banner</span>
-          </button>
           <button onClick={() => setActiveTab('hero')} className={tabClass('hero')}>
             <Layout className="h-4 w-4 shrink-0" />
-            <span>3. Hero Campaign</span>
+            <span>1. Hero Section</span>
           </button>
           <button onClick={() => setActiveTab('who')} className={tabClass('who')}>
             <Users className="h-4 w-4 shrink-0" />
-            <span>4. Who We Are</span>
+            <span>2. About Section (Who We Are)</span>
           </button>
           <button onClick={() => setActiveTab('garment')} className={tabClass('garment')}>
             <Layers className="h-4 w-4 shrink-0" />
-            <span>5. Garment Divisions</span>
-          </button>
-          <button onClick={() => setActiveTab('household')} className={tabClass('household')}>
-            <Layers className="h-4 w-4 shrink-0" />
-            <span>6. Household showcase</span>
+            <span>3. Garments Categories (6 Cards)</span>
           </button>
           <button onClick={() => setActiveTab('hospitality')} className={tabClass('hospitality')}>
             <Layers className="h-4 w-4 shrink-0" />
-            <span>6.5 Hospitality showcase</span>
+            <span>4. Hospitality Showcase (Horeca24h)</span>
+          </button>
+          <button onClick={() => setActiveTab('household')} className={tabClass('household')}>
+            <Layers className="h-4 w-4 shrink-0" />
+            <span>5. Household Showcase (Aanya Homecraft)</span>
+          </button>
+          <button onClick={() => setActiveTab('bulk')} className={tabClass('bulk')}>
+            <Sliders className="h-4 w-4 shrink-0" />
+            <span>6. Bulk Offer Banner</span>
+          </button>
+          <button onClick={() => setActiveTab('global')} className={tabClass('global')}>
+            <Settings className="h-4 w-4 shrink-0" />
+            <span>7. Contact & General Details</span>
           </button>
           <button onClick={() => setActiveTab('expansion')} className={tabClass('expansion')}>
             <TrendingUp className="h-4 w-4 shrink-0" />
-            <span>7. Strategic Expansion</span>
+            <span>8. Future Expansion</span>
           </button>
           <button onClick={() => setActiveTab('pipeline')} className={tabClass('pipeline')}>
             <FileText className="h-4 w-4 shrink-0" />
-            <span>8. Dubai pipeline</span>
+            <span>9. Dubai Pipeline (5 Stages)</span>
           </button>
         </div>
 

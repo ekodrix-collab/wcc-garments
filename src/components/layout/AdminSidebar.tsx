@@ -12,13 +12,13 @@ import { useThemeContext } from '@/context/ThemeContext'
 const ADMIN_LINKS = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, badge: '' },
   { name: 'Website Content', href: '/admin/sections', icon: Layers, badge: '' },
-  { name: 'Products', href: '/admin/products', icon: Package, badge: '14' },
+  { name: 'Products', href: '/admin/products', icon: Package, badge: '' },
   { name: 'Brands', href: '/admin/brands', icon: Award, badge: '' },
-  { name: 'Categories', href: '/admin/categories', icon: FolderOpen, badge: '10' },
-  { name: 'Media & Assets', href: '/admin/media', icon: Film, badge: '6' },
-  { name: 'Enquiries', href: '/admin/enquiries', icon: Inbox, badge: '3 New' },
+  { name: 'Categories', href: '/admin/categories', icon: FolderOpen, badge: '' },
+  { name: 'Media & Assets', href: '/admin/media', icon: Film, badge: '' },
+  { name: 'Enquiries', href: '/admin/enquiries', icon: Inbox, badge: '' },
   { name: 'Newsletter', href: '/admin/newsletter', icon: Mail, badge: '' },
-  { name: 'Broadcast', href: '/admin/broadcast', icon: Megaphone, badge: 'Live' },
+  { name: 'Broadcast', href: '/admin/broadcast', icon: Megaphone, badge: '' },
 ]
 
 export function AdminSidebar() {

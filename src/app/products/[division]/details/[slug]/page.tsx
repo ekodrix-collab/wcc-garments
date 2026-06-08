@@ -41,16 +41,14 @@ export default function ProductDetailPage({
         if (res.success && res.data) {
           setProduct(res.data)
         } else {
-          const mock = MOCK_PRODUCTS.find((item) => item.slug === slug && item.division_slug === divisionSlug)
-          setProduct(mock || null)
+          setProduct(null)
         }
         setLoading(false)
       })
       .catch((err) => {
         if (!active) return
-        console.error("Error loading product detail from API, using fallback:", err)
-        const mock = MOCK_PRODUCTS.find((item) => item.slug === slug && item.division_slug === divisionSlug)
-        setProduct(mock || null)
+        console.error("Error loading product detail from API:", err)
+        setProduct(null)
         setLoading(false)
       })
 
@@ -64,19 +62,13 @@ export default function ProductDetailPage({
             .slice(0, 4)
           setRelatedProducts(filtered)
         } else {
-          const mockRelated = MOCK_PRODUCTS.filter(
-            (item) => item.division_slug === divisionSlug && item.slug !== slug
-          ).slice(0, 4)
-          setRelatedProducts(mockRelated)
+          setRelatedProducts([])
         }
       })
       .catch((err) => {
         if (!active) return
-        console.error("Error fetching related products from API, using fallback:", err)
-        const mockRelated = MOCK_PRODUCTS.filter(
-          (item) => item.division_slug === divisionSlug && item.slug !== slug
-        ).slice(0, 4)
-        setRelatedProducts(mockRelated)
+        console.error("Error fetching related products from API:", err)
+        setRelatedProducts([])
       })
 
     return () => {

@@ -4,10 +4,10 @@ import { fetchWithFallback } from '@/lib/db-service'
 
 const MOCK_STATS = {
   stats: {
-    products: 14,
-    enquiries: 3,
-    media: 6,
-    contacts: 12
+    products: 0,
+    enquiries: 0,
+    media: 0,
+    contacts: 0
   },
   recentEnquiries: []
 }

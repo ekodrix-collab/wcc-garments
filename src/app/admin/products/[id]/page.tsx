@@ -17,33 +17,56 @@ export default function EditProductPage() {
   const [uploadingImage, setUploadingImage] = useState(false)
   const [dragActive, setDragActive] = useState(false)
   
+  const populateForm = (match: any) => {
+    setFormData({
+      name: match.name || '',
+      slug: match.slug || '',
+      division_id: match.division?.name || match.division_id || 'Garments',
+      category_id: match.category?.name || match.category_id || 'Formal Shirts',
+      brand_slug: match.brand_slug || '',
+      short_description: match.short_description || match.description || '',
+      description: match.description || match.short_description || '',
+      moq: match.moq || '500 Units',
+      lead_time: match.lead_time || '15-20 Working Days',
+      featured: !!match.featured,
+      is_new: !!match.is_new,
+      is_offer: !!match.is_offer,
+      offer_label: match.offer_label || '',
+      published: match.published !== false,
+      tags: Array.isArray(match.tags) ? match.tags : [],
+      specs: typeof match.specifications === 'object' && match.specifications 
+        ? Object.entries(match.specifications).map(([k, v]) => ({ key: k, value: String(v) }))
+        : Array.isArray(match.specs) ? match.specs : [],
+      image: match.images?.[0] || match.image || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80'
+    })
+  }
+
   useEffect(() => {
     setBrands(brandStore.getBrands())
     
-    // Attempt to dynamically fetch and populate the real product data from our store
-    const realProducts = brandStore.getProducts()
-    const match = realProducts.find(p => p.id === params.id)
-    if (match) {
-      setFormData({
-        name: match.name,
-        slug: match.slug,
-        division_id: match.division?.name || 'Garments',
-        category_id: match.category?.name || match.category_id || 'Formal Shirts',
-        brand_slug: match.brand_slug || '',
-        short_description: match.short_description || '',
-        description: match.description || '',
-        moq: match.moq || '500 Units',
-        lead_time: match.lead_time || '15-20 Working Days',
-        featured: match.featured,
-        is_new: match.is_new,
-        is_offer: match.is_offer,
-        offer_label: match.offer_label || '',
-        published: match.published,
-        tags: match.tags,
-        specs: Object.entries(match.specifications || {}).map(([k, v]) => ({ key: k, value: String(v) })),
-        image: match.images?.[0] || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80'
-      })
+    const loadProduct = async () => {
+      // 1. Initial local load
+      const realProducts = brandStore.getProducts()
+      const match = realProducts.find((p: any) => p.id === params.id || p.slug === params.id)
+      if (match) {
+        populateForm(match)
+      }
+
+      // 2. Fetch live database data
+      try {
+        const res = await api.getProducts({ limit: 100 })
+        if (res.success && Array.isArray(res.data)) {
+          const liveMatch = res.data.find((p: any) => p.id === params.id || p.slug === params.id)
+          if (liveMatch) {
+            populateForm(liveMatch)
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch live product details for edit page:", err)
+      }
     }
+
+    loadProduct()
   }, [params.id])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,20 +170,54 @@ export default function EditProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 1200))
     
-    // Update dynamic record inside our local store
-    brandStore.saveProduct({
-      id: params.id as string,
-      ...formData,
-      brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
-    })
+    try {
+      const specifications: Record<string, string> = {}
+      formData.specs.forEach(s => {
+        if (s.key && s.value) specifications[s.key] = s.value
+      })
 
-    setSaving(false)
-    setSuccess(true)
-    setTimeout(() => {
-      router.push('/admin/products')
-    }, 1500)
+      const productPayload = {
+        name: formData.name,
+        slug: formData.slug,
+        division: formData.division_id,
+        division_slug: formData.division_id.toLowerCase(),
+        category: formData.category_id,
+        short_description: formData.short_description,
+        moq: formData.moq,
+        lead_time: formData.lead_time,
+        images: [formData.image],
+        is_new: formData.is_new,
+        is_offer: formData.is_offer,
+        offer_label: formData.offer_label,
+        featured: formData.featured,
+        specifications,
+        tags: formData.tags,
+        brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+      }
+
+      const token = localStorage.getItem('wcc-admin-token') || ''
+      const res = await api.admin.updateProduct(token, params.id as string, productPayload)
+
+      if (res.success) {
+        brandStore.saveProduct({
+          id: params.id as string,
+          ...formData,
+          brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+        })
+        setSuccess(true)
+        setTimeout(() => {
+          router.push('/admin/products')
+        }, 1500)
+      } else {
+        alert(res.error || 'Failed to update product in DB')
+      }
+    } catch (err: any) {
+      console.error(err)
+      alert(err.message || 'Server error updating product')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const inputClass = "w-full rounded-xl border border-neutral-200 bg-white px-4 py-3.5 text-xs text-neutral-900 placeholder-neutral-400 focus:border-gold focus:outline-none focus:bg-gray-50 dark:border-white/10 dark:bg-black/60 dark:text-white dark:placeholder-white/20 dark:focus:bg-black transition-all font-mono"

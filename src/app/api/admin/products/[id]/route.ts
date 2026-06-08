@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase'
-import { fetchWithFallback } from '@/lib/db-service'
 
 export async function PUT(
   request: NextRequest,
@@ -10,24 +9,18 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
-    await fetchWithFallback(
-      async () => {
-        const supabase = getSupabaseServerClient()
-        const { error } = await supabase
-          .from('products')
-          .update(body)
-          .eq('id', id)
-        
-        if (error) throw error
-        return true
-      },
-      true,
-      'Admin Update Product'
-    )
+    const supabase = getSupabaseServerClient()
+    const { error } = await supabase
+      .from('products')
+      .update(body)
+      .eq('id', id)
+    
+    if (error) throw error
 
     return NextResponse.json({ success: true, message: 'Product updated' })
-  } catch (error) {
-    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
+  } catch (error: any) {
+    console.error('Admin Update Product error:', error)
+    return NextResponse.json({ success: false, error: error.message || 'Server error' }, { status: 500 })
   }
 }
 
@@ -38,23 +31,17 @@ export async function DELETE(
   try {
     const { id } = await params
 
-    await fetchWithFallback(
-      async () => {
-        const supabase = getSupabaseServerClient()
-        const { error } = await supabase
-          .from('products')
-          .delete()
-          .eq('id', id)
-        
-        if (error) throw error
-        return true
-      },
-      true,
-      'Admin Delete Product'
-    )
+    const supabase = getSupabaseServerClient()
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
 
     return NextResponse.json({ success: true, message: 'Product deleted' })
-  } catch (error) {
-    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
+  } catch (error: any) {
+    console.error('Admin Delete Product error:', error)
+    return NextResponse.json({ success: false, error: error.message || 'Server error' }, { status: 500 })
   }
 }
