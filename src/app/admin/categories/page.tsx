@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle, Loader2 } from 'lucide-react'
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle, Loader2, Upload } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from '@/lib/api'
 
@@ -61,6 +61,7 @@ export default function AdminCategoriesPage() {
   const [editingCat, setEditingCat] = useState<CatItem | null>(null)
   const [catForm, setCatForm] = useState(EMPTY_CAT)
   const [saving, setSaving] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState<'cat' | 'sub' | null>(null)
 
   // Sub-category modal
   const [subModal, setSubModal] = useState<'add' | 'edit' | null>(null)
@@ -104,6 +105,26 @@ export default function AdminCategoriesPage() {
       console.error('Failed to fetch categories:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'cat' | 'sub') => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploadingImage(type)
+      try {
+        const url = await api.uploadFile(file)
+        if (type === 'cat') {
+          setCatForm(prev => ({ ...prev, image: url }))
+        } else {
+          setSubForm(prev => ({ ...prev, image: url }))
+        }
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check Supabase configuration.')
+      } finally {
+        setUploadingImage(null)
+      }
     }
   }
 
@@ -490,6 +511,25 @@ export default function AdminCategoriesPage() {
                 <div>
                   <label className={labelCls}>Category Image URL</label>
                   <input value={catForm.image} onChange={(e) => setCatForm({ ...catForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-[9px] text-neutral-400 dark:text-white/30 font-mono uppercase">or select from device</span>
+                    <input
+                      id="cat-image-file"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageUpload(e, 'cat')}
+                    />
+                    <button
+                      type="button"
+                      disabled={uploadingImage === 'cat'}
+                      onClick={() => document.getElementById('cat-image-file')?.click()}
+                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none disabled:opacity-50"
+                    >
+                      {uploadingImage === 'cat' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
+                      <span>{uploadingImage === 'cat' ? 'Uploading...' : 'Upload Image'}</span>
+                    </button>
+                  </div>
                   {catForm.image && (
                     <div className="mt-2 h-20 w-32 relative bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 rounded overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -542,6 +582,25 @@ export default function AdminCategoriesPage() {
                 <div>
                   <label className={labelCls}>Sub-Category Image URL</label>
                   <input value={subForm.image} onChange={(e) => setSubForm({ ...subForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-[9px] text-neutral-400 dark:text-white/30 font-mono uppercase">or select from device</span>
+                    <input
+                      id="sub-image-file"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageUpload(e, 'sub')}
+                    />
+                    <button
+                      type="button"
+                      disabled={uploadingImage === 'sub'}
+                      onClick={() => document.getElementById('sub-image-file')?.click()}
+                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none disabled:opacity-50"
+                    >
+                      {uploadingImage === 'sub' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
+                      <span>{uploadingImage === 'sub' ? 'Uploading...' : 'Upload Image'}</span>
+                    </button>
+                  </div>
                   {subForm.image && (
                     <div className="mt-2 h-20 w-32 relative bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 rounded overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -8,6 +8,7 @@ import { DIVISIONS } from '@/lib/constants'
 import { motion, AnimatePresence } from 'framer-motion'
 import { brandStore } from '@/lib/brand-store'
 import { Brand } from '@/types'
+import { api } from '@/lib/api'
 
 export default function EditProductPage() {
   const router = useRouter()
@@ -45,16 +46,19 @@ export default function EditProductPage() {
     }
   }, [params.id])
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       setUploadingImage(true)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, image: reader.result as string }))
+      try {
+        const url = await api.uploadFile(file)
+        setFormData(prev => ({ ...prev, image: url }))
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check configuration.')
+      } finally {
         setUploadingImage(false)
       }
-      reader.readAsDataURL(file)
     }
   }
 
@@ -68,19 +72,22 @@ export default function EditProductPage() {
     }
   }
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
     const file = e.dataTransfer.files?.[0]
     if (file && file.type.startsWith("image/")) {
       setUploadingImage(true)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, image: reader.result as string }))
+      try {
+        const url = await api.uploadFile(file)
+        setFormData(prev => ({ ...prev, image: url }))
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check configuration.')
+      } finally {
         setUploadingImage(false)
       }
-      reader.readAsDataURL(file)
     }
   }
   const [saving, setSaving] = useState(false)
