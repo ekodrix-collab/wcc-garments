@@ -35,7 +35,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[var(--bg)] mt-16">
       {/* Hero */}
-      <div className="relative min-h-[500px] md:min-h-[600px] lg:min-h-[70vh] w-full flex items-center overflow-hidden">
+      <div className="relative min-h-[500px] md:min-h-[600px] lg:min-h-[70vh] w-full flex items-center overflow-hidden pt-10">
         <Image src="/images/about-hero.jpg" alt="WCC Fashions Manufacturing Facility" fill className="object-cover object-center" priority sizes="100vw" />
 
         {/* Subtle Dark Gradient Overlay behind text only */}

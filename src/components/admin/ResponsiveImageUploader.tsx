@@ -1,9 +1,10 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
-import { Upload, Link as LinkIcon } from 'lucide-react'
+import { Upload, Link as LinkIcon, Loader2 } from 'lucide-react'
 import { ResponsiveImage, normalizeImage } from '@/lib/image-utils'
 import { useThemeContext } from '@/context/ThemeContext'
+import { api } from '@/lib/api'
 
 interface Props {
   label: string
@@ -15,15 +16,21 @@ interface Props {
 export function ResponsiveImageUploader({ label, value, onChange, aspectRatioHint }: Props) {
   const { isDark } = useThemeContext()
   const img = normalizeImage(value)
+  const [uploading, setUploading] = useState<{ desktop: boolean; mobile: boolean }>({ desktop: false, mobile: false })
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'desktop' | 'mobile') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'desktop' | 'mobile') => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        onChange({ ...img, [type]: reader.result as string })
+      setUploading(prev => ({ ...prev, [type]: true }))
+      try {
+        const url = await api.uploadFile(file)
+        onChange({ ...img, [type]: url })
+      } catch (err) {
+        console.error('Failed to upload image', err)
+        alert('Failed to upload image. Please check if Supabase storage is configured.')
+      } finally {
+        setUploading(prev => ({ ...prev, [type]: false }))
       }
-      reader.readAsDataURL(file)
     }
   }
 
@@ -70,8 +77,8 @@ export function ResponsiveImageUploader({ label, value, onChange, aspectRatioHin
             </div>
             <div>
               <label className="flex items-center justify-center gap-1.5 py-2 w-full font-mono text-[10px] font-bold cursor-pointer border transition-colors hover:border-gold rounded-none">
-                <Upload className="h-3 w-3" />
-                <span>Upload from Device</span>
+                {uploading.desktop ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                <span>{uploading.desktop ? 'Uploading...' : 'Upload from Device'}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -101,8 +108,8 @@ export function ResponsiveImageUploader({ label, value, onChange, aspectRatioHin
             </div>
             <div>
               <label className="flex items-center justify-center gap-1.5 py-2 w-full font-mono text-[10px] font-bold cursor-pointer border transition-colors hover:border-gold rounded-none">
-                <Upload className="h-3 w-3" />
-                <span>Upload from Device</span>
+                {uploading.mobile ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                <span>{uploading.mobile ? 'Uploading...' : 'Upload from Device'}</span>
                 <input
                   type="file"
                   accept="image/*"

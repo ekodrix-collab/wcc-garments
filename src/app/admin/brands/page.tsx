@@ -56,14 +56,21 @@ export default function AdminBrandsPage() {
     }
   }
 
-  const handleFileFieldUpload = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_desktop' | 'logo_mobile') => {
+  const [uploadingField, setUploadingField] = useState<string | null>(null)
+
+  const handleFileFieldUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_desktop' | 'logo_mobile') => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, [fieldName]: reader.result as string }))
+      setUploadingField(fieldName)
+      try {
+        const url = await api.uploadFile(file)
+        setFormData(prev => ({ ...prev, [fieldName]: url }))
+      } catch (err) {
+        console.error('Failed to upload image:', err)
+        alert('Failed to upload image. Please check Supabase configuration.')
+      } finally {
+        setUploadingField(null)
       }
-      reader.readAsDataURL(file)
     }
   }
 
@@ -347,11 +354,12 @@ export default function AdminBrandsPage() {
                         />
                         <button
                           type="button"
+                          disabled={uploadingField === 'logo_desktop'}
                           onClick={() => document.getElementById('brand-logo-desktop-file')?.click()}
-                          className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none"
+                          className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none disabled:opacity-50"
                         >
-                          <Upload className="h-2.5 w-2.5" />
-                          <span>Upload Banner</span>
+                          {uploadingField === 'logo_desktop' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
+                          <span>{uploadingField === 'logo_desktop' ? 'Uploading...' : 'Upload Banner'}</span>
                         </button>
                       </div>
                     </div>
@@ -376,11 +384,12 @@ export default function AdminBrandsPage() {
                         />
                         <button
                           type="button"
+                          disabled={uploadingField === 'logo_mobile'}
                           onClick={() => document.getElementById('brand-logo-mobile-file')?.click()}
-                          className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none"
+                          className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none disabled:opacity-50"
                         >
-                          <Upload className="h-2.5 w-2.5" />
-                          <span>Upload Emblem</span>
+                          {uploadingField === 'logo_mobile' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
+                          <span>{uploadingField === 'logo_mobile' ? 'Uploading...' : 'Upload Emblem'}</span>
                         </button>
                       </div>
                     </div>
