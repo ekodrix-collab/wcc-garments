@@ -108,7 +108,7 @@ export function HeroEditor({ initialData }: Props) {
               value={camp.left}
               onChange={(val) => {
                 const updated = [...hero.campaigns]
-                updated[cIdx].left = val
+                updated[cIdx].left = val.desktop || val.mobile || ''
                 setHero({ ...hero, campaigns: updated })
               }}
               aspectRatioHint="Suggested: 3:4 Portrait"
@@ -118,7 +118,7 @@ export function HeroEditor({ initialData }: Props) {
               value={camp.center}
               onChange={(val) => {
                 const updated = [...hero.campaigns]
-                updated[cIdx].center = val
+                updated[cIdx].center = val.desktop || val.mobile || ''
                 setHero({ ...hero, campaigns: updated })
               }}
               aspectRatioHint="Suggested: 16:9 Landscape"
@@ -128,7 +128,7 @@ export function HeroEditor({ initialData }: Props) {
               value={camp.right}
               onChange={(val) => {
                 const updated = [...hero.campaigns]
-                updated[cIdx].right = val
+                updated[cIdx].right = val.desktop || val.mobile || ''
                 setHero({ ...hero, campaigns: updated })
               }}
               aspectRatioHint="Suggested: 3:4 Portrait"

@@ -193,7 +193,7 @@ export function BulkOfferEditor({ initialData }: Props) {
               value={img}
               onChange={(val) => {
                 const updated = [...bulkOffer.slideImages]
-                updated[idx] = val
+                updated[idx] = val.desktop || val.mobile || ''
                 setBulkOffer({ ...bulkOffer, slideImages: updated })
               }}
               aspectRatioHint="Suggested: 16:9 for Desktop, 4:5 for Mobile"

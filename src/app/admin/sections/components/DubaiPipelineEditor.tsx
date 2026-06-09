@@ -166,7 +166,7 @@ export function DubaiPipelineEditor({ initialData }: Props) {
                 value={scene.image}
                 onChange={(val) => {
                   const updated = [...pipeline.scenes]
-                  updated[sIdx].image = val
+                  updated[sIdx].image = val.desktop || val.mobile || ''
                   setPipeline({ ...pipeline, scenes: updated })
                 }}
                 aspectRatioHint="Suggested: 16:9 Landscape"

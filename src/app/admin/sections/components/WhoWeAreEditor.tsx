@@ -214,7 +214,7 @@ export function WhoWeAreEditor({ initialData }: Props) {
           label="Main Editorial Image (Vibrant & Sharp)"
           value={whoWeAre.mainImage}
           onChange={(val) => {
-            setWhoWeAre({ ...whoWeAre, mainImage: val })
+            setWhoWeAre({ ...whoWeAre, mainImage: val.desktop || val.mobile || '' })
           }}
           aspectRatioHint="Suggested: 16:9 for Desktop, 4:5 for Mobile"
         />

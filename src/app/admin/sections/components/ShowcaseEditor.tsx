@@ -169,7 +169,7 @@ export function ShowcaseEditor({ initialData, sectionId, title, subtitle, matrix
                   value={cat.image}
                   onChange={(val) => {
                     const updated = [...showcase.categories]
-                    updated[cIdx].image = val
+                    updated[cIdx].image = val.desktop || val.mobile || ''
                     setShowcase({ ...showcase, categories: updated })
                   }}
                   aspectRatioHint="Suggested: 16:9 or 3:4"
