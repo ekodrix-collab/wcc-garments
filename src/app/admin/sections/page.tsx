@@ -283,34 +283,12 @@ export default function AdminSectionsPage() {
         </div>
 
         <div className="flex items-center gap-3 self-start sm:self-auto">
-          {/* Theme Switcher Toggle */}
-          <button
-            onClick={toggleTheme}
-            type="button"
-            className={`flex items-center gap-2 rounded-none border px-4 py-3.5 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-              isDark 
-                ? 'border-white/10 bg-white/5 text-white hover:bg-white/10' 
-                : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
-            }`}
-            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          >
-            {isDark ? (
-              <>
-                <Sun className="h-4 w-4 text-gold" />
-                <span>Light Mode</span>
-              </>
-            ) : (
-              <>
-                <Moon className="h-4 w-4 text-blue-600" />
-                <span>Dark Mode</span>
-              </>
-            )}
-          </button>
+
 
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2.5 rounded-none bg-gold px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light shadow-md disabled:opacity-50"
+            className="flex items-center gap-2.5 rounded-none bg-gold px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-gold-light shadow-md disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             <span>{saving ? 'Syncing...' : 'Sync Elementary'}</span>

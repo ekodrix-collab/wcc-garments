@@ -181,7 +181,7 @@ export default function AdminBrandsPage() {
         </div>
         <button
           onClick={() => handleOpenEdit()}
-          className="flex items-center gap-2.5 bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold/80 shadow-md self-start sm:self-auto rounded-none"
+          className="flex items-center gap-2.5 bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-gold/80 shadow-md self-start sm:self-auto rounded-none"
         >
           <Plus className="h-4 w-4" />
           <span>Add New Brand</span>
@@ -240,7 +240,7 @@ export default function AdminBrandsPage() {
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <button
                     onClick={e => { e.stopPropagation(); handleOpenEdit(undefined, div.slug) }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider border border-gold/40 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-all rounded-none"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider border border-gold/40 bg-gold/10 text-gold hover:bg-gold hover:text-white transition-all rounded-none"
                   >
                     <Plus className="h-3 w-3" />
                     Add Brand
@@ -476,7 +476,7 @@ export default function AdminBrandsPage() {
                           type="button"
                           disabled={uploadingField === field}
                           onClick={() => document.getElementById(`upload-${field}`)?.click()}
-                          className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] font-bold text-gold border border-gold/30 bg-gold/5 hover:bg-gold hover:text-black transition-all disabled:opacity-50 rounded-none"
+                          className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] font-bold text-gold border border-gold/30 bg-gold/5 hover:bg-gold hover:text-white transition-all disabled:opacity-50 rounded-none"
                         >
                           {uploadingField === field
                             ? <Loader2 className="h-3 w-3 animate-spin" />
@@ -519,7 +519,7 @@ export default function AdminBrandsPage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="flex-1 flex h-12 items-center justify-center gap-2 bg-gold text-black text-xs font-bold uppercase tracking-wider hover:bg-gold/80 disabled:opacity-50 transition-all rounded-none shadow-md"
+                      className="flex-1 flex h-12 items-center justify-center gap-2 bg-gold text-white text-xs font-bold uppercase tracking-wider hover:bg-gold/80 disabled:opacity-50 transition-all rounded-none shadow-md"
                     >
                       {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                       <span>Save Brand</span>

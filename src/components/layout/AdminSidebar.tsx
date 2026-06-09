@@ -4,7 +4,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, FolderOpen, Film, Inbox, Megaphone, LogOut, Menu, X, ShieldCheck, Mail, Award, Layers } from 'lucide-react'
+import { LayoutDashboard, Package, FolderOpen, Film, Inbox, Megaphone, LogOut, Menu, X, ShieldCheck, Mail, Award, Layers, Sun, Moon } from 'lucide-react'
 import { useAdmin } from '@/context/AdminContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useThemeContext } from '@/context/ThemeContext'
@@ -25,7 +25,7 @@ export function AdminSidebar() {
   const pathname = usePathname()
   const { logout } = useAdmin()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { isDark } = useThemeContext()
+  const { isDark, toggleTheme } = useThemeContext()
 
   const SidebarContent = () => (
     <div className={`flex h-full flex-col justify-between transition-colors duration-300 ${isDark ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
@@ -44,6 +44,16 @@ export function AdminSidebar() {
             </div>
           </Link>
           <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className={`rounded p-2 transition-all ${isDark
+                  ? 'text-amber-400 hover:bg-white/10'
+                  : 'text-indigo-500 hover:bg-gray-100'
+                }`}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
             <button
               onClick={() => setMobileOpen(false)}
               className={`rounded p-1 lg:hidden ${isDark ? 'text-white/50 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
@@ -82,7 +92,7 @@ export function AdminSidebar() {
                   </div>
                   {link.badge && (
                     <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${link.badge.includes('New') || link.badge.includes('Live')
-                        ? 'bg-gold text-black animate-pulse'
+                        ? 'bg-gold text-white animate-pulse'
                         : isDark
                           ? 'bg-white/10 text-white/70'
                           : 'bg-gray-100 text-gray-600 border border-gray-200'
@@ -137,6 +147,16 @@ export function AdminSidebar() {
           </h2>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className={`rounded-lg border p-2 transition-all ${isDark
+                ? 'border-white/10 text-amber-400 hover:bg-white/10'
+                : 'border-gray-200 text-indigo-500 hover:bg-gray-100'
+              }`}
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
           <button
             onClick={() => setMobileOpen(true)}
             className={`rounded-lg border p-2 transition-all ${isDark

@@ -314,7 +314,7 @@ export default function AdminCategoriesPage() {
           </div>
           <p className="mt-1 font-mono text-xs text-neutral-500 dark:text-white/40">Manage all division categories and sub-categories. Changes reflect across the site and API instantly.</p>
         </div>
-        <button onClick={openAddCat} className="flex items-center gap-2 bg-gold px-5 py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all shrink-0">
+        <button onClick={openAddCat} className="flex items-center gap-2 bg-gold px-5 py-2.5 font-mono text-xs font-bold text-white hover:bg-gold/90 transition-all shrink-0">
           <Plus className="h-3.5 w-3.5" /> Add Category
         </button>
       </div>
@@ -357,7 +357,7 @@ export default function AdminCategoriesPage() {
           <button
             key={tab.key}
             onClick={() => setSection(tab.key)}
-            className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${section === tab.key ? 'bg-gold border-gold text-black' : 'border-neutral-200 text-neutral-500 hover:text-neutral-950 dark:border-white/10 dark:text-white/50 dark:hover:text-white'}`}
+            className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${section === tab.key ? 'bg-gold border-gold text-white' : 'border-neutral-200 text-neutral-500 hover:text-neutral-950 dark:border-white/10 dark:text-white/50 dark:hover:text-white'}`}
           >
             {tab.label}
           </button>
@@ -376,7 +376,7 @@ export default function AdminCategoriesPage() {
               </div>
               <button
                 onClick={() => { setCatForm({ ...EMPTY_CAT, divisionSlug: divSlug }); setEditingCat(null); setCatModal('add') }}
-                className="flex items-center gap-1.5 border border-neutral-200 bg-white dark:border-white/15 dark:bg-white/5 px-3 py-1.5 font-mono text-[10px] font-bold text-neutral-700 dark:text-white hover:bg-gold hover:text-black dark:hover:text-black transition-all shadow-sm"
+                className="flex items-center gap-1.5 border border-neutral-200 bg-white dark:border-white/15 dark:bg-white/5 px-3 py-1.5 font-mono text-[10px] font-bold text-neutral-700 dark:text-white hover:bg-gold hover:text-white dark:hover:text-white transition-all shadow-sm"
               >
                 <Plus className="h-3 w-3" /> Add to {divisionName}
               </button>
@@ -410,10 +410,10 @@ export default function AdminCategoriesPage() {
                       >
                         {STATUS_LABELS[cat.status]}
                       </button>
-                      <button onClick={() => openAddSub(cat.id)} className="flex items-center gap-1 border border-neutral-200 bg-neutral-50 dark:border-white/15 dark:bg-white/5 px-2.5 py-1 font-mono text-[9px] font-bold text-neutral-700 dark:text-white hover:bg-gold hover:text-black dark:hover:text-black transition-all">
+                      <button onClick={() => openAddSub(cat.id)} className="flex items-center gap-1 border border-neutral-200 bg-neutral-50 dark:border-white/15 dark:bg-white/5 px-2.5 py-1 font-mono text-[9px] font-bold text-neutral-700 dark:text-white hover:bg-gold hover:text-white dark:hover:text-white transition-all">
                         <Plus className="h-3 w-3" /> Sub
                       </button>
-                      <button onClick={() => openEditCat(cat)} className="flex h-7 w-7 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
+                      <button onClick={() => openEditCat(cat)} className="flex h-7 w-7 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-white transition-colors">
                         <Edit2 className="h-3 w-3" />
                       </button>
                       <button onClick={() => deleteCat(cat.id, cat.divisionSlug)} className="flex h-7 w-7 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
@@ -453,7 +453,7 @@ export default function AdminCategoriesPage() {
                                 >
                                   {STATUS_LABELS[sub.status]}
                                 </button>
-                                <button onClick={() => openEditSub(cat.id, sub)} className="flex h-6 w-6 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-black transition-colors">
+                                <button onClick={() => openEditSub(cat.id, sub)} className="flex h-6 w-6 items-center justify-center border border-gold/20 bg-gold/10 text-gold hover:bg-gold hover:text-white transition-colors">
                                   <Edit2 className="h-3 w-3" />
                                 </button>
                                 <button onClick={() => deleteSub(cat.id, sub.id)} className="flex h-6 w-6 items-center justify-center border border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
@@ -524,7 +524,7 @@ export default function AdminCategoriesPage() {
                       type="button"
                       disabled={uploadingImage === 'cat'}
                       onClick={() => document.getElementById('cat-image-file')?.click()}
-                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none disabled:opacity-50"
+                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-white transition-all rounded-none disabled:opacity-50"
                     >
                       {uploadingImage === 'cat' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
                       <span>{uploadingImage === 'cat' ? 'Uploading...' : 'Upload Image'}</span>
@@ -540,7 +540,7 @@ export default function AdminCategoriesPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setCatModal(null)} className="flex-1 border border-neutral-200 text-neutral-500 hover:bg-neutral-50 dark:border-white/10 dark:text-white/60 dark:hover:bg-white/5 transition-all py-2.5 font-mono text-xs">Cancel</button>
-                <button disabled={saving} onClick={saveCat} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                <button disabled={saving} onClick={saveCat} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-white hover:bg-gold/90 transition-all">
                   {saving && <Loader2 className="w-3 h-3 animate-spin" />}
                   {catModal === 'add' ? 'Create' : 'Save Changes'}
                 </button>
@@ -595,7 +595,7 @@ export default function AdminCategoriesPage() {
                       type="button"
                       disabled={uploadingImage === 'sub'}
                       onClick={() => document.getElementById('sub-image-file')?.click()}
-                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-black transition-all rounded-none disabled:opacity-50"
+                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-white transition-all rounded-none disabled:opacity-50"
                     >
                       {uploadingImage === 'sub' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
                       <span>{uploadingImage === 'sub' ? 'Uploading...' : 'Upload Image'}</span>
@@ -611,7 +611,7 @@ export default function AdminCategoriesPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setSubModal(null)} className="flex-1 border border-neutral-200 text-neutral-500 hover:bg-neutral-50 dark:border-white/10 dark:text-white/60 dark:hover:bg-white/5 transition-all py-2.5 font-mono text-xs">Cancel</button>
-                <button disabled={saving} onClick={saveSub} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-black hover:bg-gold/90 transition-all">
+                <button disabled={saving} onClick={saveSub} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-white hover:bg-gold/90 transition-all">
                   {saving && <Loader2 className="w-3 h-3 animate-spin" />}
                   {subModal === 'add' ? 'Create' : 'Save Changes'}
                 </button>

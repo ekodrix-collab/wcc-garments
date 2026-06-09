@@ -148,7 +148,7 @@ export default function AdminNewsletterPage() {
               setShowCompose(true)
             }}
             disabled={subscribers.length === 0}
-            className="flex items-center gap-2 rounded-lg bg-gold px-5 py-2.5 font-mono text-xs font-bold text-black uppercase tracking-wider transition hover:bg-amber-400 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 rounded-lg bg-gold px-5 py-2.5 font-mono text-xs font-bold text-white uppercase tracking-wider transition hover:bg-amber-400 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Send className="h-3.5 w-3.5" /> Compose Broadcast
           </button>
@@ -334,7 +334,7 @@ export default function AdminNewsletterPage() {
                 <button
                   onClick={handleSend}
                   disabled={sendStatus === 'sending' || sendStatus === 'success'}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-gold py-3 font-mono text-xs font-bold text-black uppercase tracking-wider transition hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-gold py-3 font-mono text-xs font-bold text-white uppercase tracking-wider transition hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {sendStatus === 'sending' ? (
                     <><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Sending...</>

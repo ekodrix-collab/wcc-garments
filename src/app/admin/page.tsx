@@ -80,7 +80,7 @@ export default function AdminDashboard() {
           </button>
           <Link
             href="/admin/products/new"
-            className="flex items-center gap-2 rounded-none bg-gold px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
+            className="flex items-center gap-2 rounded-none bg-gold px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-gold-light hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]"
           >
             <Plus className="h-4 w-4" />
             <span>Add Listing</span>
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-3 py-1 font-semibold uppercase tracking-wider transition-all rounded-none ${
-                    activeTab === tab ? 'bg-gold text-black shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:text-white/40 dark:hover:text-white'
+                    activeTab === tab ? 'bg-gold text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:text-white/40 dark:hover:text-white'
                   }`}
                 >
                   {tab}

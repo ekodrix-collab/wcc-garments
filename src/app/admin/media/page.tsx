@@ -118,7 +118,7 @@ export default function AdminMediaPage() {
         <button
           onClick={handleSimulateUpload}
           disabled={uploading}
-          className="flex items-center gap-2.5 rounded-lg bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] disabled:opacity-50 self-start sm:self-auto"
+          className="flex items-center gap-2.5 rounded-lg bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] disabled:opacity-50 self-start sm:self-auto"
         >
           {uploading ? (
             <>
@@ -142,7 +142,7 @@ export default function AdminMediaPage() {
           </div>
           <h3 className="font-sans text-sm font-bold text-neutral-900 dark:text-white">Drag &amp; Drop High-Res Production Files</h3>
           <p className="mt-1 text-xs text-neutral-500 dark:text-white/50">Supports RAW, WebP, PNG, MP4 up to 50MB per asset packet</p>
-          <button onClick={handleSimulateUpload} className="mt-4 rounded-lg bg-neutral-200 dark:bg-white/10 px-4 py-2 text-xs font-semibold text-neutral-800 dark:text-white hover:bg-gold hover:text-black dark:hover:bg-gold dark:hover:text-black transition-all">
+          <button onClick={handleSimulateUpload} className="mt-4 rounded-lg bg-neutral-200 dark:bg-white/10 px-4 py-2 text-xs font-semibold text-neutral-800 dark:text-white hover:bg-gold hover:text-white dark:hover:bg-gold dark:hover:text-white transition-all">
             Browse System Directory
           </button>
         </div>
@@ -179,7 +179,7 @@ export default function AdminMediaPage() {
             key={tab}
             onClick={() => setSelectedTab(tab)}
             className={`rounded-lg px-4 py-2 text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold ${
-              selectedTab === tab ? 'bg-gold text-black shadow-md font-bold' : 'text-neutral-500 hover:bg-neutral-200 hover:text-neutral-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white'
+              selectedTab === tab ? 'bg-gold text-white shadow-md font-bold' : 'text-neutral-500 hover:bg-neutral-200 hover:text-neutral-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white'
             }`}
           >
             {tab === 'all' ? 'All Assets' : tab.replace('_', ' ')} ({mediaList.filter(m => tab === 'all' || m.type === tab).length})
@@ -236,7 +236,7 @@ export default function AdminMediaPage() {
                 <div className="flex items-center justify-between gap-2 border-t border-neutral-200 dark:border-white/10 pt-3 text-xs">
                   <button
                     onClick={() => handleCopyLink(item.image, item.id)}
-                    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-neutral-100 dark:bg-white/10 py-2.5 text-neutral-600 dark:text-white/80 font-semibold hover:bg-gold hover:text-black dark:hover:bg-gold dark:hover:text-black transition-all"
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-neutral-100 dark:bg-white/10 py-2.5 text-neutral-600 dark:text-white/80 font-semibold hover:bg-gold hover:text-white dark:hover:bg-gold dark:hover:text-white transition-all"
                   >
                     {copiedId === item.id ? (
                       <>
