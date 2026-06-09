@@ -1,35 +1,22 @@
 const BASE = typeof window !== 'undefined' ? '' : (process.env.NEXT_PUBLIC_SITE_URL || '')
 
-function getAdminToken(): string {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('wcc-admin-token')
-    if (token) return token
-  }
-  if (typeof document !== 'undefined') {
-    const match = document.cookie.match(/(^|;)\s*wcc-admin-token\s*=\s*([^;]+)/)
-    if (match) return match[2]
-  }
-  return ''
-}
-
 async function fetcher<T = any>(url: string, options?: RequestInit): Promise<T> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...options?.headers as Record<string, string>,
   }
 
-  const authHeader = headers['Authorization'] || headers['authorization']
-  if (url.startsWith('/api/admin') && !url.startsWith('/api/admin/auth')) {
-    if (!authHeader || authHeader.trim() === 'Bearer' || authHeader === 'Bearer ' || authHeader === 'Bearer undefined' || authHeader === 'Bearer null') {
-      const token = getAdminToken()
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-      }
-    }
+  // Remove manual Authorization header injection, browser sends HttpOnly cookie automatically.
+  if (headers['Authorization']) {
+    delete headers['Authorization']
+  }
+  if (headers['authorization']) {
+    delete headers['authorization']
   }
 
   const response = await fetch(`${BASE}${url}`, {
     ...options,
+    credentials: 'same-origin',
     headers,
   })
 
@@ -45,10 +32,8 @@ export const api = {
   uploadFile: async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
-    const token = getAdminToken()
     const res = await fetch('/api/admin/upload', {
       method: 'POST',
-      headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
       body: formData,
     })
     const data = await res.json()

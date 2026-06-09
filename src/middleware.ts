@@ -23,8 +23,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith('/api/admin') && !pathname.startsWith('/api/admin/auth')) {
-    const authHeader = request.headers.get('authorization')
-    const token = authHeader?.replace('Bearer ', '')
+    const token = request.cookies.get('wcc-admin-token')?.value
 
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
