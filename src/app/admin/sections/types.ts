@@ -3,6 +3,7 @@ export interface SiteConfig {
   fullName: string;
   tagline: string;
   description: string;
+  url: string;
   phone: string;
   email: string;
   whatsapp: string;
