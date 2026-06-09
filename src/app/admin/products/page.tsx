@@ -67,7 +67,7 @@ export default function AdminProductsPage() {
 
         <Link
           href="/admin/products/new"
-          className="flex items-center gap-2.5 rounded-none bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(59,130,246,0.1)] self-start sm:self-auto"
+          className="flex items-center gap-2.5 rounded-none bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(59,130,246,0.1)] self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Add New Product</span>
@@ -80,7 +80,7 @@ export default function AdminProductsPage() {
           <button
             onClick={() => setSelectedDivision('all')}
             className={`px-4 py-2 font-mono text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-all rounded-none ${
-              selectedDivision === 'all' ? 'bg-gold text-black shadow-md font-bold' : 'text-neutral-500 hover:text-neutral-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white'
+              selectedDivision === 'all' ? 'bg-gold text-white shadow-md font-bold' : 'text-neutral-500 hover:text-neutral-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white'
             }`}
           >
             All Divisions
@@ -90,7 +90,7 @@ export default function AdminProductsPage() {
               key={d.slug}
               onClick={() => setSelectedDivision(d.name)}
               className={`px-4 py-2 font-mono text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-all rounded-none ${
-                selectedDivision.toLowerCase() === d.name.toLowerCase() ? 'bg-gold text-black shadow-md font-bold' : 'text-neutral-500 hover:text-neutral-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white'
+                selectedDivision.toLowerCase() === d.name.toLowerCase() ? 'bg-gold text-white shadow-md font-bold' : 'text-neutral-500 hover:text-neutral-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white'
               }`}
             >
               {d.name}
