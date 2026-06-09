@@ -7,7 +7,8 @@ import { ArrowRight, ArrowUpRight, MessageCircle } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/constants'
 import { ProductCard } from '@/components/products/ProductCard'
 import { brandStore } from '@/lib/brand-store'
-import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
+import { useProducts } from '@/hooks/useProducts'
 
 const CATEGORIES = ['All', 'Garments', 'Uniforms', 'Hospitality', 'Home', 'Fragrance', 'Households']
 
@@ -15,20 +16,20 @@ export function NewArrivals() {
   const [activeTab, setActiveTab] = useState('All')
   const gridRef = useRef<HTMLDivElement>(null)
   const [products, setProducts] = useState<any[]>([])
-  const [config, setConfig] = useState<any>({ whatsapp: '+971 XX XXX XXXX' })
+  const { data: config } = useWebsiteContent('site_config', { whatsapp: '+971 XX XXX XXXX' })
+
+  const { products: rawProducts } = useProducts({
+    division: activeTab === 'All' ? undefined : activeTab.toLowerCase(),
+    limit: 100
+  })
 
   useEffect(() => {
-    setConfig(contentStore.getSiteConfig())
-  }, [])
-
-  useEffect(() => {
-    const allProducts = brandStore.getProducts()
-    const filtered = allProducts.filter((p) => {
+    const filtered = rawProducts.filter((p) => {
       if (activeTab === 'All') return p.is_new || p.featured
-      return p.division && p.division.slug.toLowerCase() === activeTab.toLowerCase()
+      return true
     }).slice(0, 8)
     setProducts(filtered)
-  }, [activeTab])
+  }, [rawProducts, activeTab])
 
   const handleTabChange = (cat: string) => {
     setActiveTab(cat)

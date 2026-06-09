@@ -463,6 +463,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Acacia Wood', finish: 'Food Grade Mineral Oil', diameter: '12 Inches', care: 'Hand Wash Only' },
       suitable_for: ['Restaurants', 'Hotels', 'Bespoke Kitchens'],
       tags: ['wooden', 'bowl', 'serveware'],
+      brand_slug: 'aanya-homecraft',
     },
     {
       id: '15', name: 'Premium Silk Tie Collection', slug: 'premium-silk-tie-collection',
@@ -492,6 +493,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: '18/10 Stainless Steel', finish: 'Hammered Silver', pieces: '24 Pcs with Stand', brand: 'Aanya Homecraft' },
       suitable_for: ['Fine Dining', 'Luxury Hotels', 'Retail Chains'],
       tags: ['cutlery', 'hammered', 'dining'],
+      brand_slug: 'aanya-homecraft',
     },
     {
       id: '17', name: 'Acacia Wooden Partition Box', slug: 'acacia-wooden-partition-box',
@@ -506,6 +508,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Acacia Wood & Tempered Glass', compartments: '4 Compartments', finish: 'Natural Polished', brand: 'Aanya Homecraft' },
       suitable_for: ['Home Decor', 'Kitchen Storage', 'Gifting'],
       tags: ['storage', 'organizer', 'wooden'],
+      brand_slug: 'aanya-homecraft',
     },
     {
       id: '18', name: 'Metal Wine Rack with Wooden Base – 31.5cm', slug: 'metal-wine-rack-with-wooden-base-31-5cm',
@@ -523,6 +526,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Iron Wire & Acacia Wood Base', size: '31.5cm Length', brand: 'Horeca24h', sku: 'MI-5036' },
       suitable_for: ['Hotel Bars', 'Lounges', 'Fine Dining', 'Restaurants'],
       tags: ['barware', 'wine-rack', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '25', name: 'Moscow Mule Mug 500 ml – 500 ml', slug: 'moscow-mule-mug-500ml-black',
@@ -541,6 +545,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Stainless Steel', finish: 'Hammered Black', capacity: '500 ml', brand: 'Horeca24h', sku: 'MI-5026' },
       suitable_for: ['Hotel Bars', 'Lounges', 'Fine Dining', 'Restaurants'],
       tags: ['barware', 'mule-mug', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '26', name: 'Moscow Mule Mug 500 ml | Stainless Steel Cocktail Mug with Handle – 500', slug: 'moscow-mule-mug-500ml-copper',
@@ -554,6 +559,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Stainless Steel', finish: 'Hammered Copper & Brass Handle', capacity: '500 ml', brand: 'Horeca24h', sku: 'MI-5035' },
       suitable_for: ['Hotel Bars', 'Lounges', 'Fine Dining', 'Restaurants'],
       tags: ['barware', 'mule-mug', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '27', name: 'Stainless Steel Cocktail Mug with Handle – 500 ml', slug: 'stainless-steel-cocktail-mug-with-handle-500ml',
@@ -567,6 +573,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Stainless Steel', finish: 'Rustic Patina Copper', capacity: '500 ml', brand: 'Horeca24h', sku: 'MI-5029' },
       suitable_for: ['Hotel Bars', 'Lounges', 'Fine Dining', 'Restaurants'],
       tags: ['barware', 'cocktail-mug', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '19', name: 'Horeca24h Triply Stock Pot', slug: 'horeca24h-triply-stock-pot',
@@ -581,6 +588,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Tri-Ply Stainless Steel', capacity: '12 Liters', bottom: 'Induction Compatible Encapsulated Base', brand: 'Horeca24h' },
       suitable_for: ['Commercial Kitchens', 'Hotels', 'Catering'],
       tags: ['cookware', 'stock-pot', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '20', name: 'Horeca24h Stainless Steel Buffet Tongs', slug: 'horeca24h-stainless-steel-buffet-tongs',
@@ -595,6 +603,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: '18/10 Stainless Steel', length: '10 Inches', finish: 'Mirror Polished', brand: 'Horeca24h' },
       suitable_for: ['Hotel Buffet', 'Catering Events', 'Banquet Halls'],
       tags: ['serving', 'tongs', 'buffet', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '21', name: 'Horeca24h Modern Cutlery Set', slug: 'horeca24h-modern-cutlery-set',
@@ -609,6 +618,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: '18/10 Stainless Steel', finish: 'High Mirror Polish', pieces: '24 Pcs (6 Settings)', brand: 'Horeca24h' },
       suitable_for: ['Fine Dining', 'Luxury Hotels', 'VVIP Banquets'],
       tags: ['cutlery', 'tableware', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '22', name: 'Horeca24h Black Wire Buffet Basket', slug: 'horeca24h-black-wire-buffet-basket',
@@ -623,6 +633,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: 'Iron Wire & Acacia Wood', finish: 'Matte Black Powder Coat / Food-Safe Wood Oil', sizes: '30x20x10 cm', brand: 'Horeca24h' },
       suitable_for: ['Hotel Buffet', 'Bakeries', 'Table Presentation'],
       tags: ['storage', 'serving', 'basket', 'horeca24h'],
+      brand_slug: 'horeca24h',
     },
     {
       id: '23', name: '17 Piece Trio Robust 18/10 Tri-Ply Cookware Set', slug: 'household-17-piece-trio-robust-tri-ply-cookware-set',
@@ -644,6 +655,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: '18/10 Stainless Steel', pieces: '17 Pcs Set', brand: 'Aanya Homecraft', sku: 'MI-5072-H', features: 'Ergonomic handles, induction compatible' },
       suitable_for: ['Modern Homes', 'Gifting', 'Culinary Enthusiasts'],
       tags: ['cookware', 'tri-ply', 'stainless-steel', 'set'],
+      brand_slug: 'aanya-homecraft',
     },
     {
       id: '24', name: '3 Piece Trio Robust 18/10 Tri-Ply Stainless Steel Cookware Set', slug: 'household-3-piece-trio-robust-tri-ply-cookware-set',
@@ -663,6 +675,7 @@ export const MOCK_PRODUCTS: Array<{
       specifications: { material: '18/10 Stainless Steel', pieces: '3 Pcs Set', brand: 'Aanya Homecraft', sku: 'MI-5068-H', features: 'Encapsulated core, mirror finish' },
       suitable_for: ['Home Kitchens', 'Everyday Cooking'],
       tags: ['cookware', 'tri-ply', 'stainless-steel', 'set'],
+      brand_slug: 'aanya-homecraft',
     },
   ]
 
@@ -701,6 +714,30 @@ export const MOCK_BRANDS = [
     logo_desktop: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=1200&q=80',
     featured: true,
     display_order: 3,
+    created_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'b4',
+    name: 'HORECA24H',
+    slug: 'horeca24h',
+    tagline: 'Premium Hospitality Serveware & Bar Accessories',
+    description: 'Elegant serveware, copper mule mugs, cocktail tools, and table cutlery designed for F&B establishments, hotels, and luxury catering services.',
+    logo_mobile: '/images/logo/horeca24h.png',
+    logo_desktop: '/images/logo/horeca24h.png',
+    featured: true,
+    display_order: 4,
+    created_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'b5',
+    name: 'AANYA HOMECRAFT',
+    slug: 'aanya-homecraft',
+    tagline: 'Artisanal Woodenware & High-Performance Cookware',
+    description: 'Premium tri-ply stainless steel cookware and handcrafted acacia wood serving bowls. Fusing traditional craftsmanship with modern kitchen utility.',
+    logo_mobile: '/images/logo/aanyahomecraft.png',
+    logo_desktop: '/images/logo/aanyahomecraft.png',
+    featured: true,
+    display_order: 5,
     created_at: '2026-01-01T00:00:00Z'
   }
 ]

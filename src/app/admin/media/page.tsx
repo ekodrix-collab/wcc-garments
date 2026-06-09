@@ -15,22 +15,43 @@ interface MediaAsset {
   uploadedAt: string
 }
 
-const INITIAL_MEDIA: MediaAsset[] = [
-  { id: 'MED-001', title: 'Premium Cotton Twill Suiting Banner 2026', type: 'new_arrival', image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80', dimensions: '1920x1080', size: '1.2 MB', uploadedAt: '15 May 2026' },
-  { id: 'MED-002', title: 'Hospitality Sateen Bedding Linen Showcase', type: 'new_arrival', image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80', dimensions: '2048x1536', size: '2.4 MB', uploadedAt: '14 May 2026' },
-  { id: 'MED-003', title: 'Industrial Safety Coverall Bulk Clearance Banner', type: 'offer', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80', dimensions: '1200x630', size: '940 KB', uploadedAt: '12 May 2026' },
-  { id: 'MED-004', title: 'Pure Oud Attar Royal Box Bottle Macro', type: 'offer', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80', dimensions: '1080x1080', size: '1.8 MB', uploadedAt: '10 May 2026' },
-  { id: 'MED-005', title: 'Executive Polo Collection Editorial Banner', type: 'banner', image: 'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=800&q=80', dimensions: '1920x800', size: '1.5 MB', uploadedAt: '08 May 2026' },
-  { id: 'MED-006', title: 'Microfiber Bulk Household Towel Stack', type: 'product_showcase', image: 'https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=800&q=80', dimensions: '1600x1200', size: '1.1 MB', uploadedAt: '01 May 2026' },
-]
+import { api } from '@/lib/api'
+import { useEffect } from 'react'
 
 export default function AdminMediaPage() {
-  const [mediaList, setMediaList] = useState<MediaAsset[]>(INITIAL_MEDIA)
+  const [mediaList, setMediaList] = useState<MediaAsset[]>([])
   const [selectedTab, setSelectedTab] = useState<'all' | 'new_arrival' | 'offer' | 'banner'>('all')
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [deleteModal, setDeleteModal] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchMedia()
+  }, [])
+
+  const fetchMedia = async () => {
+    setLoading(true)
+    try {
+      const res = await api.admin.getMedia('')
+      if (res.success && res.data) {
+        setMediaList(res.data.map((m: any) => ({
+          id: m.id,
+          title: m.title,
+          type: m.type,
+          image: m.url,
+          dimensions: m.dimensions,
+          size: m.size,
+          uploadedAt: m.created_at ? new Date(m.created_at).toLocaleDateString() : 'Just Now'
+        })))
+      }
+    } catch (error) {
+      console.error('Failed to fetch media:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSimulateUpload = async () => {
     setUploading(true)
@@ -40,17 +61,19 @@ export default function AdminMediaPage() {
       setUploadProgress(p)
     }
 
-    const newAsset: MediaAsset = {
-      id: `MED-00${mediaList.length + 1}`,
-      title: 'Newly Synced Production Asset ' + new Date().toLocaleTimeString(),
-      type: selectedTab === 'all' ? 'new_arrival' : selectedTab,
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
-      dimensions: '2400x1600',
-      size: '2.1 MB',
-      uploadedAt: 'Just Now'
+    try {
+      const payload = {
+        title: 'Newly Synced Production Asset ' + new Date().toLocaleTimeString(),
+        type: selectedTab === 'all' ? 'new_arrival' : selectedTab,
+        url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
+        dimensions: '2400x1600',
+        size: '2.1 MB'
+      }
+      await api.admin.createMedia('', payload)
+      await fetchMedia()
+    } catch (error) {
+      console.error('Failed to create media:', error)
     }
-
-    setMediaList([newAsset, ...mediaList])
     setUploading(false)
     setUploadProgress(0)
   }
@@ -61,8 +84,13 @@ export default function AdminMediaPage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const handleDelete = (id: string) => {
-    setMediaList(prev => prev.filter(m => m.id !== id))
+  const handleDelete = async (id: string) => {
+    try {
+      await api.admin.deleteMedia('', id)
+      await fetchMedia()
+    } catch (error) {
+      console.error('Failed to delete media:', error)
+    }
     setDeleteModal(null)
   }
 
@@ -72,17 +100,17 @@ export default function AdminMediaPage() {
   })
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto text-white font-mono">
+    <div className="space-y-8 max-w-[1600px] mx-auto text-neutral-900 dark:text-white font-mono">
       {/* Title Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6 font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 dark:border-white/10 pb-6 font-sans">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="font-display text-3xl font-bold tracking-tight text-white">Digital Asset Library</h1>
-            <span className="rounded-full bg-purple-500/10 border border-purple-500/30 px-3 py-0.5 font-mono text-xs font-bold text-purple-400">
+            <h1 className="font-display text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">Digital Asset Library</h1>
+            <span className="rounded-full bg-purple-500/10 border border-purple-500/30 px-3 py-0.5 font-mono text-xs font-bold text-purple-600 dark:text-purple-400">
               {mediaList.length} Total Assets
             </span>
           </div>
-          <p className="mt-1 font-mono text-xs text-white/50">
+          <p className="mt-1 font-mono text-xs text-neutral-500 dark:text-white/50">
             Secure cloud CDN asset storage and high-resolution banner orchestration
           </p>
         </div>
@@ -108,35 +136,35 @@ export default function AdminMediaPage() {
 
       {/* Upload Zone & Storage Status */}
       <div className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2 rounded-2xl border border-dashed border-white/20 bg-white/5 p-8 text-center transition-all hover:border-gold/50 flex flex-col items-center justify-center min-h-[180px]">
+        <div className="md:col-span-2 rounded-2xl border border-dashed border-neutral-300 dark:border-white/20 bg-neutral-50 dark:bg-white/5 p-8 text-center transition-all hover:border-gold/50 dark:hover:border-gold/50 flex flex-col items-center justify-center min-h-[180px]">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gold/10 border border-gold/30 text-gold mb-3">
             <Upload className="h-6 w-6" />
           </div>
-          <h3 className="font-sans text-sm font-bold text-white">Drag &amp; Drop High-Res Production Files</h3>
-          <p className="mt-1 text-xs text-white/50">Supports RAW, WebP, PNG, MP4 up to 50MB per asset packet</p>
-          <button onClick={handleSimulateUpload} className="mt-4 rounded-lg bg-white/10 px-4 py-2 text-xs font-semibold text-white hover:bg-gold hover:text-black transition-all">
+          <h3 className="font-sans text-sm font-bold text-neutral-900 dark:text-white">Drag &amp; Drop High-Res Production Files</h3>
+          <p className="mt-1 text-xs text-neutral-500 dark:text-white/50">Supports RAW, WebP, PNG, MP4 up to 50MB per asset packet</p>
+          <button onClick={handleSimulateUpload} className="mt-4 rounded-lg bg-neutral-200 dark:bg-white/10 px-4 py-2 text-xs font-semibold text-neutral-800 dark:text-white hover:bg-gold hover:text-black dark:hover:bg-gold dark:hover:text-black transition-all">
             Browse System Directory
           </button>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-[#0D0D0D] p-6 shadow-xl flex flex-col justify-between space-y-4">
+        <div className="rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-[#0D0D0D] p-6 shadow-xl flex flex-col justify-between space-y-4">
           <div>
-            <h3 className="font-sans text-sm font-bold text-white flex items-center gap-2">
-              <Film className="h-4 w-4 text-purple-400" />
+            <h3 className="font-sans text-sm font-bold text-neutral-900 dark:text-white flex items-center gap-2">
+              <Film className="h-4 w-4 text-purple-600 dark:text-purple-400" />
               <span>Cloud Storage Telemetry</span>
             </h3>
-            <p className="mt-1 text-xs text-white/40">Supabase Secure Bucket Storage</p>
+            <p className="mt-1 text-xs text-neutral-500 dark:text-white/40">Supabase Secure Bucket Storage</p>
           </div>
 
           <div className="space-y-2 text-xs font-mono">
-            <div className="flex items-center justify-between text-white/70">
+            <div className="flex items-center justify-between text-neutral-600 dark:text-white/70">
               <span>Bandwidth &amp; Space</span>
               <span className="text-gold font-bold">18.4 GB / 100 GB</span>
             </div>
-            <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-neutral-100 dark:bg-white/10 rounded-full overflow-hidden">
               <div className="h-full bg-purple-500 rounded-full w-[18.4%]" />
             </div>
-            <div className="flex items-center justify-between text-[10px] text-white/40 pt-1">
+            <div className="flex items-center justify-between text-[10px] text-neutral-400 dark:text-white/40 pt-1">
               <span>CDN Edge Caching: 99.8%</span>
               <span>Global Region: Frankfurt</span>
             </div>
@@ -145,13 +173,13 @@ export default function AdminMediaPage() {
       </div>
 
       {/* Category Navigation Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto bg-white/5 p-3 rounded-xl border border-white/10 scrollbar-none font-mono">
+      <div className="flex items-center gap-2 overflow-x-auto bg-neutral-50 dark:bg-white/5 p-3 rounded-xl border border-neutral-200 dark:border-white/10 scrollbar-none font-mono">
         {(['all', 'new_arrival', 'offer', 'banner'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setSelectedTab(tab)}
             className={`rounded-lg px-4 py-2 text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold ${
-              selectedTab === tab ? 'bg-gold text-black shadow-md font-bold' : 'text-white/60 hover:bg-white/10 hover:text-white'
+              selectedTab === tab ? 'bg-gold text-black shadow-md font-bold' : 'text-neutral-500 hover:bg-neutral-200 hover:text-neutral-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white'
             }`}
           >
             {tab === 'all' ? 'All Assets' : tab.replace('_', ' ')} ({mediaList.filter(m => tab === 'all' || m.type === tab).length})
@@ -160,19 +188,22 @@ export default function AdminMediaPage() {
       </div>
 
       {/* Media Assets Bento Box Grid */}
+      {loading ? (
+        <div className="py-20 flex justify-center"><RefreshCw className="w-8 h-8 text-gold animate-spin" /></div>
+      ) : (
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 font-sans">
         <AnimatePresence>
           {filteredMedia.map((item, idx) => (
-            <motion.div
+              <motion.div
               key={item.id}
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: idx * 0.05 }}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-xl transition-all duration-500 hover:border-gold/50 hover:shadow-2xl flex flex-col justify-between"
+              className="group relative overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 shadow-xl transition-all duration-500 hover:border-gold/50 hover:shadow-2xl flex flex-col justify-between"
             >
               {/* Image Preview Box */}
-              <div className="relative aspect-video w-full overflow-hidden bg-black">
+              <div className="relative aspect-video w-full overflow-hidden bg-neutral-100 dark:bg-black">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -198,19 +229,19 @@ export default function AdminMediaPage() {
               {/* Asset Metadata Bar */}
               <div className="p-5 space-y-3 font-mono">
                 <div>
-                  <span className="text-[10px] text-white/40 font-bold block">{item.id} • Synced {item.uploadedAt}</span>
-                  <p className="font-display text-sm font-bold text-white group-hover:text-gold transition-colors pt-0.5 line-clamp-1 font-sans">{item.title}</p>
+                  <span className="text-[10px] text-neutral-500 dark:text-white/40 font-bold block">{item.id.slice(0, 8)}... • Synced {item.uploadedAt}</span>
+                  <p className="font-display text-sm font-bold text-neutral-900 dark:text-white group-hover:text-gold transition-colors pt-0.5 line-clamp-1 font-sans">{item.title}</p>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 border-t border-white/10 pt-3 text-xs">
+                <div className="flex items-center justify-between gap-2 border-t border-neutral-200 dark:border-white/10 pt-3 text-xs">
                   <button
                     onClick={() => handleCopyLink(item.image, item.id)}
-                    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-white/10 py-2.5 text-white/80 font-semibold hover:bg-gold hover:text-black transition-all"
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-neutral-100 dark:bg-white/10 py-2.5 text-neutral-600 dark:text-white/80 font-semibold hover:bg-gold hover:text-black dark:hover:bg-gold dark:hover:text-black transition-all"
                   >
                     {copiedId === item.id ? (
                       <>
-                        <Check className="h-3.5 w-3.5 text-emerald-400 font-bold" />
-                        <span className="text-emerald-400 font-bold">Link Copied!</span>
+                        <Check className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400 font-bold" />
+                        <span className="text-emerald-500 dark:text-emerald-400 font-bold">Link Copied!</span>
                       </>
                     ) : (
                       <>
@@ -221,7 +252,7 @@ export default function AdminMediaPage() {
                   </button>
                   <button
                     onClick={() => setDeleteModal(item.id)}
-                    className="rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all"
+                    className="rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-red-500 dark:text-red-400 hover:bg-red-500/20 hover:text-red-600 dark:hover:text-red-300 transition-all"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -231,11 +262,12 @@ export default function AdminMediaPage() {
           ))}
         </AnimatePresence>
       </div>
+      )}
 
       {filteredMedia.length === 0 && (
-        <div className="p-16 text-center font-mono space-y-3 rounded-2xl border border-white/10 bg-white/5">
-          <ImageIcon className="h-8 w-8 text-white/30 mx-auto" />
-          <p className="text-sm text-white/60 font-semibold">No digital assets found under this filtering taxonomy.</p>
+        <div className="p-16 text-center font-mono space-y-3 rounded-2xl border border-neutral-200 bg-neutral-50 dark:border-white/10 dark:bg-white/5">
+          <ImageIcon className="h-8 w-8 text-neutral-400 dark:text-white/30 mx-auto" />
+          <p className="text-sm text-neutral-500 dark:text-white/60 font-semibold">No digital assets found under this filtering taxonomy.</p>
         </div>
       )}
 
@@ -247,27 +279,27 @@ export default function AdminMediaPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0D0D0D] p-8 shadow-2xl text-center space-y-6"
+              className="w-full max-w-md rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-[#0D0D0D] p-8 shadow-2xl text-center space-y-6"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 mx-auto text-red-400">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 mx-auto text-red-500 dark:text-red-400">
                 <Trash2 className="h-8 w-8" />
               </div>
               <div>
-                <h3 className="font-display text-xl font-bold text-white font-sans">Decommission CDN Asset</h3>
-                <p className="mt-2 text-xs text-white/60 leading-relaxed font-sans">
+                <h3 className="font-display text-xl font-bold text-neutral-900 dark:text-white font-sans">Decommission CDN Asset</h3>
+                <p className="mt-2 text-xs text-neutral-600 dark:text-white/60 leading-relaxed font-sans">
                   Are you sure you want to permanently purge this asset packet from the cloud CDN bucket? Banners linking here will instantly failover.
                 </p>
               </div>
               <div className="flex items-center gap-4 pt-2">
                 <button
                   onClick={() => setDeleteModal(null)}
-                  className="flex-1 rounded-lg border border-white/10 bg-white/5 py-3 text-xs font-semibold text-white/70 hover:bg-white/10 transition-all"
+                  className="flex-1 rounded-lg border border-neutral-200 bg-neutral-50 text-neutral-700 hover:bg-neutral-100 dark:border-white/10 dark:bg-white/5 py-3 text-xs font-semibold dark:text-white/70 dark:hover:bg-white/10 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(deleteModal)}
-                  className="flex-1 rounded-lg bg-red-500 py-3 text-xs font-bold text-black hover:bg-red-400 transition-all shadow-lg shadow-red-500/20"
+                  className="flex-1 rounded-lg bg-red-500 py-3 text-xs font-bold text-white dark:text-black hover:bg-red-600 dark:hover:bg-red-400 transition-all shadow-lg shadow-red-500/20"
                 >
                   Purge Asset
                 </button>

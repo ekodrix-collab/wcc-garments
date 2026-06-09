@@ -7,6 +7,7 @@ import {
   resolveDivisionCategorySlug,
 } from '@/lib/category-routing'
 import { DIVISIONS, MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
+import { getSupabaseServerClient } from '@/lib/supabase'
 
 export function generateStaticParams() {
   const params: Array<{ division: string; slug: string }> = []
@@ -63,10 +64,13 @@ export async function generateMetadata({
 
 export default async function DivisionCategoryOrLegacyProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ division: string; slug: string }>
+  searchParams: Promise<{ brand?: string }>
 }) {
   const { division: divisionSlug, slug } = await params
+  const { brand } = await searchParams
   const division = DIVISIONS.find((item) => item.slug === divisionSlug)
 
   if (!division) {
@@ -80,17 +84,28 @@ export default async function DivisionCategoryOrLegacyProductPage({
       <DivisionCatalogPage
         divisionSlug={divisionSlug}
         initialCategorySlug={resolvedCategorySlug}
+        initialBrandSlug={brand}
       />
     )
   }
 
-  const matchingProduct = MOCK_PRODUCTS.find(
-    (item) => item.slug === slug && item.division_slug === divisionSlug
-  )
+  try {
+    const supabase = getSupabaseServerClient()
+    const { data: dbProd } = await supabase
+      .from('products')
+      .select('slug')
+      .eq('slug', slug)
+      .eq('division_slug', divisionSlug)
+      .maybeSingle()
 
-  if (matchingProduct) {
-    redirect(getProductHref(divisionSlug, slug))
+    if (dbProd) {
+      redirect(getProductHref(divisionSlug, slug))
+    }
+  } catch (err) {
+    console.error("Error querying product slug from DB:", err)
   }
+
+
 
   notFound()
 }

@@ -6,8 +6,8 @@ import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { useState, useEffect } from "react";
-import { contentStore } from "@/lib/content-store";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
+import { ResponsivePicture } from "@/components/ui/ResponsivePicture";
 
 const DEFAULT_GARMENTS = {
   indicator: "OUR MANUFACTURING DIVISIONS",
@@ -64,11 +64,7 @@ const DEFAULT_GARMENTS = {
 export function DivisionCutouts() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [data, setData] = useState(DEFAULT_GARMENTS);
-
-  useEffect(() => {
-    setData(contentStore.getSectionData("garments-showcase", DEFAULT_GARMENTS));
-  }, []);
+  const { data } = useWebsiteContent("garments-showcase", DEFAULT_GARMENTS);
 
   return (
     <section className="bg-[var(--bg)] py-16 md:py-24" ref={ref}>
@@ -125,11 +121,11 @@ export function DivisionCutouts() {
               >
                 {/* Image aspect-[3/4] */}
                 <div className="relative overflow-hidden aspect-[4/3] sm:aspect-[3/4] rounded-none">
-                  <Image
+                  <ResponsivePicture
                     src={category.image}
                     alt={category.name}
                     fill
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   {/* Subtle lighting mask */}

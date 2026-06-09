@@ -39,35 +39,70 @@ const ALL_IMAGE_PATHS = Array.from(
   new Set(CAMPAIGN_SETS.flatMap((c) => [c.center, c.left, c.right])),
 );
 
-import { contentStore } from "@/lib/content-store";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
+import { resolveImageSrc } from "@/lib/image-utils";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export function HeroSection(): JSX.Element {
-  const [campaignSets, setCampaignSets] = useState(CAMPAIGN_SETS);
   const [campaignIdx, setCampaignIdx] = useState<number>(0);
   const [allLoaded, setAllLoaded] = useState<boolean>(false);
+  const [dynamicCampaignSets, setDynamicCampaignSets] = useState<any[]>([]);
+
+  const { data: heroData } = useWebsiteContent("hero", { campaigns: CAMPAIGN_SETS });
 
   useEffect(() => {
-    const loaded = contentStore.getSectionData("hero", {
-      campaigns: CAMPAIGN_SETS,
-    });
-    if (loaded && loaded.campaigns) {
-      setCampaignSets(loaded.campaigns);
-    }
-  }, []);
+    fetch('/api/products?division=garments&limit=100')
+      .then(res => res.json())
+      .then(json => {
+        if (json.success && Array.isArray(json.data) && json.data.length >= 3) {
+          const list = [...json.data]
+          // Shuffle products
+          for (let i = list.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [list[i], list[j]] = [list[j], list[i]];
+          }
+          
+          const newCampaigns = []
+          const numCampaigns = Math.min(4, list.length)
+          for (let i = 0; i < numCampaigns; i++) {
+            const centerProd = list[i]
+            const leftProd = list[(i - 1 + list.length) % list.length]
+            const rightProd = list[(i + 1) % list.length]
+            
+            newCampaigns.push({
+              id: centerProd.id || `dynamic-${i}`,
+              center: centerProd.images?.[0] || "/images/products/egyptian_cotton_shirt.png",
+              left: leftProd.images?.[0] || "/images/products/cargo_work_pants.png",
+              right: rightProd.images?.[0] || "/images/products/chef_uniform.png",
+              title: centerProd.name,
+              tag: centerProd.brand_slug ? centerProd.brand_slug.toUpperCase() : "LATEST RELEASE",
+              centerSlug: centerProd.slug,
+              leftSlug: leftProd.slug,
+              rightSlug: rightProd.slug,
+            })
+          }
+          setDynamicCampaignSets(newCampaigns)
+        }
+      })
+      .catch(err => console.error("Failed to load hero garments rotation:", err))
+  }, [])
+
+  const campaignSets = dynamicCampaignSets.length >= 3 ? dynamicCampaignSets : (heroData?.campaigns ?? CAMPAIGN_SETS);
 
   useEffect(() => {
     let count = 0;
     const allPaths = Array.from(
-      new Set(campaignSets.flatMap((c) => [c.center, c.left, c.right])),
-    );
+      new Set(campaignSets.flatMap((c: any) => [
+        resolveImageSrc(c.center), resolveImageSrc(c.left), resolveImageSrc(c.right)
+      ])).values()
+    ).filter(Boolean);
     if (allPaths.length === 0) {
       setAllLoaded(true);
       return;
     }
     allPaths.forEach((src) => {
       const img = new window.Image();
-      img.src = src;
+      img.src = src as string;
       img.onload = img.onerror = () => {
         count += 1;
         if (count >= allPaths.length) setAllLoaded(true);
@@ -230,16 +265,18 @@ export function HeroSection(): JSX.Element {
                       "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
                   }}
                 >
-                  <Image
-                    src={campaign.left}
-                    alt="Campaign background"
-                    fill
-                    priority
-                    placeholder="blur"
-                    blurDataURL={BLUR_PLACEHOLDER}
-                    sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 260px"
-                    className="object-cover"
-                  />
+                  <Link href={campaign.leftSlug ? `/products/garments/details/${campaign.leftSlug}` : "/products/garments"} className="relative block w-full h-full">
+                    <Image
+                      src={resolveImageSrc(campaign.left)}
+                      alt="Campaign background"
+                      fill
+                      priority
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDER}
+                      sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 260px"
+                      className="object-cover"
+                    />
+                  </Link>
                 </motion.div>
               </AnimatePresence>
 
@@ -267,16 +304,18 @@ export function HeroSection(): JSX.Element {
                       "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
                   }}
                 >
-                  <Image
-                    src={campaign.right}
-                    alt="Campaign background detail"
-                    fill
-                    priority
-                    placeholder="blur"
-                    blurDataURL={BLUR_PLACEHOLDER}
-                    sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 260px"
-                    className="object-cover"
-                  />
+                  <Link href={campaign.rightSlug ? `/products/garments/details/${campaign.rightSlug}` : "/products/garments"} className="relative block w-full h-full">
+                    <Image
+                      src={resolveImageSrc(campaign.right)}
+                      alt="Campaign background detail"
+                      fill
+                      priority
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDER}
+                      sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 260px"
+                      className="object-cover"
+                    />
+                  </Link>
                 </motion.div>
               </AnimatePresence>
 
@@ -304,25 +343,27 @@ export function HeroSection(): JSX.Element {
                       "0 0 0 1px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08)",
                   }}
                 >
-                  <Image
-                    src={campaign.center}
-                    alt={campaign.title}
-                    fill
-                    priority
-                    placeholder="blur"
-                    blurDataURL={BLUR_PLACEHOLDER}
-                    sizes="(max-width: 640px) 180px, (max-width: 1024px) 220px, 280px"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 flex flex-col items-start">
-                    <span className="font-mono text-[8px] font-bold tracking-[0.2em] text-[#3b82f6] uppercase mb-1">
-                      {campaign.tag}
-                    </span>
-                    <span className="font-display text-sm md:text-xl font-medium text-white leading-tight">
-                      {campaign.title}
-                    </span>
-                  </div>
+                  <Link href={campaign.centerSlug ? `/products/garments/details/${campaign.centerSlug}` : "/products/garments"} className="relative block w-full h-full">
+                    <Image
+                      src={resolveImageSrc(campaign.center)}
+                      alt={campaign.title}
+                      fill
+                      priority
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDER}
+                      sizes="(max-width: 640px) 180px, (max-width: 1024px) 220px, 280px"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 flex flex-col items-start">
+                      <span className="font-mono text-[8px] font-bold tracking-[0.2em] text-[#3b82f6] uppercase mb-1">
+                        {campaign.tag}
+                      </span>
+                      <span className="font-display text-sm md:text-xl font-medium text-white leading-tight">
+                        {campaign.title}
+                      </span>
+                    </div>
+                  </Link>
                 </motion.div>
               </AnimatePresence>
             </div>

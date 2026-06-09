@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { MOCK_PRODUCTS } from '@/lib/constants'
+import { getSupabaseServerClient, proxyImageUrl } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,59 +13,42 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '12')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    let filtered = [...MOCK_PRODUCTS]
+    let data: any[] = []
+    let count: number | null = 0
 
-    if (division) {
-      filtered = filtered.filter((p) => p.division_slug === division)
-    }
-    if (category) {
-      filtered = filtered.filter((p) =>
-        p.category.toLowerCase().includes(category.toLowerCase())
-      )
-    }
-    if (featured === 'true') {
-      filtered = filtered.filter((p) => p.featured)
-    }
-    if (is_new === 'true') {
-      filtered = filtered.filter((p) => p.is_new)
-    }
-    if (is_offer === 'true') {
-      filtered = filtered.filter((p) => p.is_offer)
-    }
-    if (search) {
-      filtered = filtered.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      )
+    try {
+      const supabase = getSupabaseServerClient()
+      let query = supabase.from('products').select('*', { count: 'exact' })
+
+      if (division) query = query.eq('division_slug', division)
+      if (category) query = query.ilike('category', `%${category}%`)
+      if (featured === 'true') query = query.eq('featured', true)
+      if (is_new === 'true') query = query.eq('is_new', true)
+      if (is_offer === 'true') query = query.eq('is_offer', true)
+      if (search) query = query.ilike('name', `%${search}%`)
+
+      query = query.range(offset, offset + limit - 1)
+      
+      const res = await query
+      if (res.error) throw res.error
+      data = res.data || []
+      count = res.count
+    } catch (dbError) {
+      console.warn('Supabase fetch failed or not configured, returning empty list:', dbError)
+      data = []
+      count = 0
     }
 
-    const total = filtered.length
-    const paginated = filtered.slice(offset, offset + limit)
-
-    const data = paginated.map((p) => ({
-      id: p.id,
+    const formattedData = data.map((p) => ({
+      ...p,
+      images: Array.isArray(p.images) ? p.images.map(proxyImageUrl) : [],
       division_id: p.id,
       category_id: null,
-      name: p.name,
-      slug: p.slug,
-      short_description: p.short_description,
       description: p.short_description,
-      specifications: p.specifications,
-      moq: p.moq,
-      lead_time: p.lead_time,
-      custom_branding: true,
-      images: p.images,
       video_url: null,
-      tags: p.tags,
-      suitable_for: p.suitable_for,
-      featured: p.featured,
-      is_new: p.is_new,
-      is_offer: p.is_offer,
-      offer_label: p.offer_label,
       published: true,
-      view_count: Math.floor(Math.random() * 500),
-      enquiry_count: Math.floor(Math.random() * 50),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      view_count: p.view_count || 0,
+      enquiry_count: p.enquiry_count || 0,
       division: {
         id: p.id,
         name: p.division,
@@ -75,22 +58,22 @@ export async function GET(request: NextRequest) {
       category: {
         id: p.id,
         name: p.category,
-        slug: p.category.toLowerCase().replace(/\s+/g, '-'),
+        slug: p.category ? p.category.toLowerCase().replace(/\s+/g, '-') : '',
       },
     }))
 
     return NextResponse.json(
-      { success: true, data, total, limit, offset },
+      { success: true, data: formattedData, total: count || 0, limit, offset },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=60',
         },
       }
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Products route error:', error)
     return NextResponse.json(
-      { success: false, error: 'Server error' },
+      { success: false, error: error.message || 'Server error' },
       { status: 500 }
     )
   }

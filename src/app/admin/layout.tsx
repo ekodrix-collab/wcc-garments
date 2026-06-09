@@ -4,9 +4,22 @@
 import { AdminProvider } from '@/context/AdminContext'
 import { AdminSidebar } from '@/components/layout/AdminSidebar'
 import { useThemeContext } from '@/context/ThemeContext'
+import { usePathname } from 'next/navigation'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { isDark } = useThemeContext()
+  const pathname = usePathname()
+  const isLoginPage = pathname === '/admin/login'
+
+  if (isLoginPage) {
+    return (
+      <AdminProvider>
+        <div className="min-h-screen bg-black text-white">
+          {children}
+        </div>
+      </AdminProvider>
+    )
+  }
 
   return (
     <AdminProvider>

@@ -1,9 +1,47 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
+import { getSupabaseServerClient } from '@/lib/supabase'
 
-export async function PUT() {
-  return NextResponse.json({ success: true, message: 'Product updated (mock mode)' })
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const body = await request.json()
+
+    const supabase = getSupabaseServerClient()
+    const { error } = await supabase
+      .from('products')
+      .update(body)
+      .eq('id', id)
+    
+    if (error) throw error
+
+    return NextResponse.json({ success: true, message: 'Product updated' })
+  } catch (error: any) {
+    console.error('Admin Update Product error:', error)
+    return NextResponse.json({ success: false, error: error.message || 'Server error' }, { status: 500 })
+  }
 }
 
-export async function DELETE() {
-  return NextResponse.json({ success: true, message: 'Product deleted (mock mode)' })
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+
+    const supabase = getSupabaseServerClient()
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
+
+    return NextResponse.json({ success: true, message: 'Product deleted' })
+  } catch (error: any) {
+    console.error('Admin Delete Product error:', error)
+    return NextResponse.json({ success: false, error: error.message || 'Server error' }, { status: 500 })
+  }
 }

@@ -8,6 +8,7 @@ import { DIVISIONS } from '@/lib/constants'
 import { motion, AnimatePresence } from 'framer-motion'
 import { brandStore } from '@/lib/brand-store'
 import { Brand } from '@/types'
+import { api } from '@/lib/api'
 
 export default function EditProductPage() {
   const router = useRouter()
@@ -16,45 +17,71 @@ export default function EditProductPage() {
   const [uploadingImage, setUploadingImage] = useState(false)
   const [dragActive, setDragActive] = useState(false)
   
+  const populateForm = (match: any) => {
+    setFormData({
+      name: match.name || '',
+      slug: match.slug || '',
+      division_id: match.division?.name || match.division_id || 'Garments',
+      category_id: match.category?.name || match.category_id || 'Formal Shirts',
+      brand_slug: match.brand_slug || '',
+      short_description: match.short_description || match.description || '',
+      description: match.description || match.short_description || '',
+      moq: match.moq || '500 Units',
+      lead_time: match.lead_time || '15-20 Working Days',
+      featured: !!match.featured,
+      is_new: !!match.is_new,
+      is_offer: !!match.is_offer,
+      offer_label: match.offer_label || '',
+      published: match.published !== false,
+      tags: Array.isArray(match.tags) ? match.tags : [],
+      specs: typeof match.specifications === 'object' && match.specifications 
+        ? Object.entries(match.specifications).map(([k, v]) => ({ key: k, value: String(v) }))
+        : Array.isArray(match.specs) ? match.specs : [],
+      image: match.images?.[0] || match.image || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80'
+    })
+  }
+
   useEffect(() => {
     setBrands(brandStore.getBrands())
     
-    // Attempt to dynamically fetch and populate the real product data from our store
-    const realProducts = brandStore.getProducts()
-    const match = realProducts.find(p => p.id === params.id)
-    if (match) {
-      setFormData({
-        name: match.name,
-        slug: match.slug,
-        division_id: match.division?.name || 'Garments',
-        category_id: match.category?.name || match.category_id || 'Formal Shirts',
-        brand_slug: match.brand_slug || '',
-        short_description: match.short_description || '',
-        description: match.description || '',
-        moq: match.moq || '500 Units',
-        lead_time: match.lead_time || '15-20 Working Days',
-        featured: match.featured,
-        is_new: match.is_new,
-        is_offer: match.is_offer,
-        offer_label: match.offer_label || '',
-        published: match.published,
-        tags: match.tags,
-        specs: Object.entries(match.specifications || {}).map(([k, v]) => ({ key: k, value: String(v) })),
-        image: match.images?.[0] || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80'
-      })
+    const loadProduct = async () => {
+      // 1. Initial local load
+      const realProducts = brandStore.getProducts()
+      const match = realProducts.find((p: any) => p.id === params.id || p.slug === params.id)
+      if (match) {
+        populateForm(match)
+      }
+
+      // 2. Fetch live database data
+      try {
+        const res = await api.getProducts({ limit: 100 })
+        if (res.success && Array.isArray(res.data)) {
+          const liveMatch = res.data.find((p: any) => p.id === params.id || p.slug === params.id)
+          if (liveMatch) {
+            populateForm(liveMatch)
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch live product details for edit page:", err)
+      }
     }
+
+    loadProduct()
   }, [params.id])
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       setUploadingImage(true)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, image: reader.result as string }))
+      try {
+        const url = await api.uploadFile(file)
+        setFormData(prev => ({ ...prev, image: url }))
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check configuration.')
+      } finally {
         setUploadingImage(false)
       }
-      reader.readAsDataURL(file)
     }
   }
 
@@ -68,19 +95,22 @@ export default function EditProductPage() {
     }
   }
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
     const file = e.dataTransfer.files?.[0]
     if (file && file.type.startsWith("image/")) {
       setUploadingImage(true)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, image: reader.result as string }))
+      try {
+        const url = await api.uploadFile(file)
+        setFormData(prev => ({ ...prev, image: url }))
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check configuration.')
+      } finally {
         setUploadingImage(false)
       }
-      reader.readAsDataURL(file)
     }
   }
   const [saving, setSaving] = useState(false)
@@ -140,41 +170,75 @@ export default function EditProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 1200))
     
-    // Update dynamic record inside our local store
-    brandStore.saveProduct({
-      id: params.id as string,
-      ...formData,
-      brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
-    })
+    try {
+      const specifications: Record<string, string> = {}
+      formData.specs.forEach(s => {
+        if (s.key && s.value) specifications[s.key] = s.value
+      })
 
-    setSaving(false)
-    setSuccess(true)
-    setTimeout(() => {
-      router.push('/admin/products')
-    }, 1500)
+      const productPayload = {
+        name: formData.name,
+        slug: formData.slug,
+        division: formData.division_id,
+        division_slug: formData.division_id.toLowerCase(),
+        category: formData.category_id,
+        short_description: formData.short_description,
+        moq: formData.moq,
+        lead_time: formData.lead_time,
+        images: [formData.image],
+        is_new: formData.is_new,
+        is_offer: formData.is_offer,
+        offer_label: formData.offer_label,
+        featured: formData.featured,
+        specifications,
+        tags: formData.tags,
+        brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+      }
+
+      const token = localStorage.getItem('wcc-admin-token') || ''
+      const res = await api.admin.updateProduct(token, params.id as string, productPayload)
+
+      if (res.success) {
+        brandStore.saveProduct({
+          id: params.id as string,
+          ...formData,
+          brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+        })
+        setSuccess(true)
+        setTimeout(() => {
+          router.push('/admin/products')
+        }, 1500)
+      } else {
+        alert(res.error || 'Failed to update product in DB')
+      }
+    } catch (err: any) {
+      console.error(err)
+      alert(err.message || 'Server error updating product')
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const inputClass = "w-full rounded-xl border border-white/10 bg-black/60 px-4 py-3.5 text-xs text-white placeholder-white/20 focus:border-gold focus:outline-none focus:bg-black transition-all font-mono"
-  const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-white/50 font-mono"
+  const inputClass = "w-full rounded-xl border border-neutral-200 bg-white px-4 py-3.5 text-xs text-neutral-900 placeholder-neutral-400 focus:border-gold focus:outline-none focus:bg-gray-50 dark:border-white/10 dark:bg-black/60 dark:text-white dark:placeholder-white/20 dark:focus:bg-black transition-all font-mono"
+  const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-white/50 font-mono"
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto text-white font-mono">
+    <div className="space-y-8 max-w-[1600px] mx-auto text-neutral-900 dark:text-white font-mono">
       {/* Title Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6 font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 dark:border-white/10 pb-6 font-sans">
         <div className="flex items-center gap-4">
-          <Link href="/admin/products" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 hover:text-white hover:bg-white/10 transition-all">
+          <Link href="/admin/products" className="flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-neutral-50 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 dark:border-white/10 dark:bg-white/5 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10 transition-all">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="font-display text-3xl font-bold tracking-tight text-white font-sans">Modify Catalog Entry</h1>
-              <span className="rounded-full bg-blue-500/10 border border-blue-500/30 px-3 py-0.5 font-mono text-xs font-bold text-blue-400 uppercase tracking-widest">
+              <h1 className="font-display text-3xl font-bold tracking-tight text-neutral-900 dark:text-white font-sans">Modify Catalog Entry</h1>
+              <span className="rounded-full bg-blue-500/10 border border-blue-500/30 px-3 py-0.5 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
                 ID: {params?.id || 'PROD-01'}
               </span>
             </div>
-            <p className="mt-1 font-mono text-xs text-white/50">
+            <p className="mt-1 font-mono text-xs text-neutral-500 dark:text-white/50">
               Synchronize commercial parameters across global wholesale network
             </p>
           </div>
@@ -186,14 +250,14 @@ export default function EditProductPage() {
             setSuccess(true)
             setTimeout(() => router.push('/admin/products'), 1500)
           }}
-          className="rounded-lg bg-white/10 border border-white/20 px-4 py-2 text-xs font-bold text-white hover:bg-gold hover:text-black transition-all self-start sm:self-auto"
+          className="rounded-lg bg-neutral-100 border border-neutral-300 px-4 py-2 text-xs font-bold text-neutral-800 hover:bg-gold hover:text-black dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-gold dark:hover:text-black transition-all self-start sm:self-auto"
         >
           Quick Save Draft
         </button>
       </div>
 
       {success && (
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl bg-emerald-500/15 border border-emerald-500/30 p-5 flex items-center gap-3 text-emerald-400 font-sans text-sm font-bold shadow-2xl">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl bg-emerald-500/15 border border-emerald-500/30 p-5 flex items-center gap-3 text-emerald-600 dark:text-emerald-400 font-sans text-sm font-bold shadow-2xl">
           <CheckCircle2 className="h-5 w-5 flex-shrink-0 animate-bounce" />
           <span>Product commercial modifications successfully validated and updated across WCC index nodes. Redirecting...</span>
         </motion.div>
@@ -202,8 +266,8 @@ export default function EditProductPage() {
       <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-12 font-mono">
         {/* Main Product Info Form */}
         <div className="lg:col-span-8 space-y-6 font-sans">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl space-y-6">
-            <h3 className="font-display text-lg font-bold text-white flex items-center gap-2 border-b border-white/10 pb-4">
+          <div className="rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 p-8 shadow-2xl space-y-6">
+            <h3 className="font-display text-lg font-bold text-neutral-900 dark:text-white flex items-center gap-2 border-b border-neutral-200 dark:border-white/10 pb-4">
               <Layers className="h-5 w-5 text-gold" />
               <span>Core Specifications</span>
             </h3>
@@ -249,9 +313,9 @@ export default function EditProductPage() {
           </div>
 
           {/* Technical Specifications Key-Value Builder */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl space-y-6 font-mono">
-            <h3 className="font-display text-lg font-bold text-white flex items-center gap-2 border-b border-white/10 pb-4 font-sans">
-              <Tag className="h-5 w-5 text-purple-400" />
+          <div className="rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 p-8 shadow-2xl space-y-6 font-mono">
+            <h3 className="font-display text-lg font-bold text-neutral-900 dark:text-white flex items-center gap-2 border-b border-neutral-200 dark:border-white/10 pb-4 font-sans">
+              <Tag className="h-5 w-5 text-purple-500 dark:text-purple-400" />
               <span>Technical Data Matrix &amp; Tags</span>
             </h3>
 
@@ -270,28 +334,28 @@ export default function EditProductPage() {
                 {formData.tags.map(t => (
                   <span key={t} className="inline-flex items-center gap-2 rounded-lg bg-gold/10 border border-gold/30 px-3 py-1 font-mono text-xs font-bold text-gold uppercase">
                     <span>{t}</span>
-                    <button type="button" onClick={() => handleRemoveTag(t)} className="text-gold/60 hover:text-red-400">✕</button>
+                    <button type="button" onClick={() => handleRemoveTag(t)} className="text-gold/60 hover:text-red-500">✕</button>
                   </span>
                 ))}
               </div>
             </div>
 
             {/* Spec Builder */}
-            <div className="space-y-4 pt-4 border-t border-white/10">
+            <div className="space-y-4 pt-4 border-t border-neutral-200 dark:border-white/10">
               <label className={labelClass}>Material Specification Matrix</label>
               <div className="grid sm:grid-cols-12 gap-2">
-                <input type="text" value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="e.g. Tensile Strength" className="sm:col-span-5 rounded-lg border border-white/10 bg-black/50 p-3 text-xs text-white" />
-                <input type="text" value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="e.g. 120 N/cm" className="sm:col-span-5 rounded-lg border border-white/10 bg-black/50 p-3 text-xs text-white" />
-                <button type="button" onClick={handleAddSpec} className="sm:col-span-2 rounded-lg bg-white/10 text-white font-bold text-xs hover:bg-gold hover:text-black transition-all p-3">Add Spec</button>
+                <input type="text" value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="e.g. Tensile Strength" className="sm:col-span-5 rounded-lg border border-neutral-200 bg-white dark:border-white/10 dark:bg-black/50 p-3 text-xs text-neutral-900 dark:text-white" />
+                <input type="text" value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="e.g. 120 N/cm" className="sm:col-span-5 rounded-lg border border-neutral-200 bg-white dark:border-white/10 dark:bg-black/50 p-3 text-xs text-neutral-900 dark:text-white" />
+                <button type="button" onClick={handleAddSpec} className="sm:col-span-2 rounded-lg bg-neutral-100 hover:bg-gold hover:text-black dark:bg-white/10 text-neutral-700 dark:text-white font-bold text-xs transition-all p-3 border border-neutral-200 dark:border-transparent">Add Spec</button>
               </div>
 
-              <div className="divide-y divide-white/10 border border-white/10 rounded-xl overflow-hidden bg-black/30">
+              <div className="divide-y divide-neutral-200 border border-neutral-200 dark:divide-white/10 dark:border-white/10 rounded-xl overflow-hidden bg-neutral-50/50 dark:bg-black/30">
                 {formData.specs.map((sp, idx) => (
                   <div key={idx} className="flex items-center justify-between p-3.5 text-xs">
-                    <span className="text-white/40">{sp.key}</span>
-                    <div className="flex items-center gap-3 font-bold text-white">
+                    <span className="text-neutral-500 dark:text-white/40">{sp.key}</span>
+                    <div className="flex items-center gap-3 font-bold text-neutral-900 dark:text-white">
                       <span>{sp.value}</span>
-                      <button type="button" onClick={() => handleRemoveSpec(idx)} className="text-red-400 hover:text-red-300 p-1">✕</button>
+                      <button type="button" onClick={() => handleRemoveSpec(idx)} className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 p-1">✕</button>
                     </div>
                   </div>
                 ))}
@@ -302,8 +366,8 @@ export default function EditProductPage() {
 
         {/* Right Sidebar Form Controls */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl space-y-6 font-sans">
-            <h3 className="font-display text-base font-bold text-white border-b border-white/10 pb-3">Organization Hierarchy</h3>
+          <div className="rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 p-6 shadow-2xl space-y-6 font-sans">
+            <h3 className="font-display text-base font-bold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-white/10 pb-3">Organization Hierarchy</h3>
             <div className="space-y-4">
               <div>
                 <label className={labelClass}>Division Core *</label>
@@ -329,8 +393,8 @@ export default function EditProductPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl space-y-6 font-sans">
-            <h3 className="font-display text-base font-bold text-white border-b border-white/10 pb-3">Commercial Badging</h3>
+          <div className="rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 p-6 shadow-2xl space-y-6 font-sans">
+            <h3 className="font-display text-base font-bold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-white/10 pb-3">Commercial Badging</h3>
             <div className="space-y-4 font-mono text-xs">
               {[
                 { name: 'featured', label: 'Feature on Homepage Gallery' },
@@ -338,13 +402,13 @@ export default function EditProductPage() {
                 { name: 'is_offer', label: 'Activate Special Offer Ribbon' },
                 { name: 'published', label: 'Publish Live on Web Store' },
               ].map((flag) => (
-                <label key={flag.name} className="flex items-center gap-3.5 text-white/80 cursor-pointer hover:text-gold transition-colors">
+                <label key={flag.name} className="flex items-center gap-3.5 text-neutral-700 dark:text-white/80 cursor-pointer hover:text-gold transition-colors">
                   <input
                     type="checkbox"
                     name={flag.name}
                     checked={formData[flag.name as keyof typeof formData] as boolean}
                     onChange={handleChange}
-                    className="h-4 w-4 accent-gold rounded border-white/20 bg-black"
+                    className="h-4 w-4 accent-gold rounded border-neutral-300 dark:border-white/20 bg-white dark:bg-black"
                   />
                   <span>{flag.label}</span>
                 </label>
@@ -359,17 +423,17 @@ export default function EditProductPage() {
             )}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl space-y-4 font-sans">
-            <h3 className="font-display text-base font-bold text-white border-b border-white/10 pb-3">Digital Asset Cover</h3>
+          <div className="rounded-2xl border border-neutral-200 bg-white dark:border-white/10 dark:bg-white/5 p-6 shadow-2xl space-y-4 font-sans">
+            <h3 className="font-display text-base font-bold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-white/10 pb-3">Digital Asset Cover</h3>
             <div className="space-y-3">
               <div>
                 <label className={labelClass}>Cover Image URL</label>
                 <input name="image" value={formData.image} onChange={handleChange} className={inputClass} placeholder="Cover Image URL..." />
               </div>
               
-              <div className="relative flex items-center justify-center my-2 font-mono text-[10px] text-white/30 uppercase">
-                <span className="w-full h-[1px] bg-white/10" />
-                <span className="absolute bg-[#0D0D0D] px-3">or upload from device</span>
+              <div className="relative flex items-center justify-center my-2 font-mono text-[10px] text-neutral-400 dark:text-white/30 uppercase">
+                <span className="w-full h-[1px] bg-neutral-200 dark:bg-white/10" />
+                <span className="absolute bg-white dark:bg-[#0D0D0D] px-3">or upload from device</span>
               </div>
 
               {/* Drag and drop zone */}
@@ -381,7 +445,7 @@ export default function EditProductPage() {
                 className={`relative border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all ${
                   dragActive
                     ? 'border-gold bg-gold/5'
-                    : 'border-white/10 bg-black/40 hover:border-gold/40 hover:bg-black/60'
+                    : 'border-neutral-200 bg-neutral-50 hover:border-gold/40 hover:bg-neutral-100/50 dark:border-white/10 dark:bg-black/40 dark:hover:border-gold/40 dark:hover:bg-black/60'
                 } cursor-pointer`}
                 onClick={() => document.getElementById('device-upload-input')?.click()}
               >
@@ -392,18 +456,18 @@ export default function EditProductPage() {
                   onChange={handleImageUpload}
                   className="hidden"
                 />
-                <Upload className={`h-6 w-6 mb-2 transition-colors ${dragActive ? 'text-gold' : 'text-white/40'}`} />
+                <Upload className={`h-6 w-6 mb-2 transition-colors ${dragActive ? 'text-gold' : 'text-neutral-400 dark:text-white/40'}`} />
                 {uploadingImage ? (
                   <p className="text-[11px] font-mono text-gold animate-pulse">Reading device file...</p>
                 ) : (
                   <>
-                    <p className="text-[11px] font-bold text-white/80">Click or drag photo here</p>
-                    <p className="text-[9px] font-mono text-white/40 mt-1">Supports PNG, JPG, JPEG, WEBP up to 5MB</p>
+                    <p className="text-[11px] font-bold text-neutral-800 dark:text-white/80">Click or drag photo here</p>
+                    <p className="text-[9px] font-mono text-neutral-400 dark:text-white/40 mt-1">Supports PNG, JPG, JPEG, WEBP up to 5MB</p>
                   </>
                 )}
               </div>
 
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-white/10">
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={formData.image} alt="Preview" className="h-full w-full object-cover" />
               </div>
@@ -418,7 +482,7 @@ export default function EditProductPage() {
             >
               {saving ? <><Loader2 className="h-5 w-5 animate-spin text-black" /> Committing Changes...</> : <><Save className="h-4 w-4" /> Save Modifications</>}
             </button>
-            <Link href="/admin/products" className="flex h-12 w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 font-mono text-xs font-bold uppercase tracking-wider text-white/60 hover:bg-white/10 hover:text-white transition-all">
+            <Link href="/admin/products" className="flex h-12 w-full items-center justify-center rounded-xl border border-neutral-200 bg-neutral-50 font-mono text-xs font-bold uppercase tracking-wider text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white transition-all">
               Discard Modifications
             </Link>
           </div>

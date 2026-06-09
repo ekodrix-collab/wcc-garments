@@ -12,13 +12,13 @@ import { useThemeContext } from '@/context/ThemeContext'
 const ADMIN_LINKS = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, badge: '' },
   { name: 'Website Content', href: '/admin/sections', icon: Layers, badge: '' },
-  { name: 'Products', href: '/admin/products', icon: Package, badge: '14' },
+  { name: 'Products', href: '/admin/products', icon: Package, badge: '' },
   { name: 'Brands', href: '/admin/brands', icon: Award, badge: '' },
-  { name: 'Categories', href: '/admin/categories', icon: FolderOpen, badge: '10' },
-  { name: 'Media & Assets', href: '/admin/media', icon: Film, badge: '6' },
-  { name: 'Enquiries', href: '/admin/enquiries', icon: Inbox, badge: '3 New' },
+  { name: 'Categories', href: '/admin/categories', icon: FolderOpen, badge: '' },
+  { name: 'Media & Assets', href: '/admin/media', icon: Film, badge: '' },
+  { name: 'Enquiries', href: '/admin/enquiries', icon: Inbox, badge: '' },
   { name: 'Newsletter', href: '/admin/newsletter', icon: Mail, badge: '' },
-  { name: 'Broadcast', href: '/admin/broadcast', icon: Megaphone, badge: 'Live' },
+  { name: 'Broadcast', href: '/admin/broadcast', icon: Megaphone, badge: '' },
 ]
 
 export function AdminSidebar() {
@@ -43,12 +43,14 @@ export function AdminSidebar() {
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-gold/70">Enterprise OS</p>
             </div>
           </Link>
-          <button
-            onClick={() => setMobileOpen(false)}
-            className={`rounded p-1 lg:hidden ${isDark ? 'text-white/50 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setMobileOpen(false)}
+              className={`rounded p-1 lg:hidden ${isDark ? 'text-white/50 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation Links */}
@@ -65,28 +67,26 @@ export function AdminSidebar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`group relative flex items-center justify-between rounded-lg px-3.5 py-3 font-mono text-xs font-semibold tracking-wider transition-all duration-300 ${
-                    isActive
+                  className={`group relative flex items-center justify-between rounded-lg px-3.5 py-3 font-mono text-xs font-semibold tracking-wider transition-all duration-300 ${isActive
                       ? isDark
                         ? 'bg-gold/15 text-gold border-l-2 border-gold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]'
                         : 'bg-gold/10 text-gold border-l-2 border-gold font-bold shadow-sm'
                       : isDark
                         ? 'text-white/60 hover:bg-white/5 hover:text-white'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon className={`h-4 w-4 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-gold' : isDark ? 'text-white/40' : 'text-gray-400'}`} />
                     <span>{link.name}</span>
                   </div>
                   {link.badge && (
-                    <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                      link.badge.includes('New') || link.badge.includes('Live')
+                    <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${link.badge.includes('New') || link.badge.includes('Live')
                         ? 'bg-gold text-black animate-pulse'
                         : isDark
                           ? 'bg-white/10 text-white/70'
                           : 'bg-gray-100 text-gray-600 border border-gray-200'
-                    }`}>
+                      }`}>
                       {link.badge}
                     </span>
                   )}
@@ -102,11 +102,10 @@ export function AdminSidebar() {
         <Link
           href="/"
           target="_blank"
-          className={`group flex items-center justify-between rounded-lg border p-3 text-xs transition-all ${
-            isDark 
-              ? 'border-white/10 text-white/60 hover:border-gold hover:bg-gold/5 hover:text-white' 
+          className={`group flex items-center justify-between rounded-lg border p-3 text-xs transition-all ${isDark
+              ? 'border-white/10 text-white/60 hover:border-gold hover:bg-gold/5 hover:text-white'
               : 'border-gray-200 text-gray-600 hover:border-gold hover:bg-gold/5 hover:text-gray-900 bg-white'
-          }`}
+            }`}
         >
           <div className="flex items-center gap-2 font-mono">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -127,9 +126,8 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile Top Navigation Bar */}
-      <div className={`flex h-16 items-center justify-between border-b px-6 lg:hidden fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        isDark ? 'border-white/10 bg-[#0D0D0D]' : 'border-gray-200 bg-white shadow-sm'
-      }`}>
+      <div className={`flex h-16 items-center justify-between border-b px-6 lg:hidden fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${isDark ? 'border-white/10 bg-[#0D0D0D]' : 'border-gray-200 bg-white shadow-sm'
+        }`}>
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center border border-gold bg-gold/10">
             <ShieldCheck className="h-4 w-4 text-gold" />
@@ -138,22 +136,22 @@ export function AdminSidebar() {
             WCC <span className="text-gold">Admin</span>
           </h2>
         </div>
-        <button
-          onClick={() => setMobileOpen(true)}
-          className={`rounded-lg border p-2 transition-all ${
-            isDark 
-              ? 'border-white/10 text-white/70 hover:bg-white/10 hover:text-white' 
-              : 'border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-          }`}
-        >
-          <Menu className="h-6 w-6" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className={`rounded-lg border p-2 transition-all ${isDark
+                ? 'border-white/10 text-white/70 hover:bg-white/10 hover:text-white'
+                : 'border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        </div>
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className={`hidden w-72 flex-shrink-0 border-r lg:block min-h-screen transition-colors duration-300 ${
-        isDark ? 'border-r-white/5 bg-[#0D0D0D]' : 'border-r-gray-200 bg-white'
-      }`}>
+      <aside className={`hidden w-72 flex-shrink-0 border-r lg:block min-h-screen transition-colors duration-300 ${isDark ? 'border-r-white/5 bg-[#0D0D0D]' : 'border-r-gray-200 bg-white'
+        }`}>
         <SidebarContent />
       </aside>
 

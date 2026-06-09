@@ -44,34 +44,11 @@ export function useProducts(options: UseProductsOptions = {}) {
       } else {
         throw new Error(json.error || 'Failed to fetch products')
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('useProducts error:', err)
-      const mockFiltered = MOCK_PRODUCTS.filter((p) => {
-        if (options.division && p.division_slug !== options.division) return false
-        if (options.featured && !p.featured) return false
-        if (options.is_new && !p.is_new) return false
-        if (options.is_offer && !p.is_offer) return false
-        if (options.search && !p.name.toLowerCase().includes(options.search.toLowerCase())) return false
-        return true
-      })
-
-      const mapped = mockFiltered.map((p) => ({
-        ...p,
-        division_id: '',
-        category_id: null,
-        description: p.short_description,
-        custom_branding: false,
-        video_url: null,
-        published: true,
-        view_count: 0,
-        enquiry_count: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })) as unknown as Product[]
-
-      setProducts(mapped)
-      setTotal(mapped.length)
-      setError(null)
+      setProducts([])
+      setTotal(0)
+      setError(err.message || 'Failed to fetch products')
     } finally {
       setLoading(false)
     }
