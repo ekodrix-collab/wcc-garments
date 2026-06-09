@@ -47,10 +47,20 @@ export async function POST(request: NextRequest) {
         .setExpirationTime('7d')
         .sign(secret)
 
-      return NextResponse.json({
+      const response = NextResponse.json({
         success: true,
-        data: { token, user: { email, name: userName, role: 'super_admin' } },
+        data: { user: { email, name: userName, role: 'super_admin' } },
       })
+
+      response.cookies.set('wcc-admin-token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/'
+      })
+
+      return response
     }
 
     return NextResponse.json(

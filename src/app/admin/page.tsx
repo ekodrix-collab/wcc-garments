@@ -13,6 +13,7 @@ import { api } from '@/lib/api'
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'all' | 'new' | 'quoted'>('all')
   const [refreshing, setRefreshing] = useState(false)
+  const [cooldown, setCooldown] = useState(false)
   
   const [stats, setStats] = useState({ products: 0, enquiries: 0, media: 0, contacts: 0 })
   const [recentEnquiries, setRecentEnquiries] = useState<any[]>([])
@@ -22,9 +23,10 @@ export default function AdminDashboard() {
   }, [])
 
   const fetchDashboard = async () => {
+    if (cooldown) return;
     setRefreshing(true)
     try {
-      const res = await api.admin.getDashboard('')
+      const res = await api.admin.getDashboard()
       if (res.success && res.data) {
         setStats(res.data.stats || { products: 0, enquiries: 0, media: 0, contacts: 0 })
         setRecentEnquiries(res.data.recentEnquiries || [])
@@ -33,11 +35,15 @@ export default function AdminDashboard() {
       console.error('Failed to fetch dashboard data:', error)
     } finally {
       setRefreshing(false)
+      setCooldown(true)
+      setTimeout(() => setCooldown(false), 5000)
     }
   }
 
   const handleRefresh = async () => {
-    await fetchDashboard()
+    if (!cooldown && !refreshing) {
+      await fetchDashboard()
+    }
   }
 
   const filteredEnquiries = recentEnquiries.filter(enq => {
@@ -72,11 +78,11 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleRefresh}
-            disabled={refreshing}
+            disabled={refreshing || cooldown}
             className="flex items-center gap-2 rounded-none border border-neutral-200 bg-neutral-50 px-3.5 py-2.5 font-mono text-xs font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white disabled:opacity-50 transition-colors"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin text-gold' : ''}`} />
-            <span>{refreshing ? 'Syncing...' : 'Sync Telemetry'}</span>
+            <span>{refreshing ? 'Syncing...' : cooldown ? 'Synced' : 'Sync Telemetry'}</span>
           </button>
           <Link
             href="/admin/products/new"
