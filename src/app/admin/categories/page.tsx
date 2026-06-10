@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle, Loader2, Upload } from 'lucide-react'
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, X, HelpCircle, Loader2, Upload, Shirt, Home, Briefcase, Sparkles, Building2, LayoutGrid } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from '@/lib/api'
+import { DIVISIONS } from '@/lib/constants'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 type ItemStatus = 'active' | 'coming-soon' | 'hidden'
-type SectionKey = 'all' | 'garments' | 'households' | 'divisions'
 
 interface SubCatItem {
   id: string
@@ -38,12 +38,19 @@ const STATUS_LABELS: Record<ItemStatus, string> = {
   active: 'Active', 'coming-soon': 'Coming Soon', hidden: 'Hidden',
 }
 
-// ── Section mapping ────────────────────────────────────────────────────────────
-const SECTION_SLUGS: Record<Exclude<SectionKey, 'all'>, string[]> = {
-  garments:   ['garments'],
-  households: ['households'],
-  divisions:  ['uniforms', 'hospitality', 'fragrance', 'home'],
+const getDivisionIcon = (slug: string) => {
+  switch (slug) {
+    case 'garments': return Shirt
+    case 'uniforms': return Briefcase
+    case 'hospitality': return Building2
+    case 'home': return Home
+    case 'fragrance': return Sparkles
+    case 'households': return Home
+    default: return LayoutGrid
+  }
 }
+
+// removed SECTION_SLUGS
 
 // ── Empty form state ───────────────────────────────────────────────────────────
 const EMPTY_CAT = { divisionSlug: 'garments', name: '', slug: '', status: 'active' as ItemStatus, image: '' }
@@ -53,7 +60,7 @@ export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<CatItem[]>([])
   const [divisionsData, setDivisionsData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [section, setSection] = useState<SectionKey>('all')
+  const [section, setSection] = useState<string>('all')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
   // Category modal
@@ -131,8 +138,7 @@ export default function AdminCategoriesPage() {
   // ── Filtered view ────────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
     if (section === 'all') return categories
-    const slugs = SECTION_SLUGS[section]
-    return categories.filter((c) => slugs.includes(c.divisionSlug))
+    return categories.filter((c) => c.divisionSlug === section)
   }, [categories, section])
 
   const grouped = useMemo(() => {
@@ -348,20 +354,25 @@ export default function AdminCategoriesPage() {
 
       {/* ── Section Tabs ── */}
       <div className="flex flex-wrap gap-2 border-b border-neutral-200 dark:border-white/10 pb-4">
-        {([
-          { key: 'all', label: `All (${totalCats})` },
-          { key: 'garments', label: '👗 Garments' },
-          { key: 'households', label: '🏠 Households' },
-          { key: 'divisions', label: '🚀 Other Divisions' },
-        ] as { key: SectionKey; label: string }[]).map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setSection(tab.key)}
-            className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${section === tab.key ? 'bg-gold border-gold text-white' : 'border-neutral-200 text-neutral-500 hover:text-neutral-950 dark:border-white/10 dark:text-white/50 dark:hover:text-white'}`}
-          >
-            {tab.label}
-          </button>
-        ))}
+        <button
+          onClick={() => setSection('all')}
+          className={`px-4 py-2 flex items-center gap-2 font-mono text-xs font-bold uppercase border transition-all ${section === 'all' ? 'bg-gold border-gold text-white' : 'border-neutral-200 text-neutral-500 hover:text-neutral-950 dark:border-white/10 dark:text-white/50 dark:hover:text-white'}`}
+        >
+          All ({totalCats})
+        </button>
+        {DIVISIONS.map((div) => {
+          const Icon = getDivisionIcon(div.slug)
+          return (
+            <button
+              key={div.slug}
+              onClick={() => setSection(div.slug)}
+              className={`px-4 py-2 flex items-center gap-2 font-mono text-xs font-bold uppercase border transition-all ${section === div.slug ? 'bg-gold border-gold text-white' : 'border-neutral-200 text-neutral-500 hover:text-neutral-950 dark:border-white/10 dark:text-white/50 dark:hover:text-white'}`}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {div.name}
+            </button>
+          )
+        })}
       </div>
 
       {/* ── Category Groups ── */}
