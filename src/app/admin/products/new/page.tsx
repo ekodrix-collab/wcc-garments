@@ -42,17 +42,19 @@ export default function NewProductPage() {
   }, [])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
+    const files = Array.from(e.target.files || [])
+    if (files.length > 0) {
       setUploadingImage(true)
       try {
-        const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
+        const uploadPromises = files.map(file => api.uploadFile(file))
+        const urls = await Promise.all(uploadPromises)
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...urls] }))
       } catch (err) {
         console.error('Upload failed:', err)
-        alert('Failed to upload image. Please check configuration.')
+        alert('Failed to upload some images. Please check configuration.')
       } finally {
         setUploadingImage(false)
+        if (e.target) e.target.value = ''
       }
     }
   }
@@ -71,15 +73,16 @@ export default function NewProductPage() {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    const file = e.dataTransfer.files?.[0]
-    if (file && file.type.startsWith("image/")) {
+    const files = Array.from(e.dataTransfer.files || []).filter(file => file.type.startsWith("image/"))
+    if (files.length > 0) {
       setUploadingImage(true)
       try {
-        const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
+        const uploadPromises = files.map(file => api.uploadFile(file))
+        const urls = await Promise.all(uploadPromises)
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...urls] }))
       } catch (err) {
         console.error('Upload failed:', err)
-        alert('Failed to upload image. Please check configuration.')
+        alert('Failed to upload some images. Please check configuration.')
       } finally {
         setUploadingImage(false)
       }
@@ -94,13 +97,9 @@ export default function NewProductPage() {
     name: '', slug: '', division_id: 'Garments', category_id: '', brand_slug: '',
     short_description: '', description: '', moq: '500 Units', lead_time: '15-25 Working Days',
     featured: false, is_new: true, is_offer: false, offer_label: '',
-    published: true, tags: ['Cotton', 'Industrial Export', 'Anti-Microbial'],
-    specs: [
-      { key: 'Fabric Composition', value: '100% Long-Staple Premium Cotton' },
-      { key: 'Weave Type', value: 'High-Density 300TC Twill' },
-      { key: 'Certifications', value: 'ISO 9001:2015, OEKO-TEX Standard 100' }
-    ],
-    images: ['https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80']
+    published: true, tags: [],
+    specs: [],
+    images: []
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -448,6 +447,7 @@ export default function NewProductPage() {
                   id="device-upload-input"
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={handleImageUpload}
                   className="hidden"
                 />
