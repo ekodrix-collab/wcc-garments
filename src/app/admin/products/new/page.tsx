@@ -30,6 +30,15 @@ export default function NewProductPage() {
       }
     }
     loadLiveBrands()
+
+    // Auto-select division from URL if present
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const divParam = urlParams.get('division')
+      if (divParam) {
+        setFormData(prev => ({ ...prev, division_id: divParam }))
+      }
+    }
   }, [])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
