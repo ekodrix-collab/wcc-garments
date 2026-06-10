@@ -82,17 +82,19 @@ export default function EditProductPage() {
   }, [params.id])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
+    const files = Array.from(e.target.files || [])
+    if (files.length > 0) {
       setUploadingImage(true)
       try {
-        const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
+        const uploadPromises = files.map(file => api.uploadFile(file))
+        const urls = await Promise.all(uploadPromises)
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...urls] }))
       } catch (err) {
         console.error('Upload failed:', err)
-        alert('Failed to upload image. Please check configuration.')
+        alert('Failed to upload some images. Please check configuration.')
       } finally {
         setUploadingImage(false)
+        if (e.target) e.target.value = ''
       }
     }
   }
@@ -111,15 +113,16 @@ export default function EditProductPage() {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    const file = e.dataTransfer.files?.[0]
-    if (file && file.type.startsWith("image/")) {
+    const files = Array.from(e.dataTransfer.files || []).filter(file => file.type.startsWith("image/"))
+    if (files.length > 0) {
       setUploadingImage(true)
       try {
-        const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
+        const uploadPromises = files.map(file => api.uploadFile(file))
+        const urls = await Promise.all(uploadPromises)
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...urls] }))
       } catch (err) {
         console.error('Upload failed:', err)
-        alert('Failed to upload image. Please check configuration.')
+        alert('Failed to upload some images. Please check configuration.')
       } finally {
         setUploadingImage(false)
       }
@@ -502,6 +505,7 @@ export default function EditProductPage() {
                   id="device-upload-input"
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={handleImageUpload}
                   className="hidden"
                 />
