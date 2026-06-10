@@ -66,7 +66,7 @@ export default function AdminProductsPage() {
         </div>
 
         <Link
-          href="/admin/products/new"
+          href={`/admin/products/new${selectedDivision !== 'all' ? `?division=${selectedDivision}` : ''}`}
           className="flex items-center gap-2.5 rounded-none bg-gold px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-gold-light hover:shadow-[0_0_25px_rgba(59,130,246,0.1)] self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
