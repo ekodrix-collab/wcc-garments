@@ -13,7 +13,7 @@ import { useProducts } from '@/hooks/useProducts'
 const CATEGORIES = ['All', 'Garments', 'Uniforms', 'Hospitality', 'Home', 'Fragrance', 'Households']
 
 export function NewArrivals() {
-  const [activeTab, setActiveTab] = useState('All')
+  const [activeTab, setActiveTab] = useState('Garments')
   const gridRef = useRef<HTMLDivElement>(null)
   const [products, setProducts] = useState<any[]>([])
   const { data: config } = useWebsiteContent('site_config', { whatsapp: '+971 XX XXX XXXX' })
