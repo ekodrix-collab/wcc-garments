@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getSupabaseServerClient, proxyImageUrl } from '@/lib/supabase'
 import { fetchWithFallback } from '@/lib/db-service'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const data = await fetchWithFallback(

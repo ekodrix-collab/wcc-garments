@@ -1,5 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic'
 import { fetchWithFallback } from '@/lib/db-service'
 import { MOCK_BRANDS } from '@/lib/constants'
 

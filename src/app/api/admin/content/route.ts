@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -13,7 +15,7 @@ export async function GET(request: Request) {
       const { data, error } = await supabase
         .from('website_content')
         .select('*')
-        .eq('key', sectionId)
+        .eq('section_id', sectionId)
         .single()
 
       if (error && error.code !== 'PGRST116') { // PGRST116 is not found
@@ -59,9 +61,9 @@ export async function PUT(request: Request) {
     const { data, error } = await supabase
       .from('website_content')
       .upsert({ 
-        key: sectionId, 
+        section_id: sectionId, 
         content: body 
-      }, { onConflict: 'key' })
+      }, { onConflict: 'section_id' })
       .select()
       .single()
 

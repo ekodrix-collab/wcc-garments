@@ -38,11 +38,11 @@ export default function AdminMediaPage() {
       if (res.success && res.data) {
         setMediaList(res.data.map((m: any) => ({
           id: m.id,
-          title: m.title,
-          type: m.type,
+          title: m.title || 'Untitled Asset',
+          type: m.type || 'banner',
           image: m.url,
-          dimensions: m.dimensions,
-          size: m.size,
+          dimensions: m.dimensions || 'N/A',
+          size: m.size || 'N/A',
           uploadedAt: m.created_at ? new Date(m.created_at).toLocaleDateString() : 'Just Now'
         })))
       }
@@ -221,7 +221,7 @@ export default function AdminMediaPage() {
                     item.type === 'banner' ? 'bg-purple-500/80 text-white border-purple-300' :
                     'bg-emerald-500/80 text-black border-emerald-300'
                   }`}>
-                    {item.type.replace('_', ' ')}
+                    {(item.type || 'banner').replace('_', ' ')}
                   </span>
                 </div>
               </div>
