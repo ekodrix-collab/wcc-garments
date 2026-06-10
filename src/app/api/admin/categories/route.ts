@@ -3,6 +3,8 @@ import { getSupabaseServerClient } from '@/lib/supabase'
 import { fetchWithFallback } from '@/lib/db-service'
 import { DIVISIONS } from '@/lib/constants'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const data = await fetchWithFallback(
