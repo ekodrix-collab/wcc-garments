@@ -250,7 +250,7 @@ export default function EditProductPage() {
             setSuccess(true)
             setTimeout(() => router.push('/admin/products'), 1500)
           }}
-          className="rounded-lg bg-neutral-100 border border-neutral-300 px-4 py-2 text-xs font-bold text-neutral-800 hover:bg-gold hover:text-black dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-gold dark:hover:text-black transition-all self-start sm:self-auto"
+          className="rounded-lg bg-neutral-100 border border-neutral-300 px-4 py-2 text-xs font-bold text-neutral-800 hover:bg-gold hover:text-white dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-gold dark:hover:text-white transition-all self-start sm:self-auto"
         >
           Quick Save Draft
         </button>
@@ -346,7 +346,7 @@ export default function EditProductPage() {
               <div className="grid sm:grid-cols-12 gap-2">
                 <input type="text" value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="e.g. Tensile Strength" className="sm:col-span-5 rounded-lg border border-neutral-200 bg-white dark:border-white/10 dark:bg-black/50 p-3 text-xs text-neutral-900 dark:text-white" />
                 <input type="text" value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="e.g. 120 N/cm" className="sm:col-span-5 rounded-lg border border-neutral-200 bg-white dark:border-white/10 dark:bg-black/50 p-3 text-xs text-neutral-900 dark:text-white" />
-                <button type="button" onClick={handleAddSpec} className="sm:col-span-2 rounded-lg bg-neutral-100 hover:bg-gold hover:text-black dark:bg-white/10 text-neutral-700 dark:text-white font-bold text-xs transition-all p-3 border border-neutral-200 dark:border-transparent">Add Spec</button>
+                <button type="button" onClick={handleAddSpec} className="sm:col-span-2 rounded-lg bg-neutral-100 hover:bg-gold hover:text-white dark:bg-white/10 text-neutral-700 dark:text-white font-bold text-xs transition-all p-3 border border-neutral-200 dark:border-transparent">Add Spec</button>
               </div>
 
               <div className="divide-y divide-neutral-200 border border-neutral-200 dark:divide-white/10 dark:border-white/10 rounded-xl overflow-hidden bg-neutral-50/50 dark:bg-black/30">
@@ -478,7 +478,7 @@ export default function EditProductPage() {
             <button
               type="submit"
               disabled={saving}
-              className="flex h-14 w-full items-center justify-center gap-2.5 rounded-xl bg-gold font-mono text-xs font-bold uppercase tracking-widest text-black hover:bg-gold-light transition-all shadow-xl disabled:opacity-50"
+              className="flex h-14 w-full items-center justify-center gap-2.5 rounded-xl bg-gold font-mono text-xs font-bold uppercase tracking-widest text-white hover:bg-gold-light transition-all shadow-xl disabled:opacity-50"
             >
               {saving ? <><Loader2 className="h-5 w-5 animate-spin text-black" /> Committing Changes...</> : <><Save className="h-4 w-4" /> Save Modifications</>}
             </button>

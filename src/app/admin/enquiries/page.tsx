@@ -101,7 +101,7 @@ export default function AdminEnquiriesPage() {
               onClick={() => setStatusFilter(tab)}
               className={`rounded-lg px-4 py-2.5 font-semibold uppercase tracking-wider transition-all whitespace-nowrap ${
                 statusFilter === tab
-                  ? 'bg-gold text-black shadow-lg font-bold'
+                  ? 'bg-gold text-white shadow-lg font-bold'
                   : 'bg-neutral-50 text-neutral-600 border border-neutral-200 hover:bg-neutral-100 hover:text-neutral-900 dark:bg-white/5 dark:text-white/60 dark:border-white/10 dark:hover:bg-white/10 dark:hover:text-white'
               }`}
             >
@@ -210,7 +210,7 @@ export default function AdminEnquiriesPage() {
                     <td className="px-6 py-5 text-right">
                       <button
                         onClick={(e) => { e.stopPropagation(); setActiveModal(enq) }}
-                        className="inline-flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 dark:border-white/10 dark:bg-white/5 px-3 py-2 text-neutral-600 dark:text-white/70 transition-all hover:bg-gold hover:text-black hover:border-gold dark:hover:bg-gold dark:hover:text-black dark:hover:border-gold font-semibold"
+                        className="inline-flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 dark:border-white/10 dark:bg-white/5 px-3 py-2 text-neutral-600 dark:text-white/70 transition-all hover:bg-gold hover:text-white hover:border-gold dark:hover:bg-gold dark:hover:text-white dark:hover:border-gold font-semibold"
                       >
                         <Eye className="h-3.5 w-3.5" />
                         <span>Inspect</span>
@@ -307,7 +307,7 @@ export default function AdminEnquiriesPage() {
                       onClick={() => handleUpdateStatus(activeModal.id, st)}
                       className={`rounded-lg border p-3 text-center text-xs font-semibold uppercase tracking-wider transition-all ${
                         activeModal.status === st
-                          ? 'bg-gold text-black border-gold font-bold shadow-lg shadow-gold/20'
+                          ? 'bg-gold text-white border-gold font-bold shadow-lg shadow-gold/20'
                           : 'border-neutral-200 bg-neutral-50 text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 hover:border-neutral-300 dark:border-white/10 dark:bg-white/5 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white dark:hover:border-white/30'
                       }`}
                     >
@@ -320,7 +320,7 @@ export default function AdminEnquiriesPage() {
               <div className="flex items-center gap-3 pt-4 border-t border-neutral-200 dark:border-white/10">
                 <a
                   href={`mailto:${activeModal.email}?subject=Re: Commercial Enquiry (${activeModal.id}) - WCC Garments`}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-gold py-3 text-xs font-bold uppercase tracking-wider text-black hover:bg-gold-light transition-all shadow-lg"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-gold py-3 text-xs font-bold uppercase tracking-wider text-white hover:bg-gold-light transition-all shadow-lg"
                 >
                   <Send className="h-4 w-4" />
                   <span>Reply via Email Dispatch</span>

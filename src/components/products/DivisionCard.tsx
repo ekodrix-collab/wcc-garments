@@ -19,11 +19,11 @@ const DIVISION_IMAGES: Record<string, string> = {
 type DivisionStatus = 'flagship' | 'established' | 'expanding' | 'newly-started' | 'active' | 'coming-soon'
 
 const STATUS_CONFIG: Record<DivisionStatus, { badge: string; style: string }> = {
-  flagship:        { badge: 'FLAGSHIP',       style: 'bg-gold text-black' },
+  flagship:        { badge: 'FLAGSHIP',       style: 'bg-gold text-white' },
   established:     { badge: 'ESTABLISHED',    style: 'bg-blue-500 text-white' },
   expanding:       { badge: 'MAJOR EXPANSION',style: 'bg-emerald-500 text-white' },
   'newly-started': { badge: 'NEWLY STARTED',  style: 'bg-amber-500 text-white' },
-  active:          { badge: 'ACTIVE',         style: 'bg-gold text-black' },
+  active:          { badge: 'ACTIVE',         style: 'bg-gold text-white' },
   'coming-soon':   { badge: 'COMING SOON',    style: 'bg-neutral-600 text-white' },
 }
 

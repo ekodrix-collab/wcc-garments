@@ -14,6 +14,8 @@ export const isSupabaseConfigured = () => {
 // Transform supabase storage URLs to internal Next.js domain proxy route to circumvent ISP blocks in India/China
 export const proxyImageUrl = (url: string): string => {
   if (!url) return url
+  // Bypass proxying in local development to prevent Next.js image optimization deadlocks
+  if (process.env.NODE_ENV === 'development') return url
   const oldUrl = 'https://zoqbwjvkbiafnslycxsx.supabase.co'
   const newUrl = 'https://aouhgpeonexfofllurlh.supabase.co'
   const target = '/storage/v1/object/public/wcc_media'

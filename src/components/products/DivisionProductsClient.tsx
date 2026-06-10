@@ -127,7 +127,7 @@ const STYLE_COUNT: Record<string, Record<string, string>> = {
 type CatStatus = 'active' | 'coming-soon'
 
 const STATUS_CONFIG: Record<CatStatus, { badge: string; style: string }> = {
-  'active': { badge: 'ACTIVE', style: 'bg-gold text-black' },
+  'active': { badge: 'ACTIVE', style: 'bg-gold text-white' },
   'coming-soon': { badge: 'COMING SOON', style: 'bg-[var(--surface-muted)] text-[var(--text-muted)]' },
 }
 
@@ -190,7 +190,7 @@ export function DivisionProductsClient({
   const renderAllProductsButton = (className = '') => (
     <button
       onClick={clearAllFilters}
-      className={`group relative inline-flex items-center gap-2 overflow-hidden bg-[var(--text)] px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-[var(--bg)] transition-all hover:bg-gold hover:text-black shadow-[0_0_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] cursor-pointer ${className}`}
+      className={`group relative inline-flex items-center gap-2 overflow-hidden bg-[var(--text)] px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-[var(--bg)] transition-all hover:bg-gold hover:text-white shadow-[0_0_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] cursor-pointer ${className}`}
     >
       <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
         <div className="w-8 bg-white/20" />
@@ -499,7 +499,7 @@ export function DivisionProductsClient({
                   <div className="relative z-10 shrink-0 flex flex-col gap-3 w-full md:w-auto">
                     <button
                       onClick={() => updateFilters(null, 'all')}
-                      className="bg-gold hover:bg-gold/90 text-black py-3 px-6 font-mono text-[10px] font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-2xl cursor-pointer"
+                      className="bg-gold hover:bg-gold/90 text-white py-3 px-6 font-mono text-[10px] font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-2xl cursor-pointer"
                     >
                       <span>Show All Brands</span>
                       <X className="h-4 w-4" />
@@ -811,7 +811,7 @@ function ProductsGrid({
           <p className="font-display text-xl text-[var(--text-muted)]">{emptyMsg}</p>
           <Link
             href={`/contact?division=${divisionSlug}&category=${urlCategory !== 'all' ? urlCategory : ''}&brand=${urlBrand !== 'all' ? urlBrand : ''}&source=division_catalog_empty_grid&intent=bulk_quotation`}
-            className="mt-6 inline-flex items-center gap-2 border border-gold/30 bg-gold/10 px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-black transition-all"
+            className="mt-6 inline-flex items-center gap-2 border border-gold/30 bg-gold/10 px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-white transition-all"
           >
             Contact for Enquiry <ArrowRight className="h-3.5 w-3.5" />
           </Link>

@@ -11,11 +11,11 @@ import { DIVISIONS, MOCK_IMAGES } from '@/lib/constants'
 type DivisionStatus = 'flagship' | 'established' | 'expanding' | 'newly-started' | 'active' | 'coming-soon'
 
 const STATUS_CONFIG: Record<DivisionStatus, { badge: string; style: string }> = {
-  flagship:       { badge: 'FLAGSHIP',      style: 'bg-gold text-black' },
+  flagship:       { badge: 'FLAGSHIP',      style: 'bg-gold text-white' },
   established:    { badge: 'ESTABLISHED',   style: 'bg-blue-500 text-white' },
   expanding:      { badge: 'MAJOR EXPANSION', style: 'bg-emerald-500 text-white' },
   'newly-started':{ badge: 'NEWLY STARTED', style: 'bg-amber-500 text-white' },
-  active:         { badge: 'ACTIVE',        style: 'bg-gold text-black' },
+  active:         { badge: 'ACTIVE',        style: 'bg-gold text-white' },
   'coming-soon':  { badge: 'COMING SOON',   style: 'bg-neutral-600 text-white' },
 }
 
@@ -83,7 +83,7 @@ export function KillingOffers() {
               </p>
               <Link
                 href="/contact"
-                className="mt-8 inline-flex items-center gap-2 border border-white/20 bg-white/5 backdrop-blur-md px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-gold hover:text-black hover:border-gold"
+                className="mt-8 inline-flex items-center gap-2 border border-white/20 bg-white/5 backdrop-blur-md px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-gold hover:text-white hover:border-gold"
               >
                 Inquire For Bulk Orders
                 <ArrowUpRight className="h-3.5 w-3.5" />

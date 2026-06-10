@@ -8,7 +8,7 @@ import { useAdmin } from '@/context/AdminContext'
 
 export default function AdminLoginPage() {
   const router = useRouter()
-  const { login } = useAdmin()
+  // AdminContext is now only used for logout inside the dashboard.
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
       const data = await res.json()
 
       if (data.success) {
-        login(data.data.token)
+        // HttpOnly cookie is automatically set by the server response
         router.push('/admin')
       } else {
         setError(data.error || 'Invalid credential configuration')

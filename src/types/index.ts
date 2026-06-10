@@ -158,5 +158,6 @@ export interface Brand {
   logo_desktop: string  // Image for desktop
   featured: boolean
   display_order: number
+  division_slug: string // Which division this brand belongs to
   created_at: string
 }

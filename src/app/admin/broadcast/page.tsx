@@ -111,7 +111,7 @@ export default function AdminBroadcastPage() {
           <button
             onClick={() => setDispatchType('Email Dispatch')}
             className={`flex items-center gap-2 rounded-md px-4 py-2 font-semibold uppercase tracking-wider transition-all ${
-              dispatchType === 'Email Dispatch' ? 'bg-gold text-black shadow-lg font-bold' : 'text-neutral-500 dark:text-white/60 hover:text-neutral-800 dark:hover:text-white'
+              dispatchType === 'Email Dispatch' ? 'bg-gold text-white shadow-lg font-bold' : 'text-neutral-500 dark:text-white/60 hover:text-neutral-800 dark:hover:text-white'
             }`}
           >
             <Mail className="h-4 w-4" />
@@ -273,7 +273,7 @@ export default function AdminBroadcastPage() {
             }`}>
               <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-full bg-gold flex items-center justify-center text-black font-bold font-mono text-[10px]">W</div>
+                  <div className="h-6 w-6 rounded-full bg-gold flex items-center justify-center text-white font-bold font-mono text-[10px]">W</div>
                   <div>
                     <p className="font-bold text-[11px] leading-none text-neutral-900 dark:text-white">WCC Garments Global</p>
                     <span className="text-[9px] text-neutral-500 dark:text-white/60">Verified Business Account</span>
