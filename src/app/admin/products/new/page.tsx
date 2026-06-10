@@ -97,9 +97,9 @@ export default function NewProductPage() {
     name: '', slug: '', division_id: 'Garments', category_id: '', brand_slug: '',
     short_description: '', description: '', moq: '500 Units', lead_time: '15-25 Working Days',
     featured: false, is_new: true, is_offer: false, offer_label: '',
-    published: true, tags: [],
-    specs: [],
-    images: []
+    published: true, tags: [] as string[],
+    specs: [] as { key: string; value: string }[],
+    images: [] as string[]
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
