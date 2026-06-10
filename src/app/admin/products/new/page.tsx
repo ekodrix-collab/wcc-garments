@@ -38,7 +38,7 @@ export default function NewProductPage() {
       setUploadingImage(true)
       try {
         const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, image: url }))
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
       } catch (err) {
         console.error('Upload failed:', err)
         alert('Failed to upload image. Please check configuration.')
@@ -67,7 +67,7 @@ export default function NewProductPage() {
       setUploadingImage(true)
       try {
         const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, image: url }))
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
       } catch (err) {
         console.error('Upload failed:', err)
         alert('Failed to upload image. Please check configuration.')
@@ -91,7 +91,7 @@ export default function NewProductPage() {
       { key: 'Weave Type', value: 'High-Density 300TC Twill' },
       { key: 'Certifications', value: 'ISO 9001:2015, OEKO-TEX Standard 100' }
     ],
-    image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80'
+    images: ['https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80']
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -127,6 +127,10 @@ export default function NewProductPage() {
     setFormData({ ...formData, specs: formData.specs.filter((_, i) => i !== idx) })
   }
 
+  const handleRemoveImage = (idx: number) => {
+    setFormData(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
@@ -150,7 +154,7 @@ export default function NewProductPage() {
         short_description: formData.short_description,
         moq: formData.moq,
         lead_time: formData.lead_time,
-        images: [formData.image],
+        images: formData.images,
         is_new: formData.is_new,
         is_offer: formData.is_offer,
         offer_label: formData.offer_label,
@@ -400,8 +404,17 @@ export default function NewProductPage() {
             <h3 className="font-display text-base font-bold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-white/10 pb-3">Digital Asset Cover</h3>
             <div className="space-y-3">
               <div>
-                <label className={labelClass}>Cover Image URL</label>
-                <input name="image" value={formData.image} onChange={handleChange} className={inputClass} placeholder="Cover Image URL..." />
+                <label className={labelClass}>Add Image URL</label>
+                <div className="flex gap-2">
+                  <input id="image-url-input" className={inputClass} placeholder="Image URL..." />
+                  <button type="button" onClick={() => {
+                    const input = document.getElementById('image-url-input') as HTMLInputElement
+                    if (input.value) {
+                      setFormData(prev => ({ ...prev, images: [...(prev.images || []), input.value] }))
+                      input.value = ''
+                    }
+                  }} className="rounded-xl bg-neutral-100 hover:bg-gold hover:text-white dark:bg-white/10 text-neutral-700 dark:text-white font-bold text-xs transition-all px-4 border border-neutral-200 dark:border-transparent">Add</button>
+                </div>
               </div>
               
               <div className="relative flex items-center justify-center my-2 font-mono text-[10px] text-neutral-400 dark:text-white/30 uppercase">
@@ -440,9 +453,20 @@ export default function NewProductPage() {
                 )}
               </div>
 
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={formData.image} alt="Preview" className="h-full w-full object-cover" />
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                {(formData.images || []).map((img, idx) => (
+                  <div key={idx} className="relative aspect-square rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 group">
+                    <img src={img} alt={`Preview ${idx}`} className="h-full w-full object-cover" />
+                    {idx === 0 && (
+                      <div className="absolute top-2 left-2 bg-gold text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Cover
+                      </div>
+                    )}
+                    <button type="button" onClick={() => handleRemoveImage(idx)} className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md">
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
