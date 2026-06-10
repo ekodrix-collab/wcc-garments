@@ -21,9 +21,9 @@ export default function EditProductPage() {
     setFormData({
       name: match.name || '',
       slug: match.slug || '',
-      division_id: match.division?.name || match.division_id || 'Garments',
-      category_id: match.category?.name || match.category_id || 'Formal Shirts',
-      brand_slug: match.brand_slug || '',
+      division_id: typeof match.division === 'string' ? match.division : match.division?.name || match.division_id || 'Garments',
+      category_id: typeof match.category === 'string' ? match.category : match.category?.name || match.category_id || '',
+      brand_slug: match.brand_slug || match.brand?.slug || '',
       short_description: match.short_description || match.description || '',
       description: match.description || match.short_description || '',
       moq: match.moq || '500 Units',
@@ -43,6 +43,18 @@ export default function EditProductPage() {
 
   useEffect(() => {
     setBrands(brandStore.getBrands())
+    
+    const loadLiveBrands = async () => {
+      try {
+        const res = await api.admin.getBrands()
+        if (res.success && Array.isArray(res.data)) {
+          setBrands(res.data)
+        }
+      } catch (err) {
+        console.error('Failed to fetch live brands:', err)
+      }
+    }
+    loadLiveBrands()
     
     const loadProduct = async () => {
       // 1. Initial local load
@@ -177,6 +189,10 @@ export default function EditProductPage() {
         if (s.key && s.value) specifications[s.key] = s.value
       })
 
+      const selectedDiv = DIVISIONS.find(d => d.name === formData.division_id)
+      const divSlug = selectedDiv?.slug || formData.division_id.toLowerCase()
+      const hasBrands = brands.some(b => (b.division_slug || 'garments').toLowerCase() === divSlug.toLowerCase())
+
       const productPayload = {
         name: formData.name,
         slug: formData.slug,
@@ -193,7 +209,7 @@ export default function EditProductPage() {
         featured: formData.featured,
         specifications,
         tags: formData.tags,
-        brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+        brand_slug: hasBrands ? formData.brand_slug : null
       }
 
       const token = localStorage.getItem('wcc-admin-token') || ''
@@ -203,7 +219,7 @@ export default function EditProductPage() {
         brandStore.saveProduct({
           id: params.id as string,
           ...formData,
-          brand_slug: formData.division_id === 'Garments' ? formData.brand_slug : null
+          brand_slug: hasBrands ? formData.brand_slug : null
         })
         setSuccess(true)
         setTimeout(() => {
@@ -376,20 +392,40 @@ export default function EditProductPage() {
                 </select>
               </div>
 
-              {formData.division_id === 'Garments' && (
-                <div>
-                  <label className={labelClass}>Garments Brand Label *</label>
-                  <select name="brand_slug" value={formData.brand_slug} onChange={handleChange} className={inputClass} required>
-                    <option value="">-- Select Garments Brand --</option>
-                    {brands.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
-                  </select>
-                </div>
-              )}
+              {(() => {
+                const selectedDivision = DIVISIONS.find(d => d.name === formData.division_id)
+                const divisionSlug = selectedDivision?.slug || formData.division_id.toLowerCase()
+                const availableBrands = brands.filter(b => (b.division_slug || 'garments').toLowerCase() === divisionSlug.toLowerCase())
+                const availableCategories = selectedDivision?.categories || []
+                
+                return (
+                  <>
+                    <div>
+                      <label className={labelClass}>{formData.division_id} Brand Label {availableBrands.length > 0 ? '*' : ''}</label>
+                      <select name="brand_slug" value={formData.brand_slug} onChange={handleChange} className={inputClass} required={availableBrands.length > 0}>
+                        <option value="">-- Select {formData.division_id} Brand --</option>
+                        {availableBrands.map((b) => (
+                          <option key={b.slug} value={b.slug}>{b.name}</option>
+                        ))}
+                      </select>
+                    </div>
 
-              <div>
-                <label className={labelClass}>Primary Category *</label>
-                <input name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} placeholder="e.g. Bed Linen" required />
-              </div>
+                    <div>
+                      <label className={labelClass}>Primary Category *</label>
+                      {availableCategories.length > 0 ? (
+                        <select name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} required>
+                          <option value="">-- Select Category --</option>
+                          {availableCategories.map(c => (
+                            <option key={c.slug || c.id} value={c.name}>{c.name}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} placeholder="e.g. Bed Linen" required />
+                      )}
+                    </div>
+                  </>
+                )
+              })()}
             </div>
           </div>
 
