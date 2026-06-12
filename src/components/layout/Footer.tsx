@@ -9,15 +9,15 @@ import NewsletterSubscribe from '../home/NewsletterSubscribe'
 
 import { useState, useEffect } from 'react'
 import { contentStore } from '@/lib/content-store'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
 
 export function Footer() {
   const pathname = usePathname()
-  const [config, setConfig] = useState(SITE_CONFIG)
+  const { data: config } = useWebsiteContent('site_config', SITE_CONFIG)
   const [divisions, setDivisions] = useState(DIVISIONS)
   const isAdmin = pathname.startsWith('/admin')
 
   useEffect(() => {
-    setConfig(contentStore.getSiteConfig())
     setDivisions(contentStore.getDivisions())
   }, [])
 

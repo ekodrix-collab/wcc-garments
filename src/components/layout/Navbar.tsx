@@ -10,19 +10,16 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { NAV_LINKS, SITE_CONFIG } from '@/lib/constants'
 import { contentStore } from '@/lib/content-store'
 import { getProductHref } from '@/lib/category-routing'
+import { useWebsiteContent } from '@/hooks/useWebsiteContent'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [megaMenuOpen, setMegaMenuOpen] = useState(false)
-  const [config, setConfig] = useState(SITE_CONFIG)
+  const { data: config } = useWebsiteContent('site_config', SITE_CONFIG)
   const pathname = usePathname()
 
   const isAdmin = pathname.startsWith('/admin')
-
-  useEffect(() => {
-    setConfig(contentStore.getSiteConfig())
-  }, [])
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
