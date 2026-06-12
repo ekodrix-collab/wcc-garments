@@ -94,3 +94,58 @@ export interface Pipeline {
   subHeading: string;
   scenes: PipelineScene[];
 }
+
+export interface Newsletter {
+  backgroundImage: string;
+  headline: string;
+}
+
+export interface AboutLocation {
+  country: string;
+  city: string;
+  role: string;
+  detail: string;
+}
+
+export interface AboutTimeline {
+  year: string;
+  event: string;
+}
+
+export interface AboutValue {
+  title: string;
+  desc: string;
+}
+
+export interface AboutGalleryItem {
+  image: string;
+  title: string;
+  subtitle: string;
+}
+
+export interface AboutPageContent {
+  heroImage: string;
+  heroSince: string;
+  heroHeadingStart: string;
+  heroHeadingHighlight: string;
+  heroDescription: string;
+  stats: {
+    value: string;
+    label: string;
+  }[];
+  missionTitle: string;
+  missionDesc: string;
+  visionTitle: string;
+  visionDesc: string;
+  footprintTitle: string;
+  footprintDesc: string;
+  locations: AboutLocation[];
+  journeyTitle: string;
+  journeyDesc: string;
+  timeline: AboutTimeline[];
+  valuesTitle: string;
+  values: AboutValue[];
+  galleryTitle: string;
+  galleryDesc: string;
+  gallery: AboutGalleryItem[];
+}

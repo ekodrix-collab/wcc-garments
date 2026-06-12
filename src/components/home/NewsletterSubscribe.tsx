@@ -1,8 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
+
+const DEFAULT_NEWSLETTER = {
+  backgroundImage: "/images/factory.jpeg",
+  headline: "Receive exclusive B2B catalog releases, wholesale offers, and custom manufacturing updates across our garments, hospitality, and household divisions."
+};
 
 export default function NewsletterSubscribe() {
+  const { data: content } = useWebsiteContent("newsletter", DEFAULT_NEWSLETTER);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -48,14 +55,14 @@ export default function NewsletterSubscribe() {
           <div
             className="absolute inset-0 opacity-20 dark:opacity-[0.14]"
             style={{
-              backgroundImage: "url('/images/uniform-workwear.png')",
+              backgroundImage: `url('${content?.backgroundImage || DEFAULT_NEWSLETTER.backgroundImage}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundAttachment: 'scroll',
-              filter: 'saturate(0.25) brightness(1.05)',
+              filter: 'saturate(0.2) brightness(0.85)',
             }}
           />
-          <div className="absolute inset-0 bg-[rgba(255,255,255,0.72)] dark:bg-[rgba(10,10,10,0.55)]" />
+          <div className="absolute inset-0 bg-[rgba(255,255,255,0.72)] dark:bg-[rgba(10,10,10,0.65)]" />
         </div>
 
         {/* Subtle grain texture overlay */}
@@ -80,11 +87,10 @@ export default function NewsletterSubscribe() {
           {/* Headline */}
           {status !== "success" && (
             <p
-              className="text-lg md:text-[1.2rem] lg:text-[1.35rem] leading-relaxed text-[var(--text)] font-light mb-8 lg:mb-12 max-w-xl mx-auto"
+              className="text-lg md:text-[1.2rem] lg:text-[1.35rem] leading-relaxed text-[var(--text)] font-light mb-8 lg:mb-12 max-w-2xl mx-auto"
               style={{ fontFamily: "'Cormorant Garamond', 'Garamond', Georgia, serif" }}
             >
-              New collections, exclusive offers, and premium lifestyle —{" "}
-              <em>delivered to your inbox.</em>
+              {content?.headline || DEFAULT_NEWSLETTER.headline}
             </p>
           )}
 
