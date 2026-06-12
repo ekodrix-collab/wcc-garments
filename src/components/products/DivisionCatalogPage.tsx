@@ -78,19 +78,19 @@ export async function DivisionCatalogPage({
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: SITE_CONFIG.url || 'https://www.wccgarments.com',
+        item: SITE_CONFIG.url || 'https://wccfashions.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Products',
-        item: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products`,
+        item: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: division.name,
-        item: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products/${division.slug}`,
+        item: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products/${division.slug}`,
       },
     ],
   }
@@ -98,16 +98,16 @@ export async function DivisionCatalogPage({
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: `${division.name} Products - WCC Garments`,
+    name: `${division.name} Products - WCC Fashions`,
     description: division.metaDescription,
-    url: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products/${division.slug}`,
+    url: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products/${division.slug}`,
     numberOfItems: products.length,
     itemListElement: products.map((product, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       name: product.name,
       description: product.short_description,
-      url: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}${getProductHref(division.slug, product.slug)}`,
+      url: `${SITE_CONFIG.url || 'https://wccfashions.com'}${getProductHref(division.slug, product.slug)}`,
     })),
   }
 
@@ -116,11 +116,11 @@ export async function DivisionCatalogPage({
     '@type': 'CollectionPage',
     name: division.metaTitle,
     description: division.metaDescription,
-    url: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products/${division.slug}`,
+    url: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products/${division.slug}`,
     provider: {
       '@type': 'Organization',
       name: SITE_CONFIG.fullName,
-      url: SITE_CONFIG.url || 'https://www.wccgarments.com',
+      url: SITE_CONFIG.url || 'https://wccfashions.com',
     },
   }
 

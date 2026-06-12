@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full border border-white/10 bg-white/5 pl-11 pr-4 py-3.5 text-sm text-white placeholder-neutral-600 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all font-mono rounded-lg"
-                  placeholder="admin@wccgarments.com"
+                  placeholder="admin@wccfashions.com"
                   required
                 />
               </div>
@@ -156,7 +156,7 @@ export default function AdminLoginPage() {
               AUTHORIZED ACCESS ONLY • WCC FASHIONS SYSTEM
             </span>
             <span className="font-mono text-[9px] text-gold/60 mt-1 block">
-              Default Node: admin@wccgarments.com / wcc2026admin
+              Default Node: admin@wccfashions.com / wcc2026admin
             </span>
           </div>
         </div>
