@@ -1,8 +1,14 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  compress: true,
+  reactStrictMode: true,
+
   images: {
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
         protocol: 'https',
@@ -18,41 +24,60 @@ const nextConfig: NextConfig = {
         hostname: 'images.pexels.com',
       },
     ],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-  headers: async () => [
+
+  // 301 redirects — consolidate URLs for SEO
+  redirects: async () => [
     {
-      source: '/(.*)',
-      headers: [
-        {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff',
-        },
-        {
-          key: 'X-Frame-Options',
-          value: 'DENY',
-        },
-        {
-          key: 'X-XSS-Protection',
-          value: '1; mode=block',
-        },
-        {
-          key: 'Referrer-Policy',
-          value: 'strict-origin-when-cross-origin',
-        },
-      ],
+      source: '/home',
+      destination: '/',
+      permanent: true,
     },
     {
-      source: '/fonts/(.*)',
-      headers: [
-        {
-          key: 'Cache-Control',
-          value: 'public, max-age=31536000, immutable',
-        },
-      ],
+      source: '/garments',
+      destination: '/products/garments',
+      permanent: true,
+    },
+    {
+      source: '/hospitality',
+      destination: '/products/hospitality',
+      permanent: true,
+    },
+    {
+      source: '/uniforms',
+      destination: '/products/uniforms',
+      permanent: true,
     },
   ],
+
+  headers: async () => [
+    {
+      source: '/:path*',
+      headers: [
+        // Security — also a minor Google ranking signal
+        { key: 'X-DNS-Prefetch-Control', value: 'on' },
+        { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        { key: 'X-XSS-Protection', value: '1; mode=block' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+      ],
+    },
+    // Immutable cache for static assets — boosts Core Web Vitals
+    {
+      source: '/fonts/:path*',
+      headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+    },
+    {
+      source: '/images/:path*',
+      headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+    },
+  ],
+
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
+  },
 }
 
 export default nextConfig
