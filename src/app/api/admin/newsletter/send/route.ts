@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Default fallback if no subscribers in DB yet
     if (targetEmails.length === 0) {
-      targetEmails = [process.env.EMAIL_USER || 'info@wccgarments.com']
+      targetEmails = [process.env.EMAIL_USER || 'wccgarmentsllc@gmail.com']
     }
 
     // Trigger Nodemailer
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
           ${emailBody.replace(/\n/g, '<br />')}
         </div>
         <div style="margin-top: 40px; font-size: 11px; color: #999; border-top: 1px solid #eee; padding-top: 15px; text-align: center;">
-          You are receiving this email because you subscribed to corporate news and offers from WCC Garments.<br />
+          You are receiving this email because you subscribed to corporate news and offers from WCC Fashions.<br />
           WCC B2B Wholesale Trading, Dubai, UAE.
         </div>
       </div>

@@ -126,3 +126,59 @@ export const DEFAULT_DUBAI_PIPELINE = {
     { step: '05', title: 'Secure Enclosure & Export', desc: 'Containerized logistics departing from Jebel Ali Port, Dubai directly to corporate hubs and distributors in 50+ countries.', image: '/images/factory.jpeg' }
   ]
 }
+
+export const DEFAULT_NEWSLETTER = {
+  backgroundImage: "/images/factory.jpeg",
+  headline: "Receive exclusive B2B catalog releases, wholesale offers, and custom manufacturing updates across our garments, hospitality, and household divisions."
+}
+
+export const DEFAULT_ABOUT = {
+  heroImage: "/images/about-hero.jpg",
+  heroSince: "Since 2001",
+  heroHeading: "25+ Years of Manufacturing Excellence",
+  heroDescription: "Founded in Bangalore in 2001, WCC Fashions has grown into a global textile manufacturing partner with headquarters in Dubai. We operate 7 production facilities across 3 countries, delivering export-quality garments, uniforms, hospitality linens, home furnishings, and fragrances for B2B clients worldwide.",
+  stats: [
+    { value: "50+", label: "Countries" },
+    { value: "7", label: "Production Facilities" },
+    { value: "6", label: "Specialized Divisions" },
+    { value: "25+", label: "Years Experience" }
+  ],
+  missionTitle: "Our Mission",
+  missionDesc: "To provide businesses worldwide with reliable, scalable, and high-quality textile manufacturing solutions. We strive to simplify global procurement for our B2B partners through vertical integration, multi-country production, and an unwavering commitment to export-grade quality.",
+  visionTitle: "Our Vision",
+  visionDesc: "To be the most trusted global manufacturing partner for corporate, hospitality, and retail sectors, recognized for our quarter-century of expertise, ethical production standards, and ability to deliver exceptional value at an industrial scale.",
+  footprintTitle: "Global Footprint",
+  footprintDesc: "7 international production and sourcing locations across 3 countries, strategically headquartered in Dubai.",
+  locations: [
+    { country: 'UAE', city: 'Dubai', role: 'Global Headquarters', detail: 'Strategic hub for sales, customer relations, and export operations to GCC, Africa, and beyond.' },
+    { country: 'India', city: '5 Production Centers', role: 'Primary Manufacturing', detail: 'Vertically integrated facilities across Ahmedabad, Ludhiana, Bangalore, Delhi, and Tirupur.' },
+    { country: 'Bangladesh', city: 'Dhaka', role: 'Bulk Production', detail: 'High-volume, cost-effective manufacturing facility ensuring competitive pricing.' },
+    { country: 'China', city: 'Guangzhou', role: 'Sourcing & Mfg', detail: 'Strategic sourcing operations and specialized raw material manufacturing.' }
+  ],
+  journeyTitle: "Our Journey",
+  journeyDesc: "From our origins in Bangalore in 2001 to our current status as a Dubai-headquartered global manufacturing group, our 25-year journey has been defined by continuous expansion, uncompromised quality, and strong B2B partnerships.",
+  timeline: [
+    { year: '2001', event: 'WCC Fashions founded in Bangalore, India.' },
+    { year: '2005', event: 'Expanded production to key textile hubs: Ahmedabad, Delhi, and Ludhiana.' },
+    { year: '2010', event: 'Strategic shift of Headquarters to Dubai, UAE for global export reach.' },
+    { year: '2014', event: 'Launched dedicated Uniforms & Workwear and Hospitality textile divisions.' },
+    { year: '2018', event: 'International expansion with production facilities in Bangladesh and China.' },
+    { year: '2022', event: 'Achieved major export milestones serving B2B clients across 50+ nations.' },
+    { year: '2026', event: 'Celebrating 25+ years of industrial-scale manufacturing excellence.' }
+  ],
+  valuesTitle: "Our Core Values",
+  values: [
+    { title: 'Quality Assurance', desc: 'Export-grade quality standards in every stitch and thread.' },
+    { title: 'Scale & Capability', desc: 'Industrial-scale manufacturing handling small programs to massive contracts.' },
+    { title: 'Global Reach', desc: 'Manufacturing across 3 countries, supplying to businesses in 50+ nations.' },
+    { title: 'Partnership Approach', desc: 'Building long-term relationships. We grow when you grow.' }
+  ],
+  galleryTitle: "Warehouse & Production Gallery",
+  galleryDesc: "A glimpse into our manufacturing excellence, warehouse operations, and global production capabilities.",
+  gallery: [
+    { image: "/images/gallery/ourgalleryimage.png", title: "PREMIUM MATERIALS", subtitle: "OUR PROCESS" },
+    { image: "/images/gallery/ourgalleryimage4.png", title: "PRECISE PRODUCTION", subtitle: "OUR PROCESS" },
+    { image: "/images/gallery/ourgalleryimage3.png", title: "QUALITY ASSURED", subtitle: "OUR PROCESS" },
+    { image: "/images/gallery/ourgalleryimage5.png", title: "PREMIUM MATERIALS", subtitle: "OUR PROCESS" }
+  ]
+}

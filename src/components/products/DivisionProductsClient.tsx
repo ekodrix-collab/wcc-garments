@@ -257,61 +257,6 @@ export function DivisionProductsClient({
 
   return (
     <div className="w-full">
-      {/* ── BREADCRUMBS & HUB HEADER ── */}
-      <header className="border-b border-[var(--border)] bg-[var(--bg-surface)] py-8 md:py-12">
-        <div className="mx-auto max-w-[1560px] px-6 lg:px-12">
-          <nav className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
-            <Link href="/" className="hover:text-[var(--text)]">Home</Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href="/products" className="hover:text-[var(--text)]">Products</Link>
-            <ChevronRight className="h-3 w-3" />
-            <span className="text-[var(--text)]">{divisionName}</span>
-            {activeCategory && (
-              <>
-                <ChevronRight className="h-3 w-3" />
-                <span className="text-gold">{activeCategory.name}</span>
-              </>
-            )}
-          </nav>
-
-          <div className="mt-8">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-              {divisionName} Division
-              {activeCategory ? ` — ${activeCategory.name}` : ''}
-              {activeBrand ? ` · ${activeBrand.name}` : ''}
-            </span>
-            <h1 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-[var(--text)]">
-              {activeCategory
-                ? <>{activeCategory.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeCategory.name.split(' ').slice(-1)[0]}</span></>
-                : activeBrand
-                  ? <>{activeBrand.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeBrand.name.split(' ').slice(-1)[0]}</span></>
-                  : <>{divisionName.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{divisionName.split(' ').slice(-1)[0]}</span></>}
-            </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] md:text-base font-light">
-              {activeBrand
-                ? `${activeBrand.tagline}. ${activeBrand.desc}`
-                : activeCategory
-                  ? `Browse our full range of ${activeCategory.name} — precision-engineered for global B2B wholesale. Request a bulk quotation for any style.`
-                  : `Explore premium quality products manufactured specifically for commercial B2B procurement and global exports.`}
-            </p>
-          </div>
-
-          {/* Stats strip */}
-          <div className="mt-10 flex flex-wrap gap-0 divide-x divide-[var(--border)] border border-[var(--border)] w-fit">
-            {[
-              { label: 'Minimum Order', value: activeBrand ? activeBrand.moq : 'Varies by product' },
-              { label: 'Lead Time', value: '12-18 Working Days' },
-              { label: 'Active Brands', value: `${divisionBrands.length} Brand${divisionBrands.length !== 1 ? 's' : ''}` },
-              { label: 'Products Matching', value: `${filteredProducts.length}` },
-            ].map((s) => (
-              <div key={s.label} className="px-5 flex flex-col items-center py-3 bg-[var(--surface)]">
-                <p className="text-[9px] uppercase tracking-[0.18em] text-[var(--text-muted)]">{s.label}</p>
-                <p className="mt-0.5 text-[13px] text-center text-[var(--text)]">{s.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </header>
 
       {/* ── BRAND BROWSE SECTION ── */}
       {urlCategory === 'all' && urlBrand === 'all' && divisionBrands.length > 0 && (
@@ -515,21 +460,16 @@ export function DivisionProductsClient({
                 <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                   <div className="min-w-0">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">{divisionName.toUpperCase()} CATALOG</span>
-                    <div className="mt-4 flex items-end justify-between gap-4 sm:block">
+                    <div className="mt-4">
                       <h2 className="font-display text-4xl sm:text-5xl font-semibold text-[var(--text)]">
                         Browse by <span className="text-gold">Category</span>
                       </h2>
-                      <div className="shrink-0 sm:hidden">
-                        {renderAllProductsButton()}
-                      </div>
                     </div>
                   </div>
                   <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
                     {categories.filter((c) => c.status === 'active').length} active · {categories.filter((c) => c.status === 'coming-soon').length} coming soon
                   </p>
                 </div>
-
-                {renderCategoryFilterBar('mb-10')}
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {categories.sort((a, b) => a.displayOrder - b.displayOrder).map((cat, index) => {
@@ -647,8 +587,8 @@ export function DivisionProductsClient({
                 ? (urlCategory !== 'all' && activeCategory
                   ? `${activeBrand.name} - ${activeCategory.name}`
                   : `${activeBrand.name} Collection`)
-                : `All ${divisionName} Products`}
-              subheading={activeBrand ? `SHOWCASING ${activeBrand.name.toUpperCase()}` : "FULL CATALOG"}
+                : `Featured Products`}
+              subheading={activeBrand ? `SHOWCASING ${activeBrand.name.toUpperCase()}` : "FEATURED PRODUCTS"}
               emptyMsg={`No products listed yet matching this combination. Contact our team to request custom manufacturing options.`}
             />
           </motion.div>

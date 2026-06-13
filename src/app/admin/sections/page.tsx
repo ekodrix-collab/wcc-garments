@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { 
   Layers, Layout, Users, FileText, Settings,
-  TrendingUp, Sliders
+  TrendingUp, Sliders, Mail, Info
 } from 'lucide-react'
 import { contentStore } from '@/lib/content-store'
 import { useThemeContext } from '@/context/ThemeContext'
@@ -16,6 +16,8 @@ import { WhoWeAreEditor } from './components/WhoWeAreEditor'
 import { ShowcaseEditor } from './components/ShowcaseEditor'
 import { ExpansionEditor } from './components/ExpansionEditor'
 import { DubaiPipelineEditor } from './components/DubaiPipelineEditor'
+import { NewsletterEditor } from './components/NewsletterEditor'
+import { AboutPageEditor } from './components/AboutPageEditor'
 
 import {
   DEFAULT_BULK_OFFER,
@@ -25,10 +27,12 @@ import {
   DEFAULT_HOUSEHOLDS,
   DEFAULT_HOSPITALITY,
   DEFAULT_EXPANSION,
-  DEFAULT_DUBAI_PIPELINE
+  DEFAULT_DUBAI_PIPELINE,
+  DEFAULT_NEWSLETTER,
+  DEFAULT_ABOUT
 } from './defaults'
 
-type ActiveSection = 'global' | 'bulk' | 'hero' | 'who' | 'garment' | 'household' | 'hospitality' | 'expansion' | 'pipeline'
+type ActiveSection = 'global' | 'bulk' | 'hero' | 'who' | 'garment' | 'household' | 'hospitality' | 'expansion' | 'pipeline' | 'newsletter' | 'aboutPage'
 
 export default function AdminSectionsPage() {
   const [activeTab, setActiveTab] = useState<ActiveSection>('hero')
@@ -42,6 +46,8 @@ export default function AdminSectionsPage() {
   const [hospitality, setHospitality] = useState<any>(null)
   const [expansion, setExpansion] = useState<any>(null)
   const [dubaiPipeline, setDubaiPipeline] = useState<any>(null)
+  const [newsletter, setNewsletter] = useState<any>(null)
+  const [aboutPage, setAboutPage] = useState<any>(null)
 
   const [loading, setLoading] = useState(true)
   const { isDark } = useThemeContext()
@@ -67,6 +73,8 @@ export default function AdminSectionsPage() {
         setHospitality(getSec('hospitality-showcase-v2', DEFAULT_HOSPITALITY))
         setExpansion(getSec('strategic-expansion', DEFAULT_EXPANSION))
         setDubaiPipeline(getSec('dubai-pipeline', DEFAULT_DUBAI_PIPELINE))
+        setNewsletter(getSec('newsletter', DEFAULT_NEWSLETTER))
+        setAboutPage(getSec('about-page', DEFAULT_ABOUT))
       } catch (err) {
         console.error('Failed to load content from Supabase', err)
       } finally {
@@ -153,6 +161,14 @@ export default function AdminSectionsPage() {
             <FileText className="h-4 w-4 shrink-0" />
             <span>9. Dubai Pipeline</span>
           </button>
+          <button onClick={() => setActiveTab('newsletter')} className={tabClass('newsletter')}>
+            <Mail className="h-4 w-4 shrink-0" />
+            <span>10. Newsletter Strip</span>
+          </button>
+          <button onClick={() => setActiveTab('aboutPage')} className={tabClass('aboutPage')}>
+            <Info className="h-4 w-4 shrink-0" />
+            <span>11. About Page Content</span>
+          </button>
         </div>
 
         {/* Right column form panels */}
@@ -198,6 +214,8 @@ export default function AdminSectionsPage() {
 
               {activeTab === 'expansion' && expansion && <ExpansionEditor initialData={expansion} />}
               {activeTab === 'pipeline' && dubaiPipeline && <DubaiPipelineEditor initialData={dubaiPipeline} />}
+              {activeTab === 'newsletter' && newsletter && <NewsletterEditor initialData={newsletter} />}
+              {activeTab === 'aboutPage' && aboutPage && <AboutPageEditor initialData={aboutPage} />}
             </>
           )}
         </div>

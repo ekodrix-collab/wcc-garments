@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     // Fallback if Supabase is not configured or Supabase auth fails (allow mock admin login as a safety net)
     if (!isAuthenticated && (!isSupabaseConfigured() || supabaseAuthFailed)) {
-      if (email === 'admin@wccgarments.com' && password === 'wcc2026admin') {
+      if ((email === 'admin@wccfashions.com' || email === 'admin@wccgarments.com') && password === 'wcc2026admin') {
         isAuthenticated = true
       }
     }

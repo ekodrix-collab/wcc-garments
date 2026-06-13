@@ -42,17 +42,19 @@ export default function NewProductPage() {
   }, [])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
+    const files = Array.from(e.target.files || [])
+    if (files.length > 0) {
       setUploadingImage(true)
       try {
-        const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
+        const uploadPromises = files.map(file => api.uploadFile(file))
+        const urls = await Promise.all(uploadPromises)
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...urls] }))
       } catch (err) {
         console.error('Upload failed:', err)
-        alert('Failed to upload image. Please check configuration.')
+        alert('Failed to upload some images. Please check configuration.')
       } finally {
         setUploadingImage(false)
+        if (e.target) e.target.value = ''
       }
     }
   }
@@ -71,15 +73,16 @@ export default function NewProductPage() {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    const file = e.dataTransfer.files?.[0]
-    if (file && file.type.startsWith("image/")) {
+    const files = Array.from(e.dataTransfer.files || []).filter(file => file.type.startsWith("image/"))
+    if (files.length > 0) {
       setUploadingImage(true)
       try {
-        const url = await api.uploadFile(file)
-        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }))
+        const uploadPromises = files.map(file => api.uploadFile(file))
+        const urls = await Promise.all(uploadPromises)
+        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...urls] }))
       } catch (err) {
         console.error('Upload failed:', err)
-        alert('Failed to upload image. Please check configuration.')
+        alert('Failed to upload some images. Please check configuration.')
       } finally {
         setUploadingImage(false)
       }
@@ -94,13 +97,9 @@ export default function NewProductPage() {
     name: '', slug: '', division_id: 'Garments', category_id: '', brand_slug: '',
     short_description: '', description: '', moq: '500 Units', lead_time: '15-25 Working Days',
     featured: false, is_new: true, is_offer: false, offer_label: '',
-    published: true, tags: ['Cotton', 'Industrial Export', 'Anti-Microbial'],
-    specs: [
-      { key: 'Fabric Composition', value: '100% Long-Staple Premium Cotton' },
-      { key: 'Weave Type', value: 'High-Density 300TC Twill' },
-      { key: 'Certifications', value: 'ISO 9001:2015, OEKO-TEX Standard 100' }
-    ],
-    images: ['https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80']
+    published: true, tags: [] as string[],
+    specs: [] as { key: string; value: string }[],
+    images: [] as string[]
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -138,6 +137,17 @@ export default function NewProductPage() {
 
   const handleRemoveImage = (idx: number) => {
     setFormData(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))
+  }
+
+  const handleSetImageRole = (idx: number, role: 'cover' | 'hover') => {
+    setFormData(prev => {
+      const newImages = [...(prev.images || [])]
+      const targetIdx = role === 'cover' ? 0 : 1
+      if (idx === targetIdx) return prev
+      const [movedImg] = newImages.splice(idx, 1)
+      newImages.splice(targetIdx, 0, movedImg)
+      return { ...prev, images: newImages }
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -448,6 +458,7 @@ export default function NewProductPage() {
                   id="device-upload-input"
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={handleImageUpload}
                   className="hidden"
                 />
@@ -466,14 +477,34 @@ export default function NewProductPage() {
                 {(formData.images || []).map((img, idx) => (
                   <div key={idx} className="relative aspect-square rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 group">
                     <img src={img} alt={`Preview ${idx}`} className="h-full w-full object-cover" />
-                    {idx === 0 && (
-                      <div className="absolute top-2 left-2 bg-gold text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                        Cover
-                      </div>
-                    )}
-                    <button type="button" onClick={() => handleRemoveImage(idx)} className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md">
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+                    <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
+                      {idx === 0 && (
+                        <span className="bg-gold text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider w-fit shadow-md">
+                          Cover
+                        </span>
+                      )}
+                      {idx === 1 && (
+                        <span className="bg-blue-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider w-fit shadow-md">
+                          Hover
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-3 backdrop-blur-[2px]">
+                      {idx !== 0 && (
+                        <button type="button" onClick={() => handleSetImageRole(idx, 'cover')} className="bg-white/10 hover:bg-gold text-white text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider transition-colors w-full border border-white/20 hover:border-transparent">
+                          Set Cover
+                        </button>
+                      )}
+                      {idx !== 1 && formData.images.length > 1 && (
+                        <button type="button" onClick={() => handleSetImageRole(idx, 'hover')} className="bg-white/10 hover:bg-blue-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider transition-colors w-full border border-white/20 hover:border-transparent">
+                          Set Hover
+                        </button>
+                      )}
+                      <button type="button" onClick={() => handleRemoveImage(idx)} className="bg-white/10 hover:bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider transition-colors w-full border border-white/20 hover:border-transparent mt-auto flex items-center justify-center gap-1">
+                        <Trash2 className="h-3 w-3" /> Remove
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -41,22 +41,22 @@ export default function ProductsHubPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_CONFIG.url || 'https://www.wccgarments.com' },
-      { '@type': 'ListItem', position: 2, name: 'Products', item: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_CONFIG.url || 'https://wccfashions.com' },
+      { '@type': 'ListItem', position: 2, name: 'Products', item: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products` },
     ],
   }
 
   const collectionSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'WCC Garments — Product Catalogue',
+    name: 'WCC Fashions — Product Catalogue',
     description:
-      'Complete B2B product catalogue from WCC Garments, Dubai UAE. 6 divisions covering garments, uniforms, hospitality textiles, home linen, fragrance and household products.',
-    url: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products`,
+      'Complete B2B product catalogue from WCC Fashions, Dubai UAE. 6 divisions covering garments, uniforms, hospitality textiles, home linen, fragrance and household products.',
+    url: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products`,
     hasPart: DIVISIONS.map((div) => ({
       '@type': 'CollectionPage',
-      name: `${div.name} — WCC Garments`,
-      url: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products/${div.slug}`,
+      name: `${div.name} — WCC Fashions`,
+      url: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products/${div.slug}`,
       description: div.metaDescription,
     })),
   }

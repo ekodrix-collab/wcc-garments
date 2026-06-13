@@ -524,21 +524,16 @@ export default function GarmentsHubClient() {
                 <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                   <div className="min-w-0">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">GARMENTS CATALOG</span>
-                    <div className="mt-4 flex items-end justify-between gap-4 sm:block">
+                    <div className="mt-4">
                       <h2 className="font-display text-4xl sm:text-5xl font-semibold text-[var(--text)]">
                         Browse by <span className="text-gold">Category</span>
                       </h2>
-                      <div className="shrink-0 sm:hidden">
-                        {renderAllProductsButton()}
-                      </div>
                     </div>
                   </div>
                   <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
                     {CATEGORIES.filter((c) => c.status === 'active').length} active · {CATEGORIES.filter((c) => c.status === 'coming-soon').length} coming soon
                   </p>
                 </div>
-
-                {renderCategoryFilterBar('mb-10')}
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {CATEGORIES.sort((a, b) => a.displayOrder - b.displayOrder).map((cat, index) => {
@@ -653,8 +648,8 @@ export default function GarmentsHubClient() {
                 ? (urlCategory !== 'all' && activeCategory
                   ? `${activeBrand.name} - ${activeCategory.name}`
                   : `${activeBrand.name} Collection`)
-                : "All Garment Products"}
-              subheading={activeBrand ? `SHOWCASING ${activeBrand.name.toUpperCase()}` : "FULL CATALOG"}
+                : "Featured Products"}
+              subheading={activeBrand ? `SHOWCASING ${activeBrand.name.toUpperCase()}` : "FEATURED PRODUCTS"}
               emptyMsg="No products listed yet matching this combination. Contact our Dubai export office."
             />
           </motion.div>

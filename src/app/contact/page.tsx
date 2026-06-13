@@ -78,7 +78,7 @@ export default function ContactPage() {
               <p className="mt-0.5 text-[11px] text-[var(--text-muted)]">UAE Direct Line</p>
             </motion.a>
             <motion.a
-              href={`mailto:sales@wccgarments.com`}
+              href={`mailto:wccgarmentsllc@gmail.com`}
               className="group border border-[var(--border)] p-6 transition-all hover:border-gold/30"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -86,11 +86,11 @@ export default function ContactPage() {
             >
               <Mail className="h-5 w-5 text-gold" />
               <h3 className="mt-4 text-sm font-semibold text-[var(--text)]">Sales Email</h3>
-              <p className="mt-1 text-sm text-gold">sales@wccgarments.com</p>
+              <p className="mt-1 text-sm text-gold">wccgarmentsllc@gmail.com</p>
               <p className="mt-0.5 text-[11px] text-[var(--text-muted)]">Wholesale Enquiries</p>
             </motion.a>
             <motion.a
-              href={`https://wa.me/${SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')}?text=Hello WCC Garments, I'd like to enquire about your products.`}
+              href={`https://wa.me/${SITE_CONFIG.whatsapp.replace(/[^0-9]/g, '')}?text=Hello WCC Fashions, I'd like to enquire about your products.`}
               target="_blank"
               rel="noopener noreferrer"
               className="group border border-[var(--border)] p-6 transition-all hover:border-gold/30"

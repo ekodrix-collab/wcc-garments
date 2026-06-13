@@ -9,7 +9,9 @@ import {
   DEFAULT_HOUSEHOLDS,
   DEFAULT_HOSPITALITY,
   DEFAULT_EXPANSION,
-  DEFAULT_DUBAI_PIPELINE
+  DEFAULT_DUBAI_PIPELINE,
+  DEFAULT_NEWSLETTER,
+  DEFAULT_ABOUT
 } from '@/app/admin/sections/defaults'
 import { contentStore } from '@/lib/content-store'
 
@@ -93,13 +95,15 @@ export async function GET() {
       { id: 'households-showcase-v2', content: DEFAULT_HOUSEHOLDS },
       { id: 'hospitality-showcase-v2', content: DEFAULT_HOSPITALITY },
       { id: 'strategic-expansion', content: DEFAULT_EXPANSION },
-      { id: 'dubai-pipeline', content: DEFAULT_DUBAI_PIPELINE }
+      { id: 'dubai-pipeline', content: DEFAULT_DUBAI_PIPELINE },
+      { id: 'newsletter', content: DEFAULT_NEWSLETTER },
+      { id: 'about-page', content: DEFAULT_ABOUT }
     ]
 
     for (const sec of sections) {
       await supabase.from('website_content').upsert(
-        { section_id: sec.id, content: sec.content },
-        { onConflict: 'section_id' }
+        { key: sec.id, content: sec.content },
+        { onConflict: 'key' }
       )
       results.website_content.push({ section_id: sec.id, action: 'upserted' })
     }

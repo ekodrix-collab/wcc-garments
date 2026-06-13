@@ -62,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     '@type': 'Organization',
     name: SITE_CONFIG.fullName,
     alternateName: SITE_CONFIG.name,
-    url: SITE_CONFIG.url || 'https://www.wccgarments.com',
+    url: SITE_CONFIG.url || 'https://wccfashions.com',
     email: SITE_CONFIG.email,
     telephone: SITE_CONFIG.phone,
     address: {
@@ -79,11 +79,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: SITE_CONFIG.name,
-    url: SITE_CONFIG.url || 'https://www.wccgarments.com',
+    url: SITE_CONFIG.url || 'https://wccfashions.com',
     description: `${SITE_CONFIG.description} No public pricing; quotes are provided based on order scope.`,
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${SITE_CONFIG.url || 'https://www.wccgarments.com'}/products?search={search_term_string}`,
+      target: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products?search={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   }
