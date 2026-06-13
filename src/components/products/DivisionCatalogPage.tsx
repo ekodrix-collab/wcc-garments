@@ -70,6 +70,8 @@ export async function DivisionCatalogPage({
     brand_slug: product.brand_slug ?? null,
   }))
 
+  const isFiltered = !!initialCategorySlug || !!initialBrandSlug
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -140,7 +142,9 @@ export async function DivisionCatalogPage({
       />
 
       <div className="min-h-screen bg-[var(--bg)]">
-        <header className="border-b border-[var(--border)] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.09),transparent_40%),var(--bg-surface)] pt-28 pb-12 md:pt-36 md:pb-16">
+        <header className={`border-b border-[var(--border)] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.09),transparent_40%),var(--bg-surface)] transition-all duration-300 ${
+          isFiltered ? 'pt-28 pb-6 md:pt-32 md:pb-8' : 'pt-28 pb-12 md:pt-36 md:pb-16'
+        }`}>
           <div className="mx-auto max-w-[1560px] px-6 lg:px-12">
             <nav
               aria-label="Breadcrumb"
@@ -154,70 +158,74 @@ export async function DivisionCatalogPage({
                 Products
               </Link>
               <ChevronRight className="h-3 w-3" />
-              <span className="text-[var(--text)]">{division.name}</span>
+              <Link href={`/products/${division.slug}`} className="transition-colors hover:text-gold">
+                {division.name}
+              </Link>
+              {initialCategorySlug && (
+                <>
+                  <ChevronRight className="h-3 w-3" />
+                  <span className="text-gold capitalize">{initialCategorySlug.replace(/-/g, ' ')}</span>
+                </>
+              )}
+              {initialBrandSlug && (
+                <>
+                  <ChevronRight className="h-3 w-3" />
+                  <span className="text-gold capitalize">{initialBrandSlug.replace(/-/g, ' ')}</span>
+                </>
+              )}
             </nav>
 
-            <div className="mt-8 max-w-4xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold/90">
-                {division.icon} · {division.name} Division
-              </p>
-              <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] text-[var(--text)] md:text-5xl lg:text-6xl">
-                {division.heroHeading}
-              </h1>
-              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] md:text-base">
-                {division.heroSubtitle}
-              </p>
-            </div>
+            {!isFiltered && (
+              <>
+                <div className="mt-8 max-w-4xl">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold/90">
+                    {division.icon} · {division.name} Division
+                  </p>
+                  <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] text-[var(--text)] md:text-5xl lg:text-6xl">
+                    {division.heroHeading}
+                  </h1>
+                  <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] md:text-base">
+                    {division.heroSubtitle}
+                  </p>
+                </div>
 
-            <div className="mt-10 flex flex-wrap gap-0 divide-x divide-[var(--border)] border border-[var(--border)] bg-[var(--bg)]/60 backdrop-blur-sm w-fit">
-              <div className="px-5 py-3">
-                <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                  {division.stat1Label}
-                </p>
-                <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
-                  {division.stat1Value}
-                </p>
-              </div>
-              <div className="px-5 py-3">
-                <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                  {division.stat2Label}
-                </p>
-                <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
-                  {division.stat2Value}
-                </p>
-              </div>
-              <div className="px-5 py-3">
-                <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                  {division.stat3Label}
-                </p>
-                <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
-                  {division.stat3Value}
-                </p>
-              </div>
-              <div className="px-5 py-3">
-                <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                  Products
-                </p>
-                <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
-                  {products.length} Listed
-                </p>
-              </div>
-            </div>
+                <div className="mt-10 flex flex-wrap gap-0 divide-x divide-[var(--border)] border border-[var(--border)] bg-[var(--bg)]/60 backdrop-blur-sm w-fit">
+                  <div className="px-5 py-3">
+                    <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                      {division.stat1Label}
+                    </p>
+                    <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
+                      {division.stat1Value}
+                    </p>
+                  </div>
+                  <div className="px-5 py-3">
+                    <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                      {division.stat2Label}
+                    </p>
+                    <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
+                      {division.stat2Value}
+                    </p>
+                  </div>
+                  <div className="px-5 py-3">
+                    <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                      {division.stat3Label}
+                    </p>
+                    <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
+                      {division.stat3Value}
+                    </p>
+                  </div>
+                  <div className="px-5 py-3">
+                    <p className="text-[9px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                      Products
+                    </p>
+                    <p className="mt-0.5 text-base font-semibold text-[var(--text)]">
+                      {products.length} Listed
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
 
-            <div className="mt-8 flex flex-wrap gap-2">
-              <span className="border border-gold bg-gold/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">
-                {division.name}
-              </span>
-              {otherDivisions.map((item) => (
-                <Link
-                  key={item.slug}
-                  href={`/products/${item.slug}`}
-                  className="border border-[var(--border)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--text-muted)] transition-all duration-300 hover:border-gold/40 hover:text-[var(--text)]"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
           </div>
         </header>
 
