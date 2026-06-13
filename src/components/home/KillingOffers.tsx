@@ -70,16 +70,16 @@ export function KillingOffers() {
               transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
             >
               <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-                {data.indicator}
+                {data?.indicator || DEFAULT_EXPANSION.indicator}
               </span>
               <h2 className="mt-4 font-display text-4xl sm:text-5xl font-bold text-white uppercase leading-tight">
-                {data.headingStart}
+                {data?.headingStart || DEFAULT_EXPANSION.headingStart}
               </h2>
               <h2 className="font-display text-4xl sm:text-5xl font-bold uppercase text-gold leading-tight">
-                {data.headingHighlight}
+                {data?.headingHighlight || DEFAULT_EXPANSION.headingHighlight}
               </h2>
               <p className="mt-6 max-w-sm text-sm leading-relaxed text-neutral-400">
-                {data.description}
+                {data?.description || DEFAULT_EXPANSION.description}
               </p>
               <Link
                 href="/contact"
