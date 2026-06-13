@@ -267,7 +267,12 @@ export default function GarmentsHubClient() {
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] py-16 transition-colors duration-300">
 
       {/* ── HERO ────────────────────────────────────────────────────── */}
-      <header className="relative overflow-hidden border-b border-[var(--border)] pt-12 pb-16 md:pt-20 md:pb-20">
+      {/* ── HEADER ─────────────────────────────────────────────────── */}
+      <header className={`relative overflow-hidden border-b border-[var(--border)] transition-all duration-300 ${
+        (!!activeCategory || !!activeBrand)
+          ? 'pt-12 pb-6 md:pt-16 md:pb-8'
+          : 'pt-12 pb-16 md:pt-20 md:pb-20'
+      }`}>
         {/* Subtle gold radial */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(218,165,32,0.07),transparent_60%)]" />
 
@@ -278,51 +283,51 @@ export default function GarmentsHubClient() {
             <ChevronRight className="h-3 w-3" />
             <Link href="/products" className="hover:text-gold transition-colors">Products</Link>
             <ChevronRight className="h-3 w-3" />
-            <span className="text-[var(--text)]">Garments</span>
+            <Link href="/products/garments" className="hover:text-gold transition-colors">Garments</Link>
             {activeCategory && (
               <>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-gold">{activeCategory.name}</span>
               </>
             )}
+            {!activeCategory && activeBrand && (
+              <>
+                <ChevronRight className="h-3 w-3" />
+                <span className="text-gold">{activeBrand.name}</span>
+              </>
+            )}
           </nav>
 
-          <div className="mt-8">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
-              Garments Division
-              {activeCategory ? ` — ${activeCategory.name}` : ''}
-              {activeBrand ? ` · ${activeBrand.name}` : ''}
-            </span>
-            <h1 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-[var(--text)]">
-              {activeCategory
-                ? <>{activeCategory.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeCategory.name.split(' ').slice(-1)[0]}</span></>
-                : activeBrand
-                  ? <>{activeBrand.name.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{activeBrand.name.split(' ').slice(-1)[0]}</span></>
-                  : <>{division.heroHeading.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{division.heroHeading.split(' ').slice(-1)[0]}</span></>}
-            </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] md:text-base font-light">
-              {activeBrand
-                ? `${activeBrand.tagline}. ${activeBrand.desc}`
-                : activeCategory
-                  ? `Browse our full range of ${activeCategory.name} — precision-engineered for global B2B wholesale. Request a bulk quotation for any style.`
-                  : division.heroSubtitle}
-            </p>
-          </div>
-
-          {/* Stats strip */}
-          <div className="mt-10 flex flex-wrap gap-0 divide-x divide-[var(--border)] border border-[var(--border)] w-fit">
-            {[
-              { label: division.stat1Label, value: activeBrand ? activeBrand.moq : division.stat1Value },
-              { label: division.stat2Label, value: division.stat2Value },
-              { label: 'Active Lines', value: '3 Brands' },
-              { label: 'Products Matching', value: `${filteredProducts.length}` },
-            ].map((s) => (
-              <div key={s.label} className="px-5 flex flex-col items-center py-3 bg-[var(--surface)]">
-                <p className="text-[9px] uppercase tracking-[0.18em] text-[var(--text-muted)]">{s.label}</p>
-                <p className="mt-0.5 text-[13px] text-cener text-[var(--text)]">{s.value}</p>
+          {!(activeCategory || activeBrand) && (
+            <>
+              <div className="mt-8">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.4em] text-gold">
+                  Garments Division
+                </span>
+                <h1 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-[var(--text)]">
+                  {division.heroHeading.split(' ').slice(0, -1).join(' ')} <span className="text-gold">{division.heroHeading.split(' ').slice(-1)[0]}</span>
+                </h1>
+                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] md:text-base font-light">
+                  {division.heroSubtitle}
+                </p>
               </div>
-            ))}
-          </div>
+
+              {/* Stats strip */}
+              <div className="mt-10 flex flex-wrap gap-0 divide-x divide-[var(--border)] border border-[var(--border)] w-fit">
+                {[
+                  { label: division.stat1Label, value: division.stat1Value },
+                  { label: division.stat2Label, value: division.stat2Value },
+                  { label: 'Active Lines', value: '3 Brands' },
+                  { label: 'Products Matching', value: `${filteredProducts.length}` },
+                ].map((s) => (
+                  <div key={s.label} className="px-5 flex flex-col items-center py-3 bg-[var(--surface)]">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-[var(--text-muted)]">{s.label}</p>
+                    <p className="mt-0.5 text-[13px] text-cener text-[var(--text)]">{s.value}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </header>
 
