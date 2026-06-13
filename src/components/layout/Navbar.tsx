@@ -11,6 +11,7 @@ import { NAV_LINKS, SITE_CONFIG } from '@/lib/constants'
 import { contentStore } from '@/lib/content-store'
 import { getProductHref } from '@/lib/category-routing'
 import { useWebsiteContent } from '@/hooks/useWebsiteContent'
+import { api } from '@/lib/api'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -31,6 +32,77 @@ export function Navbar() {
     setIsMobileOpen(false)
     setMegaMenuOpen(false)
   }, [pathname])
+
+  // Dynamic Mega Menu Products
+  const [garmentsItems, setGarmentsItems] = useState<any[]>([])
+  const [householdsItems, setHouseholdsItems] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchMegaMenuProducts = async () => {
+      try {
+        // Fetch featured garments
+        let resGarments = await api.getProducts({ division: 'garments', featured: true, limit: 2 })
+        let garmentsList = resGarments.data || []
+        // Fallback to latest garments if none are featured
+        if (garmentsList.length < 2) {
+          const fallbackGarments = await api.getProducts({ division: 'garments', limit: 2 })
+          garmentsList = fallbackGarments.data || []
+        }
+        setGarmentsItems(garmentsList)
+
+        // Fetch featured households/hospitality
+        let resHouseholds = await api.getProducts({ division: 'households', featured: true, limit: 1 })
+        let householdsList = resHouseholds.data || []
+        
+        let resHospitality = await api.getProducts({ division: 'hospitality', featured: true, limit: 1 })
+        let hospitalityList = resHospitality.data || []
+
+        let combinedHouseholds = [...householdsList, ...hospitalityList]
+        if (combinedHouseholds.length < 2) {
+          const fallbackHouseholds = await api.getProducts({ division: 'households', limit: 1 })
+          const fallbackHospitality = await api.getProducts({ division: 'hospitality', limit: 1 })
+          combinedHouseholds = [
+            ...(fallbackHouseholds.data || []),
+            ...(fallbackHospitality.data || [])
+          ]
+        }
+        setHouseholdsItems(combinedHouseholds.slice(0, 2))
+      } catch (err) {
+        console.error('Failed to load dynamic mega menu products:', err)
+      }
+    }
+    fetchMegaMenuProducts()
+  }, [])
+
+  // Mapping helper from Database Product to Mega-Menu visual spec
+  const getMenuProducts = (items: any[], fallbackItems: any[], divisionSlug: string) => {
+    if (!items || items.length === 0) return fallbackItems
+    return items.map(p => {
+      const img = p.images?.[0] || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80'
+      const division_slug = p.division_slug || divisionSlug
+      
+      let badge = 'Featured'
+      let badgeColor = 'text-blue-400 bg-blue-400/10'
+      if (p.is_new) {
+        badge = 'New Arrival'
+        badgeColor = 'text-emerald-400 bg-emerald-400/10'
+      } else if (p.is_offer) {
+        badge = p.offer_label || 'Special Offer'
+        badgeColor = 'text-amber-400 bg-amber-400/10'
+      }
+
+      return {
+        href: getProductHref(division_slug, p.slug),
+        img,
+        alt: p.name,
+        title: p.name,
+        sub: p.short_description || p.description || '',
+        moq: `MOQ: ${p.moq || '500 Pcs'}`,
+        badge,
+        badgeColor
+      }
+    })
+  }
 
   // Prevent scroll when mobile menu is open
   useEffect(() => {
@@ -210,10 +282,10 @@ export function Navbar() {
                       </span>
                     </div>
                     <div className="space-y-4">
-                      {[
+                      {getMenuProducts(garmentsItems, [
                         { href: getProductHref('garments', 'egyptian-cotton-premium-shirts'), img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80', alt: 'Premium Shirt', title: 'Egyptian Cotton Shirts', sub: '300TC / Bespoke corporate fits', moq: 'MOQ: 500 Pcs', badge: 'High Demand', badgeColor: 'text-gold bg-gold/10' },
                         { href: getProductHref('garments', 'executive-velvet-blazer'), img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&q=80', alt: 'Velvet Blazer', title: 'Executive Velvet Blazer', sub: 'Italian cotton velvet blazers', moq: 'MOQ: 50 Units', badge: 'Bespoke Cut', badgeColor: 'text-blue-400 bg-blue-400/10' },
-                      ].map((item) => (
+                      ], 'garments').map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
                           {/* Pure White Background Container for Product Image */}
                           <div className="relative h-14 w-14 flex-shrink-0 rounded-none overflow-hidden bg-white border border-neutral-200 p-0.5 shadow-sm">
@@ -245,10 +317,10 @@ export function Navbar() {
                       </span>
                     </div>
                     <div className="space-y-4">
-                      {[
+                      {getMenuProducts(householdsItems, [
                         { href: getProductHref('households', 'triply-stainless-steel-casserole'), img: '/images/hh-1.png', alt: 'Triply Casserole', title: 'Triply Casserole', sub: 'Aanya Homecraft premium cookware', moq: 'MOQ: 100 Pcs', badge: 'New Arrival', badgeColor: 'text-emerald-400 bg-emerald-400/10' },
                         { href: getProductHref('hospitality', 'hotel-bed-linen-collection'), img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', alt: 'Bedding', title: 'Hotel Bed Linen Collection', sub: '400TC Combed Egyptian Cotton', moq: 'MOQ: 200 Sets', badge: 'Premium Tier', badgeColor: 'text-amber-400 bg-amber-400/10' },
-                      ].map((item) => (
+                      ], 'households').map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setMegaMenuOpen(false)} className="group flex items-center gap-4 rounded-none border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-3 transition-all hover:border-gold hover:bg-black/[0.05] dark:hover:bg-white/10">
                           {/* Pure White Background Container for Product Image */}
                           <div className="relative h-14 w-14 flex-shrink-0 rounded-none overflow-hidden bg-white border border-neutral-200 p-0.5 shadow-sm">
