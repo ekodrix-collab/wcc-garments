@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url)
-    // Extract file path after /api/media-proxy/
+    // Extract file path after /api/media-proxy/ using pathname replacement
     const filePath = url.pathname.replace(/^\/api\/media-proxy\//, '')
     
     if (!filePath) {
