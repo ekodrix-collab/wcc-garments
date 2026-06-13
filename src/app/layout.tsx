@@ -279,7 +279,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="alternate" hrefLang="en" href={BASE_URL} />
         <link rel="alternate" hrefLang="x-default" href={BASE_URL} />
 
-        {/* Theme init (no FOUC) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -292,6 +291,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
+                  }
+                  // Bypass intro animation immediately for return visitors
+                  if (sessionStorage.getItem('wcc-has-seen-intro')) {
+                    document.documentElement.classList.add('preloader-done');
                   }
                 } catch (e) {}
               })();

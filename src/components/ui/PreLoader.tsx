@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 
 export function PreLoader() {
@@ -7,7 +5,6 @@ export function PreLoader() {
   const [progress, setProgress] = useState(0)
   const [isFading, setIsFading] = useState(false)
   const [isDone, setIsDone] = useState(false)
-  const [logoLoaded, setLogoLoaded] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -16,15 +13,11 @@ export function PreLoader() {
     if (sessionStorage.getItem('wcc-has-seen-intro')) {
       setIsDone(true)
       document.body.classList.add('preloader-done')
+      document.documentElement.classList.add('preloader-done')
       return
     }
 
     document.body.style.overflow = 'hidden'
-
-    // Trigger logo load animation smoothly
-    const logoTimer = setTimeout(() => {
-      setLogoLoaded(true)
-    }, 150)
 
     // Start progress counter
     const startTime = performance.now()
@@ -52,6 +45,7 @@ export function PreLoader() {
           setTimeout(() => {
             setIsDone(true)
             document.body.classList.add('preloader-done')
+            document.documentElement.classList.add('preloader-done')
             document.body.style.overflow = ''
           }, 800) // smooth fade duration
         }, 300) // brief pause at 100%
@@ -61,13 +55,12 @@ export function PreLoader() {
     rafId = requestAnimationFrame(updateProgress)
 
     return () => {
-      clearTimeout(logoTimer)
       cancelAnimationFrame(rafId)
       document.body.style.overflow = ''
     }
   }, [])
 
-  if (!mounted || isDone) return null
+  if (isDone) return null
 
   return (
     <div
@@ -105,16 +98,14 @@ export function PreLoader() {
 
       {/* Cinematic Floating Logo Frame */}
       <div
+        className="preloader-logo-animate"
         style={{
           position: 'relative',
           zIndex: 10,
           marginBottom: '28px',
           width: '100px',
           height: '100px',
-          opacity: logoLoaded ? 1 : 0,
-          transform: logoLoaded ? 'scale(1) rotate(0deg)' : 'scale(0.85) rotate(-6deg)',
-          filter: logoLoaded ? 'blur(0px)' : 'blur(8px)',
-          transition: 'all 1.1s cubic-bezier(0.25, 1, 0.5, 1)',
+          opacity: 0, // Controlled by CSS @keyframes animation
         }}
       >
         <img
@@ -132,20 +123,20 @@ export function PreLoader() {
       {/* Editorial Cinematic Brand Text */}
       <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', color: 'white', fontFamily: 'sans-serif' }}>
         <h1
+          className="preloader-title-animate"
           style={{
             margin: 0,
             fontSize: '22px',
             fontWeight: 700,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            opacity: logoLoaded ? 1 : 0,
-            transform: logoLoaded ? 'translateY(0)' : 'translateY(10px)',
-            transition: 'all 1s cubic-bezier(0.25, 1, 0.5, 1) 0.15s',
+            opacity: 0, // Controlled by CSS @keyframes animation
           }}
         >
           WCC <span style={{ fontWeight: 400, color: '#3B82F6' }}>FASHIONS</span>
         </h1>
         <p
+          className="preloader-sub-animate"
           style={{
             margin: '8px 0 0 0',
             fontSize: '9px',
@@ -154,9 +145,7 @@ export function PreLoader() {
             textTransform: 'uppercase',
             color: 'rgba(255,255,255,0.35)',
             fontFamily: 'monospace',
-            opacity: logoLoaded ? 1 : 0,
-            transform: logoLoaded ? 'translateY(0)' : 'translateY(8px)',
-            transition: 'all 1s cubic-bezier(0.25, 1, 0.5, 1) 0.25s',
+            opacity: 0, // Controlled by CSS @keyframes animation
           }}
         >
           Western Clothing Co. · Est. 2001
@@ -190,3 +179,4 @@ export function PreLoader() {
     </div>
   )
 }
+
