@@ -68,13 +68,136 @@ export default function AdminCategoriesPage() {
   const [editingCat, setEditingCat] = useState<CatItem | null>(null)
   const [catForm, setCatForm] = useState(EMPTY_CAT)
   const [saving, setSaving] = useState(false)
-  const [uploadingImage, setUploadingImage] = useState<'cat' | 'sub' | null>(null)
+  const [uploadingImage, setUploadingImage] = useState<'cat' | 'sub' | 'div' | null>(null)
 
   // Sub-category modal
   const [subModal, setSubModal] = useState<'add' | 'edit' | null>(null)
   const [subParentId, setSubParentId] = useState<string | null>(null)
   const [editingSubId, setEditingSubId] = useState<string | null>(null)
   const [subForm, setSubForm] = useState(EMPTY_SUB)
+
+  // Drag and drop states
+  const [dragActiveCat, setDragActiveCat] = useState(false)
+  const [dragActiveSub, setDragActiveSub] = useState(false)
+  const [dragActiveDiv, setDragActiveDiv] = useState(false)
+
+  // Division modal states
+  const [divModal, setDivModal] = useState(false)
+  const [editingDiv, setEditingDiv] = useState<any | null>(null)
+  const [divForm, setDivForm] = useState({ id: '', name: '', image: '' })
+
+  const handleDragDiv = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActiveDiv(true)
+    } else if (e.type === "dragleave") {
+      setDragActiveDiv(false)
+    }
+  }
+
+  const handleDropDiv = async (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActiveDiv(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      setUploadingImage('div' as any)
+      try {
+        const url = await api.uploadFile(file)
+        setDivForm(prev => ({ ...prev, image: url }))
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check Supabase configuration.')
+      } finally {
+        setUploadingImage(null)
+      }
+    }
+  }
+
+  const openEditDiv = (div: any) => {
+    setEditingDiv(div)
+    setDivForm({ id: div.id, name: div.name, image: div.image || '' })
+    setDivModal(true)
+  }
+
+  const saveDiv = async () => {
+    if (!divForm.id) return
+    setSaving(true)
+    try {
+      await api.admin.updateCategory(undefined, divForm.id, { image: divForm.image })
+      
+      // Update divisionsData in local state
+      setDivisionsData(prev => prev.map(d => d.id === divForm.id ? { ...d, image: divForm.image } : d))
+      
+      // Refresh list
+      fetchCategories()
+      setDivModal(false)
+    } catch (err) {
+      console.error('Failed to save division image:', err)
+      alert('Failed to save division image.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleDragCat = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActiveCat(true)
+    } else if (e.type === "dragleave") {
+      setDragActiveCat(false)
+    }
+  }
+
+  const handleDropCat = async (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActiveCat(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      setUploadingImage('cat')
+      try {
+        const url = await api.uploadFile(file)
+        setCatForm(prev => ({ ...prev, image: url }))
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check Supabase configuration.')
+      } finally {
+        setUploadingImage(null)
+      }
+    }
+  }
+
+  const handleDragSub = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActiveSub(true)
+    } else if (e.type === "dragleave") {
+      setDragActiveSub(false)
+    }
+  }
+
+  const handleDropSub = async (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActiveSub(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      setUploadingImage('sub')
+      try {
+        const url = await api.uploadFile(file)
+        setSubForm(prev => ({ ...prev, image: url }))
+      } catch (err) {
+        console.error('Upload failed:', err)
+        alert('Failed to upload image. Please check Supabase configuration.')
+      } finally {
+        setUploadingImage(null)
+      }
+    }
+  }
 
   useEffect(() => {
     fetchCategories()
@@ -115,16 +238,18 @@ export default function AdminCategoriesPage() {
     }
   }
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'cat' | 'sub') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'cat' | 'sub' | 'div') => {
     const file = e.target.files?.[0]
     if (file) {
-      setUploadingImage(type)
+      setUploadingImage(type as any)
       try {
         const url = await api.uploadFile(file)
         if (type === 'cat') {
           setCatForm(prev => ({ ...prev, image: url }))
-        } else {
+        } else if (type === 'sub') {
           setSubForm(prev => ({ ...prev, image: url }))
+        } else {
+          setDivForm(prev => ({ ...prev, image: url }))
         }
       } catch (err) {
         console.error('Upload failed:', err)
@@ -377,14 +502,27 @@ export default function AdminCategoriesPage() {
 
       {/* ── Category Groups ── */}
       <div className="space-y-8">
-        {Array.from(grouped.entries()).map(([divSlug, { divisionName, items }]) => (
-          <div key={divSlug}>
-            {/* Division header */}
-            <div className="flex items-center justify-between border-l-4 border-gold pl-4 mb-4">
-              <div>
-                <h2 className="font-display text-lg font-bold uppercase text-neutral-900 dark:text-white">{divisionName}</h2>
-                <p className="font-mono text-[10px] text-neutral-400 dark:text-white/30">{items.length} categories · {items.reduce((a, c) => a + c.subCategories.length, 0)} sub-categories</p>
-              </div>
+        {Array.from(grouped.entries()).map(([divSlug, { divisionName, items }]) => {
+          const div = divisionsData.find(d => d.slug === divSlug)
+          return (
+            <div key={divSlug}>
+              {/* Division header */}
+              <div className="flex items-center justify-between border-l-4 border-gold pl-4 mb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-display text-lg font-bold uppercase text-neutral-900 dark:text-white">{divisionName}</h2>
+                    {div && (
+                      <button
+                        onClick={() => openEditDiv(div)}
+                        className="text-neutral-400 hover:text-gold transition-colors p-1"
+                        title={`Edit ${divisionName} Image`}
+                      >
+                        <Edit2 className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+                  <p className="font-mono text-[10px] text-neutral-400 dark:text-white/30">{items.length} categories · {items.reduce((a, c) => a + c.subCategories.length, 0)} sub-categories</p>
+                </div>
               <button
                 onClick={() => { setCatForm({ ...EMPTY_CAT, divisionSlug: divSlug }); setEditingCat(null); setCatModal('add') }}
                 className="flex items-center gap-1.5 border border-neutral-200 bg-white dark:border-white/15 dark:bg-white/5 px-3 py-1.5 font-mono text-[10px] font-bold text-neutral-700 dark:text-white hover:bg-gold hover:text-white dark:hover:text-white transition-all shadow-sm"
@@ -481,7 +619,8 @@ export default function AdminCategoriesPage() {
               ))}
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* ── Category Modal ── */}
@@ -520,33 +659,74 @@ export default function AdminCategoriesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Category Image URL</label>
-                  <input value={catForm.image} onChange={(e) => setCatForm({ ...catForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-[9px] text-neutral-400 dark:text-white/30 font-mono uppercase">or select from device</span>
-                    <input
-                      id="cat-image-file"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleImageUpload(e, 'cat')}
-                    />
-                    <button
-                      type="button"
-                      disabled={uploadingImage === 'cat'}
-                      onClick={() => document.getElementById('cat-image-file')?.click()}
-                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-white transition-all rounded-none disabled:opacity-50"
-                    >
-                      {uploadingImage === 'cat' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
-                      <span>{uploadingImage === 'cat' ? 'Uploading...' : 'Upload Image'}</span>
-                    </button>
-                  </div>
-                  {catForm.image && (
-                    <div className="mt-2 h-20 w-32 relative bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 rounded overflow-hidden">
+                  <label className={labelCls}>Category Image</label>
+                  
+                  {catForm.image ? (
+                    <div className="relative aspect-video w-full rounded-none overflow-hidden bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 group">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={catForm.image} alt="Preview" className="object-cover w-full h-full" />
+                      <img src={catForm.image} alt="Category preview" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const imgUrl = catForm.image
+                            setCatForm(prev => ({ ...prev, image: '' }))
+                            if (imgUrl) {
+                              try {
+                                await api.deleteFile(imgUrl)
+                              } catch (err) {
+                                console.error('Failed to delete file from Cloudinary:', err)
+                              }
+                            }
+                          }}
+                          className="bg-white/10 hover:bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-none transition-all border border-white/20 hover:border-transparent flex items-center gap-1 font-mono uppercase tracking-wider"
+                        >
+                          <Trash2 className="h-3 w-3" /> Remove Image
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onDragEnter={handleDragCat}
+                      onDragOver={handleDragCat}
+                      onDragLeave={handleDragCat}
+                      onDrop={handleDropCat}
+                      onClick={() => document.getElementById('cat-device-upload-input')?.click()}
+                      className={`relative border border-dashed p-6 flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+                        dragActiveCat
+                          ? 'border-gold bg-gold/5'
+                          : 'border-neutral-200 bg-neutral-50 hover:border-gold/40 hover:bg-neutral-100/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-gold/40 dark:hover:bg-white/[0.08]'
+                      }`}
+                    >
+                      <input
+                        id="cat-device-upload-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, 'cat')}
+                        className="hidden"
+                      />
+                      <Upload className={`h-5 w-5 mb-2 transition-colors ${dragActiveCat ? 'text-gold' : 'text-neutral-400 dark:text-white/40'}`} />
+                      {uploadingImage === 'cat' ? (
+                        <p className="text-[10px] font-mono text-gold animate-pulse">Uploading asset...</p>
+                      ) : (
+                        <>
+                          <p className="text-[10px] font-bold text-neutral-800 dark:text-white/80 uppercase tracking-wide">Click or drag image here</p>
+                          <p className="text-[8px] font-mono text-neutral-400 dark:text-white/40 mt-1">PNG, JPG, JPEG, WEBP up to 5MB</p>
+                        </>
+                      )}
                     </div>
                   )}
+
+                  {/* Manual input fallback */}
+                  <div className="mt-3">
+                    <label className="mb-1 block text-[9px] font-bold uppercase tracking-wider text-neutral-400 dark:text-white/30 font-mono">Or enter image URL</label>
+                    <input
+                      value={catForm.image}
+                      onChange={(e) => setCatForm({ ...catForm, image: e.target.value })}
+                      placeholder="https://example.com/image.png"
+                      className={inputCls}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
@@ -591,33 +771,74 @@ export default function AdminCategoriesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Sub-Category Image URL</label>
-                  <input value={subForm.image} onChange={(e) => setSubForm({ ...subForm, image: e.target.value })} placeholder="https://example.com/image.png" className={inputCls} />
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-[9px] text-neutral-400 dark:text-white/30 font-mono uppercase">or select from device</span>
-                    <input
-                      id="sub-image-file"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleImageUpload(e, 'sub')}
-                    />
-                    <button
-                      type="button"
-                      disabled={uploadingImage === 'sub'}
-                      onClick={() => document.getElementById('sub-image-file')?.click()}
-                      className="flex items-center gap-1 px-2.5 py-1 font-mono text-[9px] font-bold text-gold border border-gold/20 bg-gold/5 hover:bg-gold hover:text-white transition-all rounded-none disabled:opacity-50"
-                    >
-                      {uploadingImage === 'sub' ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
-                      <span>{uploadingImage === 'sub' ? 'Uploading...' : 'Upload Image'}</span>
-                    </button>
-                  </div>
-                  {subForm.image && (
-                    <div className="mt-2 h-20 w-32 relative bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 rounded overflow-hidden">
+                  <label className={labelCls}>Sub-Category Image</label>
+                  
+                  {subForm.image ? (
+                    <div className="relative aspect-video w-full rounded-none overflow-hidden bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 group">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={subForm.image} alt="Preview" className="object-cover w-full h-full" />
+                      <img src={subForm.image} alt="Sub-category preview" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const imgUrl = subForm.image
+                            setSubForm(prev => ({ ...prev, image: '' }))
+                            if (imgUrl) {
+                              try {
+                                await api.deleteFile(imgUrl)
+                              } catch (err) {
+                                console.error('Failed to delete file from Cloudinary:', err)
+                              }
+                            }
+                          }}
+                          className="bg-white/10 hover:bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-none transition-all border border-white/20 hover:border-transparent flex items-center gap-1 font-mono uppercase tracking-wider"
+                        >
+                          <Trash2 className="h-3 w-3" /> Remove Image
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onDragEnter={handleDragSub}
+                      onDragOver={handleDragSub}
+                      onDragLeave={handleDragSub}
+                      onDrop={handleDropSub}
+                      onClick={() => document.getElementById('sub-device-upload-input')?.click()}
+                      className={`relative border border-dashed p-6 flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+                        dragActiveSub
+                          ? 'border-gold bg-gold/5'
+                          : 'border-neutral-200 bg-neutral-50 hover:border-gold/40 hover:bg-neutral-100/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-gold/40 dark:hover:bg-white/[0.08]'
+                      }`}
+                    >
+                      <input
+                        id="sub-device-upload-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, 'sub')}
+                        className="hidden"
+                      />
+                      <Upload className={`h-5 w-5 mb-2 transition-colors ${dragActiveSub ? 'text-gold' : 'text-neutral-400 dark:text-white/40'}`} />
+                      {uploadingImage === 'sub' ? (
+                        <p className="text-[10px] font-mono text-gold animate-pulse">Uploading asset...</p>
+                      ) : (
+                        <>
+                          <p className="text-[10px] font-bold text-neutral-800 dark:text-white/80 uppercase tracking-wide">Click or drag image here</p>
+                          <p className="text-[8px] font-mono text-neutral-400 dark:text-white/40 mt-1">PNG, JPG, JPEG, WEBP up to 5MB</p>
+                        </>
+                      )}
                     </div>
                   )}
+
+                  {/* Manual input fallback */}
+                  <div className="mt-3">
+                    <label className="mb-1 block text-[9px] font-bold uppercase tracking-wider text-neutral-400 dark:text-white/30 font-mono">Or enter image URL</label>
+                    <input
+                      value={subForm.image}
+                      onChange={(e) => setSubForm({ ...subForm, image: e.target.value })}
+                      placeholder="https://example.com/image.png"
+                      className={inputCls}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
@@ -625,6 +846,102 @@ export default function AdminCategoriesPage() {
                 <button disabled={saving} onClick={saveSub} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-white hover:bg-gold/90 transition-all">
                   {saving && <Loader2 className="w-3 h-3 animate-spin" />}
                   {subModal === 'add' ? 'Create' : 'Save Changes'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Division Modal ── */}
+      <AnimatePresence>
+        {divModal && editingDiv && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-md">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md border border-neutral-200 bg-white dark:border-white/10 dark:bg-[#0D0D0D] p-7 shadow-2xl space-y-5 text-neutral-900 dark:text-white">
+              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-4">
+                <h3 className="font-display text-lg font-bold uppercase text-neutral-900 dark:text-white">
+                  Edit Division Image: {divForm.name}
+                </h3>
+                <button onClick={() => setDivModal(false)} className="text-neutral-400 hover:text-neutral-600 dark:text-white/40 dark:hover:text-white"><X className="h-5 w-5" /></button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelCls}>Division Image</label>
+                  
+                  {divForm.image ? (
+                    <div className="relative aspect-video w-full rounded-none overflow-hidden bg-neutral-100 border border-neutral-200 dark:bg-black dark:border-white/10 group">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={divForm.image} alt="Division preview" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const imgUrl = divForm.image
+                            setDivForm(prev => ({ ...prev, image: '' }))
+                            if (imgUrl) {
+                              try {
+                                await api.deleteFile(imgUrl)
+                              } catch (err) {
+                                console.error('Failed to delete file from Cloudinary:', err)
+                              }
+                            }
+                          }}
+                          className="bg-white/10 hover:bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-none transition-all border border-white/20 hover:border-transparent flex items-center gap-1 font-mono uppercase tracking-wider"
+                        >
+                          <Trash2 className="h-3 w-3" /> Remove Image
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onDragEnter={handleDragDiv}
+                      onDragOver={handleDragDiv}
+                      onDragLeave={handleDragDiv}
+                      onDrop={handleDropDiv}
+                      onClick={() => document.getElementById('div-device-upload-input')?.click()}
+                      className={`relative border border-dashed p-6 flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+                        dragActiveDiv
+                          ? 'border-gold bg-gold/5'
+                          : 'border-neutral-200 bg-neutral-50 hover:border-gold/40 hover:bg-neutral-100/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-gold/40 dark:hover:bg-white/[0.08]'
+                      }`}
+                    >
+                      <input
+                        id="div-device-upload-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, 'div')}
+                        className="hidden"
+                      />
+                      <Upload className={`h-5 w-5 mb-2 transition-colors ${dragActiveDiv ? 'text-gold' : 'text-neutral-400 dark:text-white/40'}`} />
+                      {uploadingImage === 'div' ? (
+                        <p className="text-[10px] font-mono text-gold animate-pulse">Uploading asset...</p>
+                      ) : (
+                        <>
+                          <p className="text-[10px] font-bold text-neutral-800 dark:text-white/80 uppercase tracking-wide">Click or drag image here</p>
+                          <p className="text-[8px] font-mono text-neutral-400 dark:text-white/40 mt-1">PNG, JPG, JPEG, WEBP up to 5MB</p>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Manual input fallback */}
+                  <div className="mt-3">
+                    <label className="mb-1 block text-[9px] font-bold uppercase tracking-wider text-neutral-400 dark:text-white/30 font-mono">Or enter image URL</label>
+                    <input
+                      value={divForm.image}
+                      onChange={(e) => setDivForm({ ...divForm, image: e.target.value })}
+                      placeholder="https://example.com/image.png"
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setDivModal(false)} className="flex-1 border border-neutral-200 text-neutral-500 hover:bg-neutral-50 dark:border-white/10 dark:text-white/60 dark:hover:bg-white/5 transition-all py-2.5 font-mono text-xs">Cancel</button>
+                <button disabled={saving} onClick={saveDiv} className="flex-1 flex justify-center items-center gap-2 bg-gold py-2.5 font-mono text-xs font-bold text-white hover:bg-gold/90 transition-all">
+                  {saving && <Loader2 className="w-3 h-3 animate-spin" />}
+                  Save Changes
                 </button>
               </div>
             </motion.div>

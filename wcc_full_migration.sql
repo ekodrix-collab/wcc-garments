@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
     stat2_label TEXT, stat2_value TEXT,
     stat3_label TEXT, stat3_value TEXT,
     sub_categories JSONB DEFAULT '[]'::jsonb,
+    image TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

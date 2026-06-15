@@ -76,6 +76,7 @@ export async function GET(request: NextRequest) {
     const statusParam   = searchParams.get('status') ?? 'all'
     const parentIdParam = searchParams.get('parentId')
     const flatParam     = searchParams.get('flat') === 'true'
+    const divisionsOnly = searchParams.get('divisions') === 'true'
 
     const divisionsData = await fetchWithFallback(
       async () => {
@@ -90,6 +91,10 @@ export async function GET(request: NextRequest) {
       DIVISIONS,
       'Fetch Categories'
     )
+
+    if (divisionsOnly) {
+      return NextResponse.json({ success: true, data: divisionsData })
+    }
 
     let categories = buildCategories(divisionsData)
 

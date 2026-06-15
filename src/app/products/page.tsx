@@ -31,10 +31,37 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ProductsHubPage() {
+export default async function ProductsHubPage() {
   // Count products per division
   const countByDivision = (slug: string) =>
     MOCK_PRODUCTS.filter((p) => p.division_slug === slug).length
+
+  let divisions = DIVISIONS
+  try {
+    const { getSupabaseServerClient, isSupabaseConfigured } = await import('@/lib/supabase')
+    if (isSupabaseConfigured()) {
+      const supabase = getSupabaseServerClient()
+      const { data } = await supabase
+        .from('categories')
+        .select('*')
+        .order('created_at', { ascending: true })
+      if (data && data.length > 0) {
+        divisions = data.map((d: any) => ({
+          ...d,
+          stat1Label: d.stat1_label || d.stat1Label,
+          stat1Value: d.stat1_value || d.stat1Value,
+          stat2Label: d.stat2_label || d.stat2Label,
+          stat2Value: d.stat2_value || d.stat2Value,
+          stat3Label: d.stat3_label || d.stat3Label,
+          stat3Value: d.stat3_value || d.stat3Value,
+          heroHeading: d.hero_heading || d.heroHeading,
+          heroSubtitle: d.hero_subtitle || d.heroSubtitle,
+        }))
+      }
+    }
+  } catch (err) {
+    console.error('Failed to fetch divisions for products hub:', err)
+  }
 
   // For JSON-LD ItemList — all divisions
   const breadcrumbSchema = {
@@ -53,11 +80,11 @@ export default function ProductsHubPage() {
     description:
       'Complete B2B product catalogue from WCC Fashions, Dubai UAE. 6 divisions covering garments, uniforms, hospitality textiles, home linen, fragrance and household products.',
     url: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products`,
-    hasPart: DIVISIONS.map((div) => ({
+    hasPart: divisions.map((div) => ({
       '@type': 'CollectionPage',
       name: `${div.name} — WCC Fashions`,
       url: `${SITE_CONFIG.url || 'https://wccfashions.com'}/products/${div.slug}`,
-      description: div.metaDescription,
+      description: div.metaDescription || (div as any).meta_description,
     })),
   }
 
@@ -140,7 +167,7 @@ export default function ProductsHubPage() {
 
           {/* Editorial masonry-style grid */}
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {DIVISIONS.map((div, i) => (
+            {divisions.map((div, i) => (
               <DivisionCard
                 key={div.slug}
                 division={div}

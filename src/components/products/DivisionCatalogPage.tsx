@@ -7,6 +7,7 @@ import { DIVISIONS, MOCK_PRODUCTS, SITE_CONFIG } from '@/lib/constants'
 import { getProductHref, resolveDivisionCategorySlug, getDivisionCategoryHref } from '@/lib/category-routing'
 import { DivisionProductsClient } from './DivisionProductsClient'
 import { getSupabaseServerClient } from '@/lib/supabase'
+import { fetchWithFallback } from '@/lib/db-service'
 
 interface DivisionCatalogPageProps {
   divisionSlug: string
@@ -31,6 +32,41 @@ export async function DivisionCatalogPage({
     divisionSlug,
     initialCategorySlug
   )
+
+  // Fetch categories dynamically from database
+  const dbDivisions = await fetchWithFallback(
+    async () => {
+      const supabase = getSupabaseServerClient()
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('created_at', { ascending: true })
+      if (error) throw error
+      return data || []
+    },
+    DIVISIONS,
+    'Fetch Categories'
+  )
+
+  const dbDivision = dbDivisions.find((item: any) => item.slug === divisionSlug)
+  const rawCategories = dbDivision ? (dbDivision.categories || dbDivision.sub_categories || []) : division.categories
+
+  const divisionCategories = rawCategories.map((cat: any) => ({
+    id: cat.id,
+    name: cat.name,
+    slug: cat.slug,
+    status: cat.status || 'active',
+    displayOrder: cat.displayOrder || cat.display_order || 1,
+    image: cat.image,
+    subCategories: (cat.subCategories || cat.sub_categories || []).map((sub: any) => ({
+      id: sub.id,
+      name: sub.name,
+      slug: sub.slug,
+      status: sub.status || 'active',
+      displayOrder: sub.displayOrder || sub.display_order || 1,
+      image: sub.image,
+    }))
+  }))
 
   let products = []
   try {
@@ -232,7 +268,7 @@ export async function DivisionCatalogPage({
         <section className="mx-auto max-w-[1560px] px-6 py-12 lg:px-12 lg:py-16">
           <DivisionProductsClient
             products={mappedProducts}
-            categories={division.categories}
+            categories={divisionCategories}
             divisionSlug={divisionSlug}
             divisionName={division.name}
             initialCategorySlug={resolvedInitialCategorySlug ?? undefined}

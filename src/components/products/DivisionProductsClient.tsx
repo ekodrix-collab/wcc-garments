@@ -15,6 +15,7 @@ interface Category {
   status: 'active' | 'coming-soon'
   displayOrder: number
   subCategories?: any[]
+  image?: string
 }
 
 interface DivisionProductsClientProps {
@@ -476,7 +477,7 @@ export function DivisionProductsClient({
                     const status = cat.status as CatStatus
                     const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG['active']
                     const imageMap = CATEGORY_IMAGES[divisionSlug] || {}
-                    const image = imageMap[cat.slug] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80'
+                    const image = cat.image || imageMap[cat.slug] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80'
                     const styleMap = STYLE_COUNT[divisionSlug] || {}
                     const styleCount = styleMap[cat.slug] || '60+ Styles'
                     const isDisabled = status === 'coming-soon'
@@ -605,7 +606,7 @@ export function DivisionProductsClient({
             <div className="relative h-[280px] md:h-[360px] overflow-hidden border-b border-[var(--border)]">
               {(() => {
                 const imageMap = CATEGORY_IMAGES[divisionSlug] || {}
-                const image = imageMap[activeCategory.slug] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&q=80'
+                const image = activeCategory.image || imageMap[activeCategory.slug] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&q=80'
                 const styleMap = STYLE_COUNT[divisionSlug] || {}
                 const styleCount = styleMap[activeCategory.slug] || '60+ Styles'
                 return (

@@ -16,6 +16,7 @@ interface GarmentCategory {
   slug: string
   status: string
   displayOrder: number
+  image?: string
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -39,6 +40,7 @@ const BRANDS_CONFIG = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function AllProductsClient() {
+  const [categories, setCategories] = useState<GarmentCategory[]>(CATEGORIES)
   const [products, setProducts] = useState<Product[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [activeBrand, setActiveBrand] = useState<string>('all')
@@ -50,6 +52,15 @@ export default function AllProductsClient() {
       (p) => p.division_id === 'Garments' || p.division?.slug === 'garments' || p.division?.name === 'Garments'
     )
     setProducts(garments)
+
+    fetch('/api/categories?division=garments')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setCategories(json.data)
+        }
+      })
+      .catch((err) => console.error('Failed to sync live garments categories for all list:', err))
   }, [])
 
   // Flat filtered list
@@ -201,7 +212,7 @@ export default function AllProductsClient() {
               >
                 All
               </button>
-              {CATEGORIES
+              {categories
                 .filter((c) => c.status === 'active')
                 .sort((a, b) => a.displayOrder - b.displayOrder)
                 .map((cat) => (

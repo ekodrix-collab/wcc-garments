@@ -64,8 +64,16 @@ export default function AdminBrandsPage() {
     if (!file) return
     setUploadingField(field)
     try {
+      const oldUrl = formData[field]
       const url = await api.uploadFile(file)
       setFormData(prev => ({ ...prev, [field]: url }))
+      if (oldUrl) {
+        try {
+          await api.deleteFile(oldUrl)
+        } catch (err) {
+          console.error('Failed to delete old brand image from Cloudinary:', err)
+        }
+      }
     } catch (err) {
       console.error('Upload failed:', err)
       alert('Image upload failed. Check Supabase storage configuration.')
@@ -125,6 +133,23 @@ export default function AdminBrandsPage() {
   // ── Delete ────────────────────────────────────────────────────────────────
   const handleDelete = async (id: string) => {
     try {
+      const brandToDelete = brands.find(b => b.id === id)
+      if (brandToDelete) {
+        if (brandToDelete.logo_desktop) {
+          try {
+            await api.deleteFile(brandToDelete.logo_desktop)
+          } catch (err) {
+            console.error('Failed to delete brand logo_desktop from Cloudinary:', err)
+          }
+        }
+        if (brandToDelete.logo_mobile) {
+          try {
+            await api.deleteFile(brandToDelete.logo_mobile)
+          } catch (err) {
+            console.error('Failed to delete brand logo_mobile from Cloudinary:', err)
+          }
+        }
+      }
       await api.admin.deleteBrand(undefined, id)
       await fetchBrands()
       setIsDeleteModalOpen(null)
@@ -484,6 +509,26 @@ export default function AdminBrandsPage() {
                           }
                           <span>{uploadingField === field ? 'Uploading…' : 'Choose File'}</span>
                         </button>
+                        {formData[field] && (
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const imgUrl = formData[field]
+                              setFormData(prev => ({ ...prev, [field]: '' }))
+                              if (imgUrl) {
+                                try {
+                                  await api.deleteFile(imgUrl)
+                                } catch (err) {
+                                  console.error('Failed to delete brand image from Cloudinary:', err)
+                                }
+                              }
+                            }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] font-bold text-red-500 border border-red-500/30 bg-red-50/5 hover:bg-red-500 hover:text-white transition-all rounded-none"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            <span>Remove Image</span>
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
