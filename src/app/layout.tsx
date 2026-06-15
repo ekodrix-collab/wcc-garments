@@ -12,6 +12,9 @@ const BASE_URL = 'https://wccfashions.com'
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  verification: {
+    google: '1IcHEmg7YDLx4mWw-yXS6isIQcUqMJsmpxzM-JvSslo',
+  },
 
   title: {
     default: 'WCC Fashions LLC — Leading B2B Textile & Garment Manufacturer in UAE | Wholesale Supplier',
