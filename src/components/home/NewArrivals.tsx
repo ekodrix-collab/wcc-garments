@@ -10,7 +10,7 @@ import { brandStore } from '@/lib/brand-store'
 import { useWebsiteContent } from '@/hooks/useWebsiteContent'
 import { useProducts } from '@/hooks/useProducts'
 
-const CATEGORIES = ['All', 'Garments', 'Uniforms', 'Hospitality', 'Home', 'Fragrance', 'Households']
+const CATEGORIES = ['All', 'Garments', 'Households', 'Hospitality', 'Uniforms', 'Home', 'Fragrance']
 
 export function NewArrivals() {
   const [activeTab, setActiveTab] = useState('Garments')
@@ -113,53 +113,88 @@ export function NewArrivals() {
             </div>
           </div>
         </div>
-
         {/* Perfectly Aligned 4-Column Card Grid */}
         <div className="mt-12 min-h-[500px]" ref={gridRef}>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4 md:gap-x-6 md:gap-y-10">
-            <AnimatePresence mode="popLayout">
-              {products.map((product, idx) => {
-                // Adapt MOCK_PRODUCTS fields to match ProductCard expects
-                const formattedProduct = {
-                  ...product,
-                  division: { name: product.division?.name || '', slug: product.division?.slug || '' },
-                  category: { name: product.category?.name || '' }
-                };
+          {products.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center border border-[var(--border)] bg-[var(--bg-surface)] py-24 px-6 text-center max-w-4xl mx-auto"
+            >
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gold/10 text-gold mb-6 border border-gold/20">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                </svg>
+              </div>
+              <h3 className="font-display text-xl font-bold tracking-tight text-[var(--text)]">
+                Bespoke {activeTab} Manufacturing
+              </h3>
+              <p className="mt-3 max-w-lg text-[13px] leading-relaxed text-[var(--text-muted)]">
+                Our ready B2B catalog for this division is currently being compiled. However, we offer complete private-label manufacturing and bulk supply for all products in the {activeTab} division.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-4">
+                <Link
+                  href={`/contact?source=empty-category-${activeTab.toLowerCase()}&intent=custom-quote`}
+                  className="group inline-flex items-center gap-2 border border-gold px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold hover:text-white"
+                >
+                  Request Custom Quote
+                </Link>
+                <a
+                  href={`https://wa.me/${whatsappBase}?text=${encodeURIComponent(`Hi WCC Garments team, I would like to query custom B2B manufacturing and bulk pricing for ${activeTab} items.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 border border-green-500 bg-green-500 hover:bg-green-600 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white transition-all"
+                >
+                  WhatsApp Production Desk
+                </a>
+              </div>
+            </motion.div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4 md:gap-x-6 md:gap-y-10">
+                <AnimatePresence mode="popLayout">
+                  {products.map((product, idx) => {
+                    // Adapt MOCK_PRODUCTS fields to match ProductCard expects
+                    const formattedProduct = {
+                      ...product,
+                      division: { name: product.division?.name || '', slug: product.division?.slug || '' },
+                      category: { name: product.category?.name || '' }
+                    };
 
-                return (
-                  <ProductCard
-                    key={product.id}
-                    product={formattedProduct}
-                    index={idx}
-                  />
-                )
-              })}
-            </AnimatePresence>
-          </div>
+                    return (
+                      <ProductCard
+                        key={product.id}
+                        product={formattedProduct}
+                        index={idx}
+                      />
+                    )
+                  })}
+                </AnimatePresence>
+              </div>
 
-          {/* View All text link */}
-          {products.length > 0 && (
-            <div className="mt-10 flex justify-center">
-              <Link
-                href={
-                  activeTab === 'All'          ? '/products' :
-                  activeTab === 'Garments'     ? '/products/garments' :
-                  activeTab === 'Uniforms'     ? '/products/uniforms' :
-                  activeTab === 'Hospitality'  ? '/products/hospitality' :
-                  activeTab === 'Home'         ? '/products/home' :
-                  activeTab === 'Fragrance'    ? '/products/fragrance' :
-                  activeTab === 'Households'   ? '/products/households' :
-                  '/products'
-                }
-                className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-muted)] transition-colors duration-200 hover:text-gold"
-              >
-                View All {activeTab === 'All' ? 'Products' : activeTab}
-                <span className="relative flex h-4 w-4 items-center justify-center">
-                  <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
-                  <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
-                </span>
-              </Link>
-            </div>
+              {/* View All text link */}
+              <div className="mt-10 flex justify-center">
+                <Link
+                  href={
+                    activeTab === 'All'          ? '/products' :
+                    activeTab === 'Garments'     ? '/products/garments' :
+                    activeTab === 'Uniforms'     ? '/products/uniforms' :
+                    activeTab === 'Hospitality'  ? '/products/hospitality' :
+                    activeTab === 'Home'         ? '/products/home' :
+                    activeTab === 'Fragrance'    ? '/products/fragrance' :
+                    activeTab === 'Households'   ? '/products/households' :
+                    '/products'
+                  }
+                  className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-muted)] transition-colors duration-200 hover:text-gold"
+                >
+                  View All {activeTab === 'All' ? 'Products' : activeTab}
+                  <span className="relative flex h-4 w-4 items-center justify-center">
+                    <ArrowUpRight className="absolute h-4 w-4 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-x-0 group-hover:opacity-0 group-hover:scale-75 group-hover:translate-x-2" />
+                    <ArrowRight className="absolute h-4 w-4 opacity-0 scale-75 -translate-x-2 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0" />
+                  </span>
+                </Link>
+              </div>
+            </>
           )}
         </div>
       </div>
