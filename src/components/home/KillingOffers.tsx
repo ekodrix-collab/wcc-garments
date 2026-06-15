@@ -70,7 +70,7 @@ export function KillingOffers() {
   }, [])
 
   const divisionsList = liveDivisions.length > 0 ? liveDivisions : DIVISIONS
-  const expansionDivisions = EXPANSION_SLUGS.map((slug) => divisionsList.find((d) => d.slug === slug)).filter(Boolean) as typeof DIVISIONS
+  const expansionDivisions = EXPANSION_SLUGS.map((slug) => divisionsList.find((d) => d.slug === slug)).filter(Boolean) as any[]
 
   return (
     <section
