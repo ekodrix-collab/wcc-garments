@@ -44,10 +44,14 @@ export default async function ProductsHubPage() {
       const { data } = await supabase
         .from('categories')
         .select('*')
-        .order('created_at', { ascending: true })
       if (data && data.length > 0) {
+        const staticMap = Object.fromEntries(
+          DIVISIONS.map((d, index) => [d.slug, { icon: d.icon, index }])
+        )
+
         divisions = data.map((d: any) => ({
           ...d,
+          icon: staticMap[d.slug]?.icon || d.icon,
           stat1Label: d.stat1_label || d.stat1Label,
           stat1Value: d.stat1_value || d.stat1Value,
           stat2Label: d.stat2_label || d.stat2Label,
@@ -57,6 +61,13 @@ export default async function ProductsHubPage() {
           heroHeading: d.hero_heading || d.heroHeading,
           heroSubtitle: d.hero_subtitle || d.heroSubtitle,
         }))
+
+        // Sort by the order in constants.ts
+        divisions.sort((a, b) => {
+          const idxA = staticMap[a.slug]?.index ?? 99
+          const idxB = staticMap[b.slug]?.index ?? 99
+          return idxA - idxB
+        })
       }
     }
   } catch (err) {
