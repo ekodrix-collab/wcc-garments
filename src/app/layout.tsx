@@ -15,6 +15,11 @@ export const metadata: Metadata = {
   verification: {
     google: '1IcHEmg7YDLx4mWw-yXS6isIQcUqMJsmpxzM-JvSslo',
   },
+  icons: {
+    icon: '/images/wcc-logo.png',
+    shortcut: '/images/wcc-logo.png',
+    apple: '/images/wcc-logo.png',
+  },
 
   title: {
     default: 'WCC Fashions LLC — Leading B2B Textile & Garment Manufacturer in UAE | Wholesale Supplier',
