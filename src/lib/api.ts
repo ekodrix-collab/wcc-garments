@@ -41,6 +41,15 @@ export const api = {
     return data.url as string
   },
 
+  deleteFile: async (url: string) => {
+    const res = await fetch(`/api/admin/upload?url=${encodeURIComponent(url)}`, {
+      method: 'DELETE',
+    })
+    const data = await res.json()
+    if (!data.success) throw new Error(data.error || 'Deletion failed')
+    return data
+  },
+
   getDivisions: () =>
     fetcher('/api/divisions'),
 
