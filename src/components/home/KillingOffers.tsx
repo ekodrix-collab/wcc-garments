@@ -39,14 +39,14 @@ const DEFAULT_EXPANSION = {
 }
 
 // Show the 4 expansion divisions (everyone except garments & home which have their own sections or have been excluded)
-const EXPANSION_SLUGS = ['uniforms', 'hospitality', 'fragrance', 'households']
+const EXPANSION_SLUGS = ['households', 'hospitality', 'uniforms', 'fragrance']
 
 export function KillingOffers() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const { data } = useWebsiteContent('strategic-expansion', DEFAULT_EXPANSION)
 
-  const expansionDivisions = DIVISIONS.filter((d) => EXPANSION_SLUGS.includes(d.slug))
+  const expansionDivisions = EXPANSION_SLUGS.map((slug) => DIVISIONS.find((d) => d.slug === slug)).filter(Boolean) as typeof DIVISIONS
 
   return (
     <section

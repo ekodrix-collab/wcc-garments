@@ -39,10 +39,11 @@ export const DIVISIONS = [
       { id: 'GAR-CAT-06', name: 'Outerwear & Jackets', slug: 'jackets', status: 'active' as const, displayOrder: 6, subCategories: [] },
     ],
   },
+
   {
     name: 'Households',
     slug: 'households',
-    icon: 'DIV-06',
+    icon: 'DIV-02',
     status: 'active' as const,
     description: 'Premium kitchenware, cookware and homecraft essentials',
     metaTitle: 'Aanya Homecraft B2B Kitchenware & Cookware Supplier UAE | Triply Cookware, Cutlery, Storage — WCC Fashions',
@@ -60,6 +61,7 @@ export const DIVISIONS = [
       { id: 'HH-CAT-04', name: 'Storage & Organizer', slug: 'utility', status: 'active' as const, displayOrder: 4, subCategories: [] },
     ],
   },
+
   {
     name: 'Hospitality',
     slug: 'hospitality',
@@ -82,10 +84,35 @@ export const DIVISIONS = [
       { id: 'HOS-CAT-11', name: 'Storage & Serving', slug: 'storage-serving', status: 'active' as const, displayOrder: 5, subCategories: [] },
     ],
   },
+
+  {
+    name: 'Uniforms',
+    slug: 'uniforms',
+    icon: 'DIV-04',
+    status: 'established' as const,
+    description: 'Professional uniform solutions for all sectors',
+    metaTitle: 'Uniform Supplier Dubai | Bulk Workwear, Security & Corporate Uniforms — WCC Garments',
+    metaDescription: 'UAE-based uniform manufacturer supplying workwear, security uniforms, corporate attire & industrial PPE in bulk. Serving hotels, hospitals, oil & gas. Request a quote.',
+    keywords: ['uniform supplier Dubai', 'workwear manufacturer UAE', 'corporate uniform bulk order', 'security uniform supplier UAE', 'industrial workwear Dubai', 'hotel staff uniform manufacturer', 'safety uniform UAE', 'bulk uniform order Middle East', 'tactical uniform supplier', 'B2B uniform factory Dubai'],
+    heroHeading: 'Professional Uniforms for Every Sector.',
+    heroSubtitle: 'From industrial cargo wear to tactical security suites — bulk uniform solutions engineered for performance and compliance.',
+    stat1Label: 'MOQ From', stat1Value: '100 Units',
+    stat2Label: 'Lead Time', stat2Value: '15–30 Days',
+    stat3Label: 'Sectors', stat3Value: '10+',
+    categories: [
+      { id: 'UNI-CAT-01', name: 'Corporate Workwear', slug: 'corporate-workwear', status: 'active' as const, displayOrder: 1, subCategories: [] },
+      { id: 'UNI-CAT-02', name: 'Security Attire', slug: 'security-attire', status: 'active' as const, displayOrder: 2, subCategories: [] },
+      { id: 'UNI-CAT-03', name: 'Industrial & PPE', slug: 'industrial-ppe', status: 'active' as const, displayOrder: 3, subCategories: [] },
+      { id: 'UNI-CAT-04', name: 'Chef & Kitchen Wear', slug: 'chef-kitchen-wear', status: 'active' as const, displayOrder: 4, subCategories: [] },
+      { id: 'UNI-CAT-05', name: 'Protective Aprons', slug: 'protective-aprons', status: 'active' as const, displayOrder: 5, subCategories: [] },
+      { id: 'UNI-CAT-06', name: 'Medical & Scrubs', slug: 'medical-scrubs', status: 'coming-soon' as const, displayOrder: 6, subCategories: [] },
+    ],
+  },
+
   {
     name: 'Home',
     slug: 'home',
-    icon: 'DIV-04',
+    icon: 'DIV-05',
     status: 'expanding' as const,
     description: 'Luxury home linen and furnishing textiles',
     metaTitle: 'Home Linen Wholesale UAE | Bedsheets, Bath Towels & Luxury Throws — WCC Garments',
@@ -129,10 +156,11 @@ export const DIVISIONS = [
       },
     ],
   },
+
   {
     name: 'Fragrance',
     slug: 'fragrance',
-    icon: 'DIV-05',
+    icon: 'DIV-06',
     status: 'newly-started' as const,
     description: 'Perfumes, raw materials and private label',
     metaTitle: 'Wholesale Perfume & Fragrance Manufacturer UAE | Oud, Bakhoor, Private Label — WCC Garments',
@@ -149,30 +177,6 @@ export const DIVISIONS = [
       { id: 'FRA-CAT-03', name: 'Eau de Parfum', slug: 'eau-de-parfum', status: 'active' as const, displayOrder: 3, subCategories: [] },
       { id: 'FRA-CAT-04', name: 'Private Label', slug: 'private-label', status: 'active' as const, displayOrder: 4, subCategories: [] },
       { id: 'FRA-CAT-05', name: 'Raw Materials', slug: 'raw-materials', status: 'coming-soon' as const, displayOrder: 5, subCategories: [] },
-    ],
-  },
-
-  {
-    name: 'Uniforms',
-    slug: 'uniforms',
-    icon: 'DIV-02',
-    status: 'established' as const,
-    description: 'Professional uniform solutions for all sectors',
-    metaTitle: 'Uniform Supplier Dubai | Bulk Workwear, Security & Corporate Uniforms — WCC Garments',
-    metaDescription: 'UAE-based uniform manufacturer supplying workwear, security uniforms, corporate attire & industrial PPE in bulk. Serving hotels, hospitals, oil & gas. Request a quote.',
-    keywords: ['uniform supplier Dubai', 'workwear manufacturer UAE', 'corporate uniform bulk order', 'security uniform supplier UAE', 'industrial workwear Dubai', 'hotel staff uniform manufacturer', 'safety uniform UAE', 'bulk uniform order Middle East', 'tactical uniform supplier', 'B2B uniform factory Dubai'],
-    heroHeading: 'Professional Uniforms for Every Sector.',
-    heroSubtitle: 'From industrial cargo wear to tactical security suites — bulk uniform solutions engineered for performance and compliance.',
-    stat1Label: 'MOQ From', stat1Value: '100 Units',
-    stat2Label: 'Lead Time', stat2Value: '15–30 Days',
-    stat3Label: 'Sectors', stat3Value: '10+',
-    categories: [
-      { id: 'UNI-CAT-01', name: 'Corporate Workwear', slug: 'corporate-workwear', status: 'active' as const, displayOrder: 1, subCategories: [] },
-      { id: 'UNI-CAT-02', name: 'Security Attire', slug: 'security-attire', status: 'active' as const, displayOrder: 2, subCategories: [] },
-      { id: 'UNI-CAT-03', name: 'Industrial & PPE', slug: 'industrial-ppe', status: 'active' as const, displayOrder: 3, subCategories: [] },
-      { id: 'UNI-CAT-04', name: 'Chef & Kitchen Wear', slug: 'chef-kitchen-wear', status: 'active' as const, displayOrder: 4, subCategories: [] },
-      { id: 'UNI-CAT-05', name: 'Protective Aprons', slug: 'protective-aprons', status: 'active' as const, displayOrder: 5, subCategories: [] },
-      { id: 'UNI-CAT-06', name: 'Medical & Scrubs', slug: 'medical-scrubs', status: 'coming-soon' as const, displayOrder: 6, subCategories: [] },
     ],
   },
 ]
