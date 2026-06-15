@@ -1,10 +1,8 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
-import { brandStore } from "@/lib/brand-store";
-import { Brand } from "@/types";
 import treasurelogo from "../../../public/images/tresurelogo.png";
 import vandegrafflogo from "../../../public/images/vadegrafflogo.png";
 import tomjacklogo from "../../../public/images/tomjacklogo.png";
@@ -70,18 +68,6 @@ export function GarmentsBrands() {
     once: true,
     margin: "-100px",
   });
-  const [brands, setBrands] = useState<Brand[]>([]);
-
-  useEffect(() => {
-    setBrands(brandStore.getBrands());
-  }, []);
-
-  const customBrands = brands.filter(
-    (brand) =>
-      brand.slug !== "treasure" &&
-      brand.slug !== "vandegraff" &&
-      brand.slug !== "tom-jack",
-  );
 
   return (
     <section
@@ -260,31 +246,6 @@ export function GarmentsBrands() {
           </span>
         </Link>
       </div>
-
-      {/* ── CUSTOM BRANDS (dynamic) ── */}
-      {customBrands.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isContainerInView ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.45 }}
-          className="bg-[var(--bg)] border-t border-[var(--border)] px-2 md:px-6 lg:px-12 py-8 mx-auto max-w-[1440px]"
-        >
-          <span className="mb-4 block font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)]">
-            Dynamically synchronized portfolios
-          </span>
-          <div className="flex flex-wrap gap-4">
-            {customBrands.map((brand) => (
-              <Link
-                key={brand.id}
-                href={`/products/garments?brand=${brand.slug}`}
-                className="border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:border-gold hover:text-gold"
-              >
-                {brand.name}
-              </Link>
-            ))}
-          </div>
-        </motion.div>
-      )}
     </section>
   );
 }
