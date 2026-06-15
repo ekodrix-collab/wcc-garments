@@ -31,6 +31,8 @@ export const metadata: Metadata = {
   },
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProductsHubPage() {
   // Count products per division
   const countByDivision = (slug: string) =>
