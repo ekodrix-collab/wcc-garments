@@ -78,14 +78,32 @@ export default async function DivisionCategoryOrLegacyProductPage({
   }
 
   const resolvedCategorySlug = resolveDivisionCategorySlug(divisionSlug, slug)
+  const resolvedCategory = division?.categories.find((item) => item.slug === resolvedCategorySlug)
 
   if (resolvedCategorySlug) {
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_CONFIG.url },
+        { '@type': 'ListItem', position: 2, name: 'Products', item: `${SITE_CONFIG.url}/products` },
+        { '@type': 'ListItem', position: 3, name: division?.name || divisionSlug, item: `${SITE_CONFIG.url}/products/${divisionSlug}` },
+        { '@type': 'ListItem', position: 4, name: resolvedCategory?.name || resolvedCategorySlug, item: `${SITE_CONFIG.url}/products/${divisionSlug}/${resolvedCategorySlug}` },
+      ],
+    }
+
     return (
-      <DivisionCatalogPage
-        divisionSlug={divisionSlug}
-        initialCategorySlug={resolvedCategorySlug}
-        initialBrandSlug={brand}
-      />
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        />
+        <DivisionCatalogPage
+          divisionSlug={divisionSlug}
+          initialCategorySlug={resolvedCategorySlug}
+          initialBrandSlug={brand}
+        />
+      </>
     )
   }
 
