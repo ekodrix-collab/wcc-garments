@@ -45,8 +45,32 @@ export function KillingOffers() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const { data } = useWebsiteContent('strategic-expansion', DEFAULT_EXPANSION)
+  const [liveDivisions, setLiveDivisions] = useState<any[]>([])
 
-  const expansionDivisions = DIVISIONS.filter((d) => EXPANSION_SLUGS.includes(d.slug))
+  useEffect(() => {
+    fetch('/api/categories?divisions=true')
+      .then(res => res.json())
+      .then(res => {
+        if (res.success && Array.isArray(res.data)) {
+          const mapped = res.data.map((d: any) => ({
+            ...d,
+            stat1Label: d.stat1_label || d.stat1Label,
+            stat1Value: d.stat1_value || d.stat1Value,
+            stat2Label: d.stat2_label || d.stat2Label,
+            stat2Value: d.stat2_value || d.stat2Value,
+            stat3Label: d.stat3_label || d.stat3Label,
+            stat3Value: d.stat3_value || d.stat3Value,
+            heroHeading: d.hero_heading || d.heroHeading,
+            heroSubtitle: d.hero_subtitle || d.heroSubtitle,
+          }))
+          setLiveDivisions(mapped)
+        }
+      })
+      .catch(err => console.error('Failed to load live divisions:', err))
+  }, [])
+
+  const divisionsList = liveDivisions.length > 0 ? liveDivisions : DIVISIONS
+  const expansionDivisions = divisionsList.filter((d) => EXPANSION_SLUGS.includes(d.slug))
 
   return (
     <section
@@ -96,7 +120,7 @@ export function KillingOffers() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {expansionDivisions.map((division, index) => {
                 const statusCfg = STATUS_CONFIG[division.status as DivisionStatus] ?? STATUS_CONFIG['active']
-                const image = DIVISION_IMAGES[division.slug] ?? MOCK_IMAGES.textiles
+                const image = division.image || DIVISION_IMAGES[division.slug] || MOCK_IMAGES.textiles
 
                 return (
                   <motion.div

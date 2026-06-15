@@ -41,6 +41,7 @@ interface DivisionCardProps {
     stat2Value: string
     stat3Label: string
     stat3Value: string
+    image?: string
   }
   productCount: number
   index: number
@@ -49,7 +50,7 @@ interface DivisionCardProps {
 }
 
 export function DivisionCard({ division, productCount, index, variant = 'small' }: DivisionCardProps) {
-  const image     = DIVISION_IMAGES[division.slug] || MOCK_IMAGES.textiles
+  const image     = division.image || DIVISION_IMAGES[division.slug] || MOCK_IMAGES.textiles
   const status    = (division.status ?? 'active') as DivisionStatus
   const statusCfg = STATUS_CONFIG[status] ?? STATUS_CONFIG['active']
 

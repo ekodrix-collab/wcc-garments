@@ -182,8 +182,16 @@ export default function EditProductPage() {
     setFormData({ ...formData, specs: formData.specs.filter((_, i) => i !== idx) })
   }
 
-  const handleRemoveImage = (idx: number) => {
+  const handleRemoveImage = async (idx: number) => {
+    const imgUrl = formData.images[idx]
     setFormData(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))
+    if (imgUrl) {
+      try {
+        await api.deleteFile(imgUrl)
+      } catch (err) {
+        console.error('Failed to delete image from Cloudinary:', err)
+      }
+    }
   }
 
   const handleSetImageRole = (idx: number, role: 'cover' | 'hover') => {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase'
+// @ts-ignore
 import { v2 as cloudinary } from 'cloudinary'
 
 // Configure Cloudinary from server environment variables
@@ -58,6 +59,45 @@ export async function POST(request: NextRequest) {
     console.error('Upload error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to upload file to Cloudinary' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const url = searchParams.get('url')
+
+    if (!url) {
+      return NextResponse.json(
+        { success: false, error: 'No URL provided' },
+        { status: 400 }
+      )
+    }
+
+    // Extract public ID from Cloudinary URL (handles folders like wcc_media)
+    const match = url.match(/\/upload\/(?:v\d+\/)?([^\s?#]+)$/)
+    if (match) {
+      const pathPart = match[1]
+      const lastDot = pathPart.lastIndexOf('.')
+      const publicId = lastDot === -1 ? pathPart : pathPart.substring(0, lastDot)
+
+      // Delete directly from Cloudinary
+      await cloudinary.uploader.destroy(publicId)
+    }
+
+    // Delete media record in Supabase DB
+    if (isSupabaseConfigured()) {
+      const supabase = getSupabaseServerClient()
+      await supabase.from('media').delete().eq('url', url)
+    }
+
+    return NextResponse.json({ success: true, message: 'Asset deleted successfully' })
+  } catch (error) {
+    console.error('Delete asset error:', error)
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete asset from Cloudinary' },
       { status: 500 }
     )
   }

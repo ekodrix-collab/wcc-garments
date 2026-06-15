@@ -33,6 +33,7 @@ interface GarmentCategory {
   status: string
   displayOrder: number
   subCategories: SubCat[]
+  image?: string
 }
 
 const division = DIVISIONS.find((d) => d.slug === 'garments')!
@@ -131,7 +132,8 @@ export default function GarmentsHubClient() {
   const urlCategory = searchParams.get('category') ?? 'all'
   const urlBrand = searchParams.get('brand') ?? 'all'
 
-  const activeCategory = (CATEGORIES.find((c) => c.slug === urlCategory) ?? null) as GarmentCategory | null
+  const [categories, setCategories] = useState<GarmentCategory[]>(CATEGORIES)
+  const activeCategory = (categories.find((c) => c.slug === urlCategory) ?? null) as GarmentCategory | null
   const activeBrand = BRANDS_CONFIG.find((b) => b.slug === urlBrand) ?? null
 
   const [products, setProducts] = useState<Product[]>([])
@@ -153,6 +155,16 @@ export default function GarmentsHubClient() {
         }
       })
       .catch((err) => console.error('Failed to sync live garments products:', err))
+
+    // 3. Fetch live categories from database
+    fetch('/api/categories?division=garments')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setCategories(json.data)
+        }
+      })
+      .catch((err) => console.error('Failed to sync live garments categories:', err))
   }, [])
 
   // Filter products by active category AND brand
@@ -227,7 +239,7 @@ export default function GarmentsHubClient() {
                 All Categories
               </button>
 
-              {CATEGORIES.map((cat) => {
+              {categories.map((cat) => {
                 const isActive = urlCategory === cat.slug
                 const isDisabled = cat.status === 'coming-soon'
                 return (
@@ -487,7 +499,7 @@ export default function GarmentsHubClient() {
                         >
                           All Collections
                         </button>
-                        {CATEGORIES.map((cat) => {
+                        {categories.map((cat) => {
                           const isActive = urlCategory === cat.slug
                           const isDisabled = cat.status === 'coming-soon'
                           return (
@@ -536,15 +548,15 @@ export default function GarmentsHubClient() {
                     </div>
                   </div>
                   <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
-                    {CATEGORIES.filter((c) => c.status === 'active').length} active · {CATEGORIES.filter((c) => c.status === 'coming-soon').length} coming soon
+                    {categories.filter((c) => c.status === 'active').length} active · {categories.filter((c) => c.status === 'coming-soon').length} coming soon
                   </p>
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {CATEGORIES.sort((a, b) => a.displayOrder - b.displayOrder).map((cat, index) => {
+                  {categories.sort((a, b) => a.displayOrder - b.displayOrder).map((cat, index) => {
                     const status = cat.status as CatStatus
                     const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG['active']
-                    const image = CATEGORY_IMAGES[cat.slug] ?? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80'
+                    const image = cat.image || CATEGORY_IMAGES[cat.slug] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80'
                     const styleCount = STYLE_COUNT[cat.slug] ?? '80+ Styles'
                     const isDisabled = status === 'coming-soon'
 
@@ -671,7 +683,7 @@ export default function GarmentsHubClient() {
             {/* Category cinematic banner */}
             <div className="relative h-[280px] md:h-[360px] overflow-hidden border-b border-[var(--border)]">
               <Image
-                src={CATEGORY_IMAGES[activeCategory.slug] ?? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&q=80'}
+                src={activeCategory.image || CATEGORY_IMAGES[activeCategory.slug] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&q=80'}
                 alt={activeCategory.name}
                 fill
                 className="object-cover object-center opacity-40"
