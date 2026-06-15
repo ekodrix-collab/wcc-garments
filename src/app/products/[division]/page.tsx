@@ -47,12 +47,29 @@ export default async function DivisionCategoryPage({
 }) {
   const { division: divisionSlug } = await params
   const { category, brand } = await searchParams
+  const division = DIVISIONS.find((item) => item.slug === divisionSlug)
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_CONFIG.url },
+      { '@type': 'ListItem', position: 2, name: 'Products', item: `${SITE_CONFIG.url}/products` },
+      { '@type': 'ListItem', position: 3, name: division?.name || divisionSlug, item: `${SITE_CONFIG.url}/products/${divisionSlug}` },
+    ],
+  }
 
   return (
-    <DivisionCatalogPage
-      divisionSlug={divisionSlug}
-      initialCategorySlug={category}
-      initialBrandSlug={brand}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <DivisionCatalogPage
+        divisionSlug={divisionSlug}
+        initialCategorySlug={category}
+        initialBrandSlug={brand}
+      />
+    </>
   )
 }
