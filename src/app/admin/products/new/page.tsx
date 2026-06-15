@@ -198,6 +198,7 @@ export default function NewProductPage() {
         brandStore.saveProduct({
           ...formData,
           id: res.data.id,
+          slug: res.data.slug || formData.slug,
           brand_slug: hasBrands ? formData.brand_slug : null
         })
         setSuccess(true)
