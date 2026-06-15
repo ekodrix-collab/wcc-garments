@@ -163,6 +163,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     legalName: 'Western Clothing Company Fashions LLC',
     alternateName: ['WCC Garments', 'Western Clothing Company', 'WCC Fashions'],
     url: BASE_URL,
+    logo: `${BASE_URL}/images/wcc-logo.png`,
+    image: `${BASE_URL}/images/wcc-logo.png`,
     email: SITE_CONFIG.email,
     telephone: SITE_CONFIG.phone,
     foundingDate: SITE_CONFIG.founded,
@@ -170,8 +172,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       'B2B manufacturing and wholesale supplier for garments, uniforms, hospitality textiles, home furnishings, fragrance, and household products. Export to 50+ countries from Dubai, UAE.',
     address: {
       '@type': 'PostalAddress',
+      streetAddress: 'Deira Wholesale Textile District',
       addressLocality: 'Dubai',
       addressRegion: 'Dubai',
+      postalCode: '00000',
       addressCountry: 'AE',
     },
     geo: {
@@ -202,17 +206,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     makesOffer: [
       {
         '@type': 'Offer',
-        itemOffered: { '@type': 'Product', name: 'Wholesale Garments', description: 'Bulk garment manufacturing and supply' },
+        itemOffered: { '@type': 'Service', name: 'Wholesale Garments', description: 'Bulk garment manufacturing and supply' },
         eligibleCustomerType: 'http://purl.org/goodrelations/v1#Business',
       },
       {
         '@type': 'Offer',
-        itemOffered: { '@type': 'Product', name: 'Hotel Linen & Hospitality Textiles', description: 'Commercial-grade hotel bedding and linen' },
+        itemOffered: { '@type': 'Service', name: 'Hotel Linen & Hospitality Textiles', description: 'Commercial-grade hotel bedding and linen' },
         eligibleCustomerType: 'http://purl.org/goodrelations/v1#Business',
       },
       {
         '@type': 'Offer',
-        itemOffered: { '@type': 'Product', name: 'Uniforms & Workwear', description: 'Custom uniforms for corporate, hospitality, and industrial sectors' },
+        itemOffered: { '@type': 'Service', name: 'Uniforms & Workwear', description: 'Custom uniforms for corporate, hospitality, and industrial sectors' },
         eligibleCustomerType: 'http://purl.org/goodrelations/v1#Business',
       },
     ],
@@ -249,13 +253,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     '@type': 'LocalBusiness',
     '@id': `${BASE_URL}/#localbusiness`,
     name: 'WCC Fashions LLC',
-    image: `${BASE_URL}/og-image-main.jpg`,
+    logo: `${BASE_URL}/images/wcc-logo.png`,
+    image: `${BASE_URL}/images/wcc-logo.png`,
     telephone: SITE_CONFIG.phone,
     email: SITE_CONFIG.email,
     address: {
       '@type': 'PostalAddress',
+      streetAddress: 'Deira Wholesale Textile District',
       addressLocality: 'Dubai',
       addressRegion: 'Dubai',
+      postalCode: '00000',
       addressCountry: 'AE',
     },
     geo: {
@@ -264,7 +271,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       longitude: 55.2708,
     },
     url: BASE_URL,
-    priceRange: '$$$ (B2B Wholesale)',
+    priceRange: '$$$',
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
