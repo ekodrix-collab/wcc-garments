@@ -245,6 +245,7 @@ export default function EditProductPage() {
         brandStore.saveProduct({
           id: params.id as string,
           ...formData,
+          slug: res.data?.slug || formData.slug,
           brand_slug: hasBrands ? formData.brand_slug : null
         })
         setSuccess(true)
