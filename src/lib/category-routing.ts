@@ -44,7 +44,6 @@ export function resolveDivisionCategorySlug(
   if (!value) return null
 
   const division = DIVISIONS.find((item) => item.slug === divisionSlug)
-  if (!division) return null
 
   const normalizedValue = normalizeCategoryValue(value)
   const aliasedSlug = CATEGORY_ALIASES[divisionSlug]?.[normalizedValue]
@@ -52,18 +51,26 @@ export function resolveDivisionCategorySlug(
     return aliasedSlug
   }
 
-  const matchedCategory = division.categories.find((category) => {
-    const normalizedName = normalizeCategoryValue(category.name)
-    const normalizedSlug = normalizeCategoryValue(category.slug)
+  // Try to match against static DIVISIONS categories
+  if (division) {
+    const matchedCategory = division.categories.find((category) => {
+      const normalizedName = normalizeCategoryValue(category.name)
+      const normalizedSlug = normalizeCategoryValue(category.slug)
 
-    return (
-      category.slug === value ||
-      normalizedSlug === normalizedValue ||
-      normalizedName === normalizedValue
-    )
-  })
+      return (
+        category.slug === value ||
+        normalizedSlug === normalizedValue ||
+        normalizedName === normalizedValue
+      )
+    })
 
-  return matchedCategory?.slug ?? null
+    if (matchedCategory) return matchedCategory.slug
+  }
+
+  // For live DB categories not in static DIVISIONS, convert the value to a slug
+  // e.g. "Serving & Kitchen Tools" → "serving-kitchen-tools"
+  const derivedSlug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  return derivedSlug || null
 }
 
 export function getDivisionCategoryHref(
