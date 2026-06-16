@@ -10,12 +10,17 @@ import { brandStore } from '@/lib/brand-store'
 import { Brand } from '@/types'
 import { api } from '@/lib/api'
 
+// Map of divisionSlug -> live categories fetched from DB
+type LiveCategory = { id: string; name: string; slug: string; status: string }
+
 export default function EditProductPage() {
   const router = useRouter()
   const params = useParams()
   const [brands, setBrands] = useState<Brand[]>([])
   const [uploadingImage, setUploadingImage] = useState(false)
   const [dragActive, setDragActive] = useState(false)
+  // Live categories keyed by division slug
+  const [liveCategories, setLiveCategories] = useState<Record<string, LiveCategory[]>>({})
   
   const populateForm = (match: any) => {
     setFormData({
@@ -55,6 +60,29 @@ export default function EditProductPage() {
       }
     }
     loadLiveBrands()
+
+    // Fetch live categories from DB (same source as Categories admin tab)
+    const loadLiveCategories = async () => {
+      try {
+        const res = await api.admin.getCategories()
+        if (res.success && Array.isArray(res.data)) {
+          const map: Record<string, LiveCategory[]> = {}
+          for (const div of res.data) {
+            const cats: LiveCategory[] = (div.sub_categories || []).map((c: any) => ({
+              id: c.id,
+              name: c.name,
+              slug: c.slug,
+              status: c.status,
+            }))
+            map[div.slug] = cats
+          }
+          setLiveCategories(map)
+        }
+      } catch (err) {
+        console.error('Failed to fetch live categories:', err)
+      }
+    }
+    loadLiveCategories()
     
     const loadProduct = async () => {
       // 1. Initial local load
@@ -423,7 +451,9 @@ export default function EditProductPage() {
                 const selectedDivision = DIVISIONS.find(d => d.name === formData.division_id)
                 const divisionSlug = selectedDivision?.slug || formData.division_id.toLowerCase()
                 const availableBrands = brands.filter(b => (b.division_slug || 'garments').toLowerCase() === divisionSlug.toLowerCase())
-                const availableCategories = selectedDivision?.categories || []
+                // Use live DB categories; fall back to static DIVISIONS categories if API hasn't loaded yet
+                const availableCategories: LiveCategory[] =
+                  liveCategories[divisionSlug] ?? (selectedDivision?.categories?.map((c: any) => ({ id: c.slug, name: c.name, slug: c.slug, status: 'active' })) || [])
                 
                 return (
                   <>
