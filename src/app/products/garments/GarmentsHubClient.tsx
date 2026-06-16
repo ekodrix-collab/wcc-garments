@@ -167,13 +167,29 @@ export default function GarmentsHubClient() {
       .catch((err) => console.error('Failed to sync live garments categories:', err))
   }, [])
 
+  // Normalize a string for comparison (lowercase, alphanumeric only)
+  const normCat = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+
   // Filter products by active category AND brand
   const filteredProducts = products.filter((p) => {
     let categoryMatch = true
     if (activeCategory) {
-      const catName = p.category?.name ?? (p as unknown as Record<string, string>)['category'] ?? ''
-      const matches = SLUG_TO_CATEGORY[activeCategory.slug] ?? []
-      categoryMatch = matches.some((m) => catName.toLowerCase().includes(m.toLowerCase()))
+      const pCatName = (p.category?.name ?? (p as unknown as Record<string, string>)['category'] ?? '')
+      const pCatSlug = (p.category?.slug ?? '')
+      const activeName = normCat(activeCategory.name)
+      const activeSlug = normCat(activeCategory.slug)
+      const pNormName = normCat(pCatName)
+      const pNormSlug = normCat(pCatSlug)
+
+      categoryMatch =
+        // exact slug match
+        pCatSlug === activeCategory.slug ||
+        // exact name match (case-insensitive)
+        pCatName.toLowerCase() === activeCategory.name.toLowerCase() ||
+        // normalized slug contains active slug (or vice-versa)
+        pNormSlug.includes(activeSlug) || activeSlug.includes(pNormSlug) ||
+        // normalized name contains active name (or vice-versa)
+        pNormName.includes(activeName) || activeName.includes(pNormName)
     }
     let brandMatch = true
     if (urlBrand !== 'all') {

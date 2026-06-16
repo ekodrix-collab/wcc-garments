@@ -151,11 +151,28 @@ export function DivisionProductsClient({
   const divisionBrands = BRANDS_CONFIG_BY_DIVISION[divisionSlug] || []
   const activeBrand = divisionBrands.find((b) => b.slug === urlBrand) || null
 
+  // Normalize a string for comparison (lowercase, alphanumeric only)
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+
   const filteredProducts = products.filter((p) => {
     let categoryMatch = true
     if (activeCategory) {
+      const pCatName = p.category?.name || ''
       const pCatSlug = p.category?.slug || ''
-      categoryMatch = pCatSlug.toLowerCase().includes(activeCategory.slug.toLowerCase())
+      const activeName = norm(activeCategory.name)
+      const activeSlug = norm(activeCategory.slug)
+      const pNormName = norm(pCatName)
+      const pNormSlug = norm(pCatSlug)
+
+      categoryMatch =
+        // exact slug match
+        pCatSlug === activeCategory.slug ||
+        // exact name match (case-insensitive)
+        pCatName.toLowerCase() === activeCategory.name.toLowerCase() ||
+        // normalized slug contains active slug (or vice-versa)
+        pNormSlug.includes(activeSlug) || activeSlug.includes(pNormSlug) ||
+        // normalized name contains active name (or vice-versa)
+        pNormName.includes(activeName) || activeName.includes(pNormName)
     }
     let brandMatch = true
     if (urlBrand !== 'all') {
