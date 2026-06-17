@@ -207,7 +207,7 @@ export default function NewProductPage() {
         division: formData.division_id,
         division_slug: formData.division_id.toLowerCase(),
         category: formData.category_ids.length > 0 ? formData.category_ids[0] : '',
-        category_ids: formData.category_ids,
+        categories: formData.category_ids,
         short_description: formData.short_description,
         moq: formData.moq,
         lead_time: formData.lead_time,
