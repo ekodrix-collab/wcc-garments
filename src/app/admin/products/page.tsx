@@ -44,7 +44,8 @@ export default function AdminProductsPage() {
   }
 
   const filteredProducts = productList.filter((p) => {
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.category.toLowerCase().includes(search.toLowerCase())
+    const categoriesStr = Array.isArray(p.categories) ? p.categories.map((c: any) => typeof c === 'string' ? c : c.name).join(' ') : (p.category || '');
+    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) || categoriesStr.toLowerCase().includes(search.toLowerCase())
     const matchDivision = selectedDivision === 'all' || p.division.toLowerCase() === selectedDivision.toLowerCase()
     return matchSearch && matchDivision
   })
@@ -157,7 +158,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4.5">
                       <span className="font-bold text-neutral-900 dark:text-white">{product.division}</span>
-                      <span className="block text-[10px] text-neutral-400 dark:text-white/50">{product.category}</span>
+                      <span className="block text-[10px] text-neutral-400 dark:text-white/50">{Array.isArray(product.categories) && product.categories.length > 0 ? product.categories.map((c: any) => typeof c === 'string' ? c : c.name).join(', ') : product.category}</span>
                     </td>
                     <td className="px-6 py-4.5 font-bold text-gold">
                       {product.moq || '500 Units'}

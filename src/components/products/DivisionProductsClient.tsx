@@ -26,6 +26,7 @@ interface DivisionProductsClientProps {
     images: string[]
     division?: { name: string; slug: string } | null
     category?: { name: string; slug?: string } | null
+    categories?: { name: string; slug?: string }[] | null
     moq: string | null
     is_new: boolean
     is_offer: boolean
@@ -157,22 +158,24 @@ export function DivisionProductsClient({
   const filteredProducts = products.filter((p) => {
     let categoryMatch = true
     if (activeCategory) {
-      const pCatName = p.category?.name || ''
-      const pCatSlug = p.category?.slug || ''
+      const categories = p.categories && p.categories.length > 0 
+        ? p.categories.map((c: any) => typeof c === 'string' ? { name: c, slug: c.toLowerCase().replace(/[^a-z0-9]+/g, '-') } : c)
+        : (p.category ? [p.category] : []);
+        
       const activeName = norm(activeCategory.name)
       const activeSlug = norm(activeCategory.slug)
-      const pNormName = norm(pCatName)
-      const pNormSlug = norm(pCatSlug)
 
-      categoryMatch =
-        // exact slug match
-        pCatSlug === activeCategory.slug ||
-        // exact name match (case-insensitive)
-        pCatName.toLowerCase() === activeCategory.name.toLowerCase() ||
-        // normalized slug contains active slug (or vice-versa)
-        pNormSlug.includes(activeSlug) || activeSlug.includes(pNormSlug) ||
-        // normalized name contains active name (or vice-versa)
-        pNormName.includes(activeName) || activeName.includes(pNormName)
+      categoryMatch = categories.some((c: any) => {
+        const pCatName = c.name || ''
+        const pCatSlug = c.slug || ''
+        const pNormName = norm(pCatName)
+        const pNormSlug = norm(pCatSlug)
+
+        return pCatSlug === activeCategory.slug ||
+          pCatName.toLowerCase() === activeCategory.name.toLowerCase() ||
+          pNormSlug.includes(activeSlug) || activeSlug.includes(pNormSlug) ||
+          pNormName.includes(activeName) || activeName.includes(pNormName)
+      })
     }
     let brandMatch = true
     if (urlBrand !== 'all') {

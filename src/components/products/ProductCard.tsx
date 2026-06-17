@@ -15,6 +15,7 @@ interface ProductCardProps {
     images: string[]
     division?: { name: string; slug: string } | null
     category?: { name: string } | null
+    categories?: { name: string }[] | null
     moq: string | null
     is_new: boolean
     is_offer: boolean
@@ -171,8 +172,8 @@ export function ProductCard({ product, index = 0, coverColor = '#ffffff', divisi
         )}
 
         <div className="mt-4 flex items-center justify-between border-t border-[var(--border)] pt-3">
-          <span className="text-sm text-[var(--text-muted)]">
-            {product.category?.name || 'Textile'}
+          <span className="text-sm text-[var(--text-muted)] line-clamp-1 pr-2">
+            {product.categories && product.categories.length > 0 ? product.categories.map((c: any) => c.name).join(', ') : (product.category?.name || 'Textile')}
           </span>
           {product.moq && (
             <span className="border border-[var(--border)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
