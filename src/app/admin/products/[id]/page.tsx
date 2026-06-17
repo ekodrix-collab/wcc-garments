@@ -30,7 +30,8 @@ export default function EditProductPage() {
       category_id: typeof match.category === 'string' ? match.category : match.category?.name || match.category_id || '',
       category_ids: Array.isArray(match.categories) 
         ? match.categories.map((c: any) => typeof c === 'string' ? c : c.name || '')
-        : (match.category ? [typeof match.category === 'string' ? match.category : match.category?.name || match.category_id || ''] : []),
+        : (Array.isArray(match.category_ids) ? match.category_ids : 
+           (match.category ? [typeof match.category === 'string' ? match.category : match.category?.name || match.category_id || ''] : [])),
       brand_slug: match.brand_slug || match.brand?.slug || '',
       short_description: match.short_description || match.description || '',
       description: match.description || match.short_description || '',
@@ -275,10 +276,30 @@ export default function EditProductPage() {
 
       if (res.success) {
         brandStore.saveProduct({
-          id: params.id as string,
           ...formData,
+          id: params.id as string,
           slug: res.data?.slug || formData.slug,
-          brand_slug: hasBrands ? formData.brand_slug : null
+          brand_slug: hasBrands ? formData.brand_slug : null,
+          category: formData.category_ids.length > 0 ? {
+            id: formData.category_ids[0],
+            division_id: formData.division_id,
+            name: formData.category_ids[0],
+            slug: formData.category_ids[0].toLowerCase().replace(/\s+/g, '-'),
+            description: '',
+            image: '',
+            display_order: 0,
+            active: true
+          } : undefined,
+          categories: formData.category_ids.map(c => ({
+            id: c,
+            division_id: formData.division_id,
+            name: c,
+            slug: c.toLowerCase().replace(/\s+/g, '-'),
+            description: '',
+            image: '',
+            display_order: 0,
+            active: true
+          }))
         })
         setSuccess(true)
         setTimeout(() => {

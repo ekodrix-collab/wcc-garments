@@ -229,7 +229,27 @@ export default function NewProductPage() {
           ...formData,
           id: res.data.id,
           slug: res.data.slug || formData.slug,
-          brand_slug: hasBrands ? formData.brand_slug : null
+          brand_slug: hasBrands ? formData.brand_slug : null,
+          category: formData.category_ids.length > 0 ? {
+            id: formData.category_ids[0],
+            division_id: formData.division_id,
+            name: formData.category_ids[0],
+            slug: formData.category_ids[0].toLowerCase().replace(/\s+/g, '-'),
+            description: '',
+            image: '',
+            display_order: 0,
+            active: true
+          } : undefined,
+          categories: formData.category_ids.map(c => ({
+            id: c,
+            division_id: formData.division_id,
+            name: c,
+            slug: c.toLowerCase().replace(/\s+/g, '-'),
+            description: '',
+            image: '',
+            display_order: 0,
+            active: true
+          }))
         })
         setSuccess(true)
         setTimeout(() => {
