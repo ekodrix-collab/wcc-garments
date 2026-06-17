@@ -174,22 +174,24 @@ export default function GarmentsHubClient() {
   const filteredProducts = products.filter((p) => {
     let categoryMatch = true
     if (activeCategory) {
-      const pCatName = (p.category?.name ?? (p as unknown as Record<string, string>)['category'] ?? '')
-      const pCatSlug = (p.category?.slug ?? '')
+      const categories = p.categories && p.categories.length > 0 
+        ? p.categories.map((c: any) => typeof c === 'string' ? { name: c, slug: c.toLowerCase().replace(/[^a-z0-9]+/g, '-') } : c)
+        : (p.category ? [p.category] : []);
+        
       const activeName = normCat(activeCategory.name)
       const activeSlug = normCat(activeCategory.slug)
-      const pNormName = normCat(pCatName)
-      const pNormSlug = normCat(pCatSlug)
 
-      categoryMatch =
-        // exact slug match
-        pCatSlug === activeCategory.slug ||
-        // exact name match (case-insensitive)
-        pCatName.toLowerCase() === activeCategory.name.toLowerCase() ||
-        // normalized slug contains active slug (or vice-versa)
-        pNormSlug.includes(activeSlug) || activeSlug.includes(pNormSlug) ||
-        // normalized name contains active name (or vice-versa)
-        pNormName.includes(activeName) || activeName.includes(pNormName)
+      categoryMatch = categories.some((c: any) => {
+        const pCatName = (c?.name ?? (c as unknown as Record<string, string>)['category'] ?? '')
+        const pCatSlug = (c?.slug ?? '')
+        const pNormName = normCat(pCatName)
+        const pNormSlug = normCat(pCatSlug)
+
+        return pCatSlug === activeCategory.slug ||
+          pCatName.toLowerCase() === activeCategory.name.toLowerCase() ||
+          pNormSlug.includes(activeSlug) || activeSlug.includes(pNormSlug) ||
+          pNormName.includes(activeName) || activeName.includes(pNormName)
+      })
     }
     let brandMatch = true
     if (urlBrand !== 'all') {

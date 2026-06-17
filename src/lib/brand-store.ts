@@ -77,7 +77,8 @@ export const brandStore = {
     const baseProducts = MOCK_PRODUCTS.map(p => ({
       ...p,
       division: { id: p.id, name: p.division, slug: p.division_slug, accent_color: '#DAA520' },
-      category: { id: p.id, name: p.category, slug: p.category.toLowerCase().replace(/\s+/g, '-') }
+      category: { id: p.id, name: p.category, slug: p.category.toLowerCase().replace(/\s+/g, '-') },
+      categories: ((p as any).categories || (p.category ? [p.category] : [])).map((c: any) => ({ id: p.id, name: c, slug: c.toLowerCase().replace(/\s+/g, '-') }))
     })) as unknown as Product[]
 
     if (!isClient()) return baseProducts
@@ -143,7 +144,8 @@ export const brandStore = {
         lead_time: product.lead_time || '15-20 Days',
         suitable_for: product.suitable_for || ['Corporate', 'Retail'],
         division: { id: 'Garments', name: 'Garments', slug: 'garments', accent_color: '#DAA520' },
-        category: { id: product.category_id || 'formal', name: product.category_id || 'Formal Shirts', slug: (product.category_id || 'formal').toLowerCase().replace(/\s+/g, '-') }
+        category: { id: product.category_id || 'formal', name: product.category_id || 'Formal Shirts', slug: (product.category_id || 'formal').toLowerCase().replace(/\s+/g, '-') },
+        categories: (product.category_ids || (product.category_id ? [product.category_id] : ['Formal Shirts'])).map(c => ({ id: c, name: c, slug: c.toLowerCase().replace(/\s+/g, '-') }))
       } as unknown as Product
       customProducts.push(savedProduct)
     }

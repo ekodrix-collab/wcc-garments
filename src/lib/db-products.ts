@@ -8,6 +8,7 @@ export interface DBProduct {
   division: any
   division_slug: string
   category: any
+  categories?: any[]
   short_description: string
   moq: string
   lead_time: string
@@ -41,7 +42,14 @@ function normalizeProduct(product: any): DBProduct {
       : { name: product.division, slug: product.division_slug },
     category: typeof product.category === 'object' && product.category !== null
       ? product.category
-      : { name: product.category, slug: product.category ? product.category.toLowerCase().replace(/\s+/g, '-') : '' }
+      : { name: product.category, slug: product.category ? product.category.toLowerCase().replace(/\s+/g, '-') : '' },
+    categories: Array.isArray(product.categories)
+      ? product.categories.map((c: any) => typeof c === 'object' && c !== null ? c : { name: c, slug: c ? c.toLowerCase().replace(/\s+/g, '-') : '' })
+      : (product.category ? [
+          typeof product.category === 'object' && product.category !== null
+            ? product.category
+            : { name: product.category, slug: product.category ? product.category.toLowerCase().replace(/\s+/g, '-') : '' }
+        ] : [])
   }
 }
 

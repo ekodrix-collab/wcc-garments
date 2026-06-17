@@ -58,9 +58,11 @@ export default function ProductDetailClient({
     ? product.division.name
     : product.division
 
-  const categoryName = typeof product.category === 'object' && product.category !== null
-    ? product.category.name
-    : product.category
+  const categoryName = Array.isArray(product.categories) && product.categories.length > 0
+    ? product.categories.map((c: any) => typeof c === 'object' && c !== null ? c.name : c).join(', ')
+    : (typeof product.category === 'object' && product.category !== null
+        ? product.category.name
+        : product.category)
 
   return (
     <div className="min-h-screen bg-[var(--bg)] pt-24">

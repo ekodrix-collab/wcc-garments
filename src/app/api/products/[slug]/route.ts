@@ -86,6 +86,15 @@ export async function GET(
         display_order: 0,
         active: true,
       },
+      categories: Array.isArray(product.categories) ? product.categories.map((c: any) => ({
+        id: product.id,
+        name: typeof c === 'string' ? c : c.name,
+        slug: (typeof c === 'string' ? c : c.name || '').toLowerCase().replace(/\s+/g, '-')
+      })) : (product.category ? [{
+        id: product.id,
+        name: product.category,
+        slug: product.category.toLowerCase().replace(/\s+/g, '-')
+      }] : []),
     }
 
     return NextResponse.json(

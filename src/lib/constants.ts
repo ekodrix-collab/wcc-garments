@@ -252,6 +252,7 @@ export const MOCK_PRODUCTS: Array<{
   division: string
   division_slug: string
   category: string
+  categories?: string[]
   short_description: string
   moq: string
   lead_time: string
@@ -272,7 +273,7 @@ export const MOCK_PRODUCTS: Array<{
 }> = [
     {
       id: '1', name: 'Egyptian Cotton Premium Shirts', slug: 'egyptian-cotton-premium-shirts',
-      division: 'Garments', division_slug: 'garments', category: 'Formal Shirts',
+      division: 'Garments', division_slug: 'garments', category: 'Formal Shirts', categories: ['Formal Shirts'],
       short_description: 'Premium 100% Egyptian cotton shirts crafted for global wholesale distribution. Available in multiple fits and finishes.',
       moq: '500 units', lead_time: '15-25 working days',
       images: [
@@ -287,7 +288,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '2', name: 'Industrial Cargo Work Pants', slug: 'industrial-cargo-work-pants',
-      division: 'Uniforms', division_slug: 'uniforms', category: 'Workwear',
+      division: 'Uniforms', division_slug: 'uniforms', category: 'Workwear', categories: ['Workwear'],
       short_description: 'Heavy-duty cargo work pants built for industrial environments. Reinforced stitching and multiple utility pockets.',
       moq: '300 units', lead_time: '20-30 working days',
       images: [
@@ -301,7 +302,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '3', name: 'Hotel Bed Linen Collection', slug: 'hotel-bed-linen-collection',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Bed Linen',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Bed Linen', categories: ['Bed Linen'],
       short_description: 'Luxury hotel-grade bed linen sets. Sateen weave finish with exceptional durability for commercial laundering.',
       moq: '200 sets', lead_time: '15-20 working days',
       images: [
@@ -315,7 +316,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '4', name: 'Luxury Bath Towel Set', slug: 'luxury-bath-towel-set',
-      division: 'Home', division_slug: 'home', category: 'Bath Textiles',
+      division: 'Home', division_slug: 'home', category: 'Bath Textiles', categories: ['Bath Textiles'],
       short_description: 'Ultra-soft ring spun cotton towels with superior absorbency. Double-stitched hems for commercial durability.',
       moq: '1000 units', lead_time: '10-15 working days',
       images: [
@@ -329,7 +330,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '5', name: 'Arabian Oud Collection', slug: 'arabian-oud-collection',
-      division: 'Fragrance', division_slug: 'fragrance', category: 'Premium Fragrances',
+      division: 'Fragrance', division_slug: 'fragrance', category: 'Premium Fragrances', categories: ['Premium Fragrances'],
       short_description: 'Authentic Arabian Oud fragrances crafted from rare aged agarwood. Private label options available.',
       moq: '100 units', lead_time: '10-15 working days',
       images: [
@@ -343,7 +344,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '6', name: 'Premium Chef Uniform Set', slug: 'premium-chef-uniform-set',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Chef Uniforms',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Chef Uniforms', categories: ['Chef Uniforms'],
       short_description: 'Professional chef coats with breathable fabric and stain resistance. Double-breasted design with cloth buttons.',
       moq: '100 units', lead_time: '12-18 working days',
       images: [
@@ -357,7 +358,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '7', name: 'Triply Stainless Steel Casserole', slug: 'triply-stainless-steel-casserole',
-      division: 'Households', division_slug: 'households', category: 'Triply Cookware',
+      division: 'Households', division_slug: 'households', category: 'Triply Cookware', categories: ['Triply Cookware'],
       short_description: 'Premium triply stainless steel cooking and serving casserole with induction compatible lid. Designed for even heating.',
       moq: '100 units', lead_time: '12-15 working days',
       images: [
@@ -371,7 +372,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '8', name: 'Executive Polo Collection', slug: 'executive-polo-collection',
-      division: 'Garments', division_slug: 'garments', category: 'Polo Shirts',
+      division: 'Garments', division_slug: 'garments', category: 'Polo Shirts', categories: ['Polo Shirts'],
       short_description: 'Premium pique cotton polo shirts with corporate customization. Ribbed collar and cuffs for refined appearance.',
       moq: '250 units', lead_time: '12-18 working days',
       images: [
@@ -386,7 +387,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '9', name: 'Executive Velvet Blazer', slug: 'executive-velvet-blazer',
-      division: 'Garments', division_slug: 'garments', category: 'Formal Outerwear',
+      division: 'Garments', division_slug: 'garments', category: 'Formal Outerwear', categories: ['Formal Outerwear'],
       short_description: 'Luxury tailored velvet blazers engineered for VIP hospitality and front-of-house attire. Stain resistant coating.',
       moq: '50 units', lead_time: '14-20 working days',
       images: [
@@ -401,7 +402,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '10', name: 'Tactical Security Uniform Suite', slug: 'tactical-security-uniform-suite',
-      division: 'Uniforms', division_slug: 'uniforms', category: 'Security Attire',
+      division: 'Uniforms', division_slug: 'uniforms', category: 'Security Attire', categories: ['Security Attire'],
       short_description: 'Industrial ripstop tactical uniforms engineered for VIP security and protocol forces. Water and abrasion resistant coating.',
       moq: '200 units', lead_time: '18-25 working days',
       images: [
@@ -415,7 +416,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '11', name: 'Cashmere Merino Hospitality Blanket', slug: 'cashmere-merino-hospitality-blanket',
-      division: 'Home', division_slug: 'home', category: 'Luxury Throws',
+      division: 'Home', division_slug: 'home', category: 'Luxury Throws', categories: ['Luxury Throws'],
       short_description: 'Exquisite blended cashmere and merino wool throws designed for five-star presidential suites and VIP aviation lounges.',
       moq: '100 units', lead_time: '20-30 working days',
       images: [
@@ -429,7 +430,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '12', name: 'Royal Majalis Bakhoor Infusion', slug: 'royal-majalis-bakhoor-infusion',
-      division: 'Fragrance', division_slug: 'fragrance', category: 'Incense & Home Fragrance',
+      division: 'Fragrance', division_slug: 'fragrance', category: 'Incense & Home Fragrance', categories: ['Incense & Home Fragrance'],
       short_description: 'Traditional royal Bakhoor compressed tablets rich in natural sandalwood, ambergris, and Taif rose essential oils.',
       moq: '300 boxes', lead_time: '12-16 working days',
       images: [
@@ -443,7 +444,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '13', name: 'Heavy-Duty Industrial Apron Set', slug: 'heavy-duty-industrial-apron-set',
-      division: 'Uniforms', division_slug: 'uniforms', category: 'Protective Workwear',
+      division: 'Uniforms', division_slug: 'uniforms', category: 'Protective Workwear', categories: ['Protective Workwear'],
       short_description: 'Waxed cotton canvas aprons with genuine leather harness straps and solid brass hardware. Built for artisan workshops.',
       moq: '150 units', lead_time: '15-20 working days',
       images: [
@@ -457,7 +458,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '14', name: 'Artisanal Acacia Wooden Bowl', slug: 'artisanal-acacia-wooden-bowl',
-      division: 'Households', division_slug: 'households', category: 'Table & Serveware',
+      division: 'Households', division_slug: 'households', category: 'Table & Serveware', categories: ['Table & Serveware'],
       short_description: 'Handcrafted premium acacia wooden serving bowl. Perfect for salads, fruits, table presentation, and everyday serving.',
       moq: '100 units', lead_time: '10-14 working days',
       images: [
@@ -472,7 +473,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '15', name: 'Premium Silk Tie Collection', slug: 'premium-silk-tie-collection',
-      division: 'Garments', division_slug: 'garments', category: 'Corporate Accessories',
+      division: 'Garments', division_slug: 'garments', category: 'Corporate Accessories', categories: ['Corporate Accessories'],
       short_description: 'Handcrafted jacquard woven 100% mulberry silk neckties. Custom monogramming and corporate gift box packaging available.',
       moq: '300 units', lead_time: '20-25 working days',
       images: [
@@ -487,7 +488,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '16', name: 'Premium Hammered Cutlery Set', slug: 'premium-hammered-cutlery-set',
-      division: 'Households', division_slug: 'households', category: 'Premium Cutlery',
+      division: 'Households', division_slug: 'households', category: 'Premium Cutlery', categories: ['Premium Cutlery'],
       short_description: 'Elegant 24-piece hammered stainless steel cutlery set with stand. Crafted for premium home dining experiences.',
       moq: '250 units', lead_time: '15-20 working days',
       images: [
@@ -502,7 +503,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '17', name: 'Acacia Wooden Partition Box', slug: 'acacia-wooden-partition-box',
-      division: 'Households', division_slug: 'households', category: 'Storage & Organizer',
+      division: 'Households', division_slug: 'households', category: 'Storage & Organizer', categories: ['Storage & Organizer'],
       short_description: 'Premium acacia wood multipurpose storage box with glass lid and compartment organizers for dry fruits or kitchen essentials.',
       moq: '200 units', lead_time: '12-18 working days',
       images: [
@@ -517,7 +518,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '18', name: 'Metal Wine Rack with Wooden Base – 31.5cm', slug: 'metal-wine-rack-with-wooden-base-31-5cm',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products', categories: ['Barware Products'],
       short_description: 'Elegant metal wire wine rack featuring a solid polished wooden base. Designed to safely store and display wine bottles in commercial hospitality and home bars.',
       moq: '100 units', lead_time: '12-18 working days',
       images: [
@@ -535,7 +536,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '25', name: 'Moscow Mule Mug 500 ml – 500 ml', slug: 'moscow-mule-mug-500ml-black',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products', categories: ['Barware Products'],
       short_description: 'Premium hammered glossy black Moscow Mule mug. Double-walled stainless steel construction keeps specialty cocktails chilled longer.',
       moq: '200 units', lead_time: '12-15 working days',
       images: [
@@ -554,7 +555,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '26', name: 'Moscow Mule Mug 500 ml | Stainless Steel Cocktail Mug with Handle – 500', slug: 'moscow-mule-mug-500ml-copper',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products', categories: ['Barware Products'],
       short_description: 'Classic hammered copper Moscow Mule mug featuring a solid brass handle. Perfectly designed for cocktails, keeping drinks ice-cold and fresh.',
       moq: '200 units', lead_time: '12-15 working days',
       images: [
@@ -568,7 +569,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '27', name: 'Stainless Steel Cocktail Mug with Handle – 500 ml', slug: 'stainless-steel-cocktail-mug-with-handle-500ml',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Barware Products', categories: ['Barware Products'],
       short_description: 'Unique rustic weathered copper-patina finished cocktail mug with a gold-tone handle. Combines premium B2B aesthetics with durable food-grade stainless steel.',
       moq: '200 units', lead_time: '12-15 working days',
       images: [
@@ -582,7 +583,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '19', name: 'Horeca24h Triply Stock Pot', slug: 'horeca24h-triply-stock-pot',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Cookware Products',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Cookware Products', categories: ['Cookware Products'],
       short_description: 'Heavy-duty tri-ply stainless steel stock pot designed for restaurant kitchens. Induction ready with superior heat distribution.',
       moq: '50 units', lead_time: '15-20 working days',
       images: [
@@ -597,7 +598,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '20', name: 'Horeca24h Stainless Steel Buffet Tongs', slug: 'horeca24h-stainless-steel-buffet-tongs',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Serving & Kitchen Tools',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Serving & Kitchen Tools', categories: ['Serving & Kitchen Tools'],
       short_description: 'Professional grade mirror-polished stainless steel buffet and serving tongs. Elegant scissor design for luxury table serving.',
       moq: '200 units', lead_time: '10-15 working days',
       images: [
@@ -612,7 +613,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '21', name: 'Horeca24h Modern Cutlery Set', slug: 'horeca24h-modern-cutlery-set',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Table Cutlery',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Table Cutlery', categories: ['Table Cutlery'],
       short_description: 'Luxury hotel-grade cutlery set, ergonomically balanced and highly polished. Suitable for high-end dining presentation.',
       moq: '250 sets', lead_time: '12-18 working days',
       images: [
@@ -627,7 +628,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '22', name: 'Horeca24h Black Wire Buffet Basket', slug: 'horeca24h-black-wire-buffet-basket',
-      division: 'Hospitality', division_slug: 'hospitality', category: 'Storage & Serving',
+      division: 'Hospitality', division_slug: 'hospitality', category: 'Storage & Serving', categories: ['Storage & Serving'],
       short_description: 'Contemporary matte black powder-coated wire basket with a natural oil-finished acacia wood base. Perfect for bread and table serving.',
       moq: '150 units', lead_time: '12-18 working days',
       images: [
@@ -642,7 +643,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '23', name: '17 Piece Trio Robust 18/10 Tri-Ply Cookware Set', slug: 'household-17-piece-trio-robust-tri-ply-cookware-set',
-      division: 'Households', division_slug: 'households', category: 'Triply Cookware',
+      division: 'Households', division_slug: 'households', category: 'Triply Cookware', categories: ['Triply Cookware'],
       short_description: 'Complete 17-piece robust 18/10 stainless steel tri-ply cookware, mixing & serving set. Elegant design for premium modern home kitchens.',
       moq: '50 sets', lead_time: '15-20 working days',
       images: [
@@ -664,7 +665,7 @@ export const MOCK_PRODUCTS: Array<{
     },
     {
       id: '24', name: '3 Piece Trio Robust 18/10 Tri-Ply Stainless Steel Cookware Set', slug: 'household-3-piece-trio-robust-tri-ply-cookware-set',
-      division: 'Households', division_slug: 'households', category: 'Triply Cookware',
+      division: 'Households', division_slug: 'households', category: 'Triply Cookware', categories: ['Triply Cookware'],
       short_description: 'Essential 3-piece robust 18/10 stainless steel tri-ply cookware set. Encapsulated core for rapid and even heat distribution.',
       moq: '50 sets', lead_time: '15-20 working days',
       images: [
