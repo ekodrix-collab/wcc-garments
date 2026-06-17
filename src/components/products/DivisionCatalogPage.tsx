@@ -98,6 +98,7 @@ export async function DivisionCatalogPage({
       name: product.category || '',
       slug: resolveDivisionCategorySlug(divisionSlug, product.category) ?? undefined,
     },
+    categories: Array.isArray(product.categories) ? product.categories : [],
     moq: product.moq,
     is_new: product.is_new,
     is_offer: product.is_offer,
