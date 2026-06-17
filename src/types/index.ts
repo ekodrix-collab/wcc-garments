@@ -32,7 +32,8 @@ export interface Category {
 export interface Product {
   id: string
   division_id: string
-  category_id: string | null
+  category_id?: string | null
+  category_ids?: string[]
   name: string
   slug: string
   short_description: string | null
@@ -56,6 +57,7 @@ export interface Product {
   updated_at: string
   division?: Division
   category?: Category
+  categories?: Category[]
   brand_slug?: string | null
 }
 

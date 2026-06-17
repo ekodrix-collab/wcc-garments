@@ -123,7 +123,7 @@ export default function NewProductPage() {
   const [specKey, setSpecKey] = useState('')
   const [specVal, setSpecVal] = useState('')
   const [formData, setFormData] = useState({
-    name: '', slug: '', division_id: 'Garments', category_id: '', brand_slug: '',
+    name: '', slug: '', division_id: 'Garments', category_ids: [] as string[], brand_slug: '',
     short_description: '', description: '', moq: '500 Units', lead_time: '15-25 Working Days',
     featured: false, is_new: true, is_offer: false, offer_label: '',
     published: true, tags: [] as string[],
@@ -206,7 +206,8 @@ export default function NewProductPage() {
         slug: formData.slug,
         division: formData.division_id,
         division_slug: formData.division_id.toLowerCase(),
-        category: formData.category_id,
+        category: formData.category_ids.length > 0 ? formData.category_ids[0] : '',
+        category_ids: formData.category_ids,
         short_description: formData.short_description,
         moq: formData.moq,
         lead_time: formData.lead_time,
@@ -411,16 +412,38 @@ export default function NewProductPage() {
                     </div>
 
                     <div>
-                      <label className={labelClass}>Primary Category *</label>
+                      <label className={labelClass}>Categories *</label>
                       {availableCategories.length > 0 ? (
-                        <select name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} required>
-                          <option value="">-- Select Category --</option>
+                        <div className="space-y-2 max-h-48 overflow-y-auto p-3 border border-neutral-200 dark:border-white/10 rounded-xl bg-white dark:bg-black/60">
                           {availableCategories.map(c => (
-                            <option key={c.slug || c.id} value={c.name}>{c.name}</option>
+                            <label key={c.slug || c.id} className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={formData.category_ids.includes(c.name)}
+                                onChange={(e) => {
+                                  const checked = e.target.checked;
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    category_ids: checked 
+                                      ? [...prev.category_ids, c.name]
+                                      : prev.category_ids.filter(id => id !== c.name)
+                                  }));
+                                }}
+                                className="h-4 w-4 accent-gold rounded border-neutral-300 dark:border-white/20 bg-white dark:bg-black"
+                              />
+                              <span className="text-xs text-neutral-700 dark:text-white/80">{c.name}</span>
+                            </label>
                           ))}
-                        </select>
+                        </div>
                       ) : (
-                        <input name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} placeholder="e.g. Bed Linen" required />
+                        <input 
+                          name="category_id" 
+                          value={formData.category_ids.join(', ')} 
+                          onChange={(e) => setFormData(prev => ({ ...prev, category_ids: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }))} 
+                          className={inputClass} 
+                          placeholder="e.g. Bed Linen, Formal Shirts (comma separated)" 
+                          required 
+                        />
                       )}
                     </div>
                   </>

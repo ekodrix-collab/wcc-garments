@@ -69,20 +69,23 @@ export default function AllProductsClient() {
       // Brand filter
       if (activeBrand !== 'all' && p.brand_slug !== activeBrand) return false
 
+      const categories = p.categories && p.categories.length > 0 
+        ? p.categories.map((c: any) => typeof c === 'string' ? c : c.name)
+        : [p.category?.name ?? (p as unknown as Record<string, string>)['category'] ?? ''];
+
       // Category filter
       if (activeCategory !== 'all') {
-        const catName = p.category?.name ?? (p as unknown as Record<string, string>)['category'] ?? ''
         const matches = SLUG_TO_CATEGORY[activeCategory] ?? []
-        if (!matches.some((m) => catName.toLowerCase().includes(m.toLowerCase()))) return false
+        const hasMatch = categories.some((catName) => matches.some((m) => catName.toLowerCase().includes(m.toLowerCase())))
+        if (!hasMatch) return false
       }
 
       // Search filter
       if (searchQuery) {
         const q = searchQuery.toLowerCase()
-        const catName = p.category?.name ?? (p as unknown as Record<string, string>)['category'] ?? ''
         const matches =
           p.name.toLowerCase().includes(q) ||
-          catName.toLowerCase().includes(q) ||
+          categories.some((catName) => catName.toLowerCase().includes(q)) ||
           (p.short_description ?? '').toLowerCase().includes(q) ||
           (p.brand_slug ?? '').toLowerCase().includes(q)
         if (!matches) return false

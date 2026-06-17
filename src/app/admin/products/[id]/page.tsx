@@ -28,6 +28,9 @@ export default function EditProductPage() {
       slug: match.slug || '',
       division_id: typeof match.division === 'string' ? match.division : match.division?.name || match.division_id || 'Garments',
       category_id: typeof match.category === 'string' ? match.category : match.category?.name || match.category_id || '',
+      category_ids: Array.isArray(match.categories) 
+        ? match.categories.map((c: any) => typeof c === 'string' ? c : c.name || '')
+        : (match.category ? [typeof match.category === 'string' ? match.category : match.category?.name || match.category_id || ''] : []),
       brand_slug: match.brand_slug || match.brand?.slug || '',
       short_description: match.short_description || match.description || '',
       description: match.description || match.short_description || '',
@@ -164,7 +167,7 @@ export default function EditProductPage() {
 
   // Preload initial mock state based on ID
   const [formData, setFormData] = useState({
-    name: 'Executive Bespoke Oxford Cotton Shirt', slug: 'executive-bespoke-oxford-shirt', division_id: 'Garments', category_id: 'Formal Shirts', brand_slug: 'treasure',
+    name: 'Executive Bespoke Oxford Cotton Shirt', slug: 'executive-bespoke-oxford-shirt', division_id: 'Garments', category_id: 'Formal Shirts', category_ids: ['Formal Shirts'], brand_slug: 'treasure',
     short_description: 'Engineered for premium executive comfort with wrinkle-resistant double-ply oxford weave.', description: 'Complete industrial specifications include reinforced double-needle stitching, Mother of Pearl buttons, and custom collar stays designed for rigorous corporate laundering protocols.', moq: '500 Units', lead_time: '15-20 Working Days',
     featured: true, is_new: false, is_offer: true, offer_label: '10% Tier Rebate on 2,500+ Units',
     published: true, tags: ['Oxford Cotton', 'Wrinkle-Resistant', 'Executive Tier'],
@@ -252,7 +255,8 @@ export default function EditProductPage() {
         slug: formData.slug,
         division: formData.division_id,
         division_slug: formData.division_id.toLowerCase(),
-        category: formData.category_id,
+        category: formData.category_ids.length > 0 ? formData.category_ids[0] : '',
+        category_ids: formData.category_ids,
         short_description: formData.short_description,
         moq: formData.moq,
         lead_time: formData.lead_time,
@@ -468,16 +472,38 @@ export default function EditProductPage() {
                     </div>
 
                     <div>
-                      <label className={labelClass}>Primary Category *</label>
+                      <label className={labelClass}>Categories *</label>
                       {availableCategories.length > 0 ? (
-                        <select name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} required>
-                          <option value="">-- Select Category --</option>
+                        <div className="space-y-2 max-h-48 overflow-y-auto p-3 border border-neutral-200 dark:border-white/10 rounded-xl bg-white dark:bg-black/60">
                           {availableCategories.map(c => (
-                            <option key={c.slug || c.id} value={c.name}>{c.name}</option>
+                            <label key={c.slug || c.id} className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={formData.category_ids.includes(c.name)}
+                                onChange={(e) => {
+                                  const checked = e.target.checked;
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    category_ids: checked 
+                                      ? [...prev.category_ids, c.name]
+                                      : prev.category_ids.filter(id => id !== c.name)
+                                  }));
+                                }}
+                                className="h-4 w-4 accent-gold rounded border-neutral-300 dark:border-white/20 bg-white dark:bg-black"
+                              />
+                              <span className="text-xs text-neutral-700 dark:text-white/80">{c.name}</span>
+                            </label>
                           ))}
-                        </select>
+                        </div>
                       ) : (
-                        <input name="category_id" value={formData.category_id} onChange={handleChange} className={inputClass} placeholder="e.g. Bed Linen" required />
+                        <input 
+                          name="category_id" 
+                          value={formData.category_ids.join(', ')} 
+                          onChange={(e) => setFormData(prev => ({ ...prev, category_ids: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }))} 
+                          className={inputClass} 
+                          placeholder="e.g. Bed Linen, Formal Shirts (comma separated)" 
+                          required 
+                        />
                       )}
                     </div>
                   </>

@@ -60,6 +60,15 @@ export async function GET(request: NextRequest) {
         name: p.category,
         slug: p.category ? p.category.toLowerCase().replace(/\s+/g, '-') : '',
       },
+      categories: Array.isArray(p.categories) ? p.categories.map((c: any) => ({
+        id: p.id,
+        name: typeof c === 'string' ? c : c.name,
+        slug: (typeof c === 'string' ? c : c.name || '').toLowerCase().replace(/\s+/g, '-')
+      })) : (p.category ? [{
+        id: p.id,
+        name: p.category,
+        slug: p.category.toLowerCase().replace(/\s+/g, '-')
+      }] : []),
     }))
 
     return NextResponse.json(
